@@ -1,4 +1,4 @@
-package com.web3.dataservice.controller;
+package com.web3;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
