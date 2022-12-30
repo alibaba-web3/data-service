@@ -1,6 +1,6 @@
 package com.web3.controller;
 
-import com.web3.data.service.UserService;
+import com.web3.service.UserService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

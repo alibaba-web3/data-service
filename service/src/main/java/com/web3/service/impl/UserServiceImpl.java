@@ -1,6 +1,6 @@
-package com.web3.data.service.impl;
+package com.web3.service.impl;
 
-import com.web3.data.service.UserService;
+import com.web3.service.UserService;
 import org.springframework.stereotype.Service;
 
 /**
