@@ -24,6 +24,7 @@
         <java.version>17</java.version>
         <spring-boot.version>3.0.1</spring-boot.version>
         <lombok.version>1.18.24</lombok.version>
+        <spring-doc.version>2.0.2</spring-doc.version>
     </properties>
 
     <dependencyManagement>
@@ -89,6 +90,12 @@
 				<artifactId>spring-boot-starter-thymeleaf</artifactId>
                 <version>${spring-boot.version}</version>
 			</dependency>
+
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${spring-doc.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
