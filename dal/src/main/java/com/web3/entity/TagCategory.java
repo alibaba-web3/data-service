@@ -2,7 +2,10 @@ package com.web3.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -21,6 +24,7 @@ import lombok.Setter;
 @TableName("tag_category")
 public class TagCategory implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
@@ -52,6 +56,7 @@ public class TagCategory implements Serializable {
     /**
      * 逻辑删除 0/1
      */
+    @TableLogic
     private String deleted;
 
     /**

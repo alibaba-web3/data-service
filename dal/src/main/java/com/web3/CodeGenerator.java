@@ -5,13 +5,12 @@ import java.util.Collections;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.ConstVal;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
-import org.springframework.stereotype.Component;
 
 /**
  * @Author: mianyun.yt
  * @Date: 2023/1/3
  */
-@Component
+
 public class CodeGenerator {
 
     public static void main(String[] args) {
@@ -31,6 +30,7 @@ public class CodeGenerator {
                 builder
                     .addInclude("tag_category") // 设置需要生成的表名
                     .entityBuilder()
+                    .logicDeleteColumnName("deleted")
                     .enableFileOverride()
                     .enableLombok()
                     .serviceBuilder()
