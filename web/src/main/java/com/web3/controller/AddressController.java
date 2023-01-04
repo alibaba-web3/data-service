@@ -1,5 +1,7 @@
 package com.web3.controller;
 
+import java.io.IOException;
+
 import com.web3.entity.vo.AddressProfileVO;
 import com.web3.service.Address.AddressService;
 import com.web3.service.Address.dto.AddressProfileDTO;
@@ -30,6 +32,11 @@ public class AddressController {
         AddressProfileVO result = new AddressProfileVO();
         BeanUtils.copyProperties(dto, result);
         return result;
+    }
+
+    @GetMapping("/version")
+    String getVersion() throws IOException {
+        return addressService.getWeb3ClientVersion();
     }
 
 }

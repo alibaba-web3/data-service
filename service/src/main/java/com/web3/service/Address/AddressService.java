@@ -1,5 +1,7 @@
 package com.web3.service.Address;
 
+import java.io.IOException;
+
 import com.web3.service.Address.dto.AddressProfileDTO;
 
 /**
@@ -15,5 +17,7 @@ public interface AddressService {
      * @return 基本信息
      */
     AddressProfileDTO getProfile(String address);
+
+    String getWeb3ClientVersion() throws IOException;
 
 }
