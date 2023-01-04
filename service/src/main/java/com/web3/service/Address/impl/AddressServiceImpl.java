@@ -1,6 +1,7 @@
 package com.web3.service.Address.impl;
 
 import java.io.IOException;
+import java.math.BigInteger;
 
 import com.web3.service.Address.AddressService;
 import com.web3.service.Address.dto.AddressProfileDTO;
@@ -34,5 +35,10 @@ public class AddressServiceImpl implements AddressService {
         Web3ClientVersion web3ClientVersion = web3.web3ClientVersion().send();
 
         return web3ClientVersion.getWeb3ClientVersion();
+    }
+
+    @Override
+    public BigInteger getEthBalance(String address) throws IOException {
+        return web3.ethGetBalance(address, null).send().getBalance();
     }
 }
