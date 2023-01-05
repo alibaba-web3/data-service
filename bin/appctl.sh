@@ -9,7 +9,7 @@
 #APP_HOME=/root/data-service/start/target
 APP_HOME=../start/target
 # 应用名称
-APP_NAME=$1
+APP_NAME=start-0.0.1-SNAPSHOT.jar
 
 # Shell Info
 
