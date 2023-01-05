@@ -5,6 +5,7 @@ import java.math.BigInteger;
 
 import com.web3.service.Address.AddressService;
 import com.web3.service.Address.dto.AddressProfileDTO;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.Web3ClientVersion;
@@ -21,8 +22,11 @@ public class AddressServiceImpl implements AddressService {
 
     private final Web3j web3;
 
+    @Value("${ethereum.node.rpc}")
+    private String nodeRpcUrl;
+
     public AddressServiceImpl() {
-        this.web3 = Web3j.build(new HttpService("http://8.222.144.214/json-rpc"));
+        this.web3 = Web3j.build(new HttpService(nodeRpcUrl));
     }
 
     @Override
