@@ -3,6 +3,8 @@ web3 data process service
 deployment:
 
 ```bash
+mvn clean compile package
+
 nohup java -jar start/target/start-0.0.1-SNAPSHOT.jar &
 ```
 
