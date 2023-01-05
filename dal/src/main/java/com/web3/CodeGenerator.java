@@ -28,7 +28,7 @@ public class CodeGenerator {
             })
             .strategyConfig(builder -> {
                 builder
-                    .addInclude("tag_category") // 设置需要生成的表名
+                    .addInclude("tags") // 设置需要生成的表名。多张表 , 分隔
                     .entityBuilder()
                     .logicDeleteColumnName("deleted")
                     .enableFileOverride()
