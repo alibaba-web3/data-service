@@ -6,7 +6,7 @@
 
 # App Info
 # 应用 Jar 包路径
-APP_HOME=/root/data-service/start/target
+APP_HOME=./
 # 应用名称
 APP_NAME=$1
 
@@ -40,6 +40,7 @@ start(){
         else
                 nohup java -jar ${APP_HOME}/${APP_NAME} &
                 PID=$(echo $!)
+                echo ""
                 echo "${APP_NAME} start success, PID=$!"
         fi
 }
