@@ -2,7 +2,9 @@ package com.web3.controller;
 
 import java.util.List;
 
+import com.web3.entity.ResultUtils;
 import com.web3.entity.TagCategory;
+import com.web3.entity.vo.Result;
 import com.web3.service.Tag.TagCategoryService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,30 +31,36 @@ public class TagController {
      * 标签分类列表
      */
     @GetMapping("/category/list")
-    List<TagCategory> listTagCategory() {
-        return tagCategoryService.list();
+    Result<List<TagCategory>> listTagCategory() {
+        return ResultUtils.createSuccessRes(tagCategoryService.list());
     }
 
     /**
      * 创建标签分类
      */
     @PostMapping("/category")
-    boolean createTagCategory(@RequestParam String name) {
+    Result<Boolean> createTagCategory(@RequestParam String name) {
         // TODO 获取登录用户信息
-        return tagCategoryService.create(name, "0xfe731b7ed91C7655B87c062a2A27625AeCB0ddD5");
+        return ResultUtils.createSuccessRes(tagCategoryService.create(name, "0xfe731b7ed91C7655B87c062a2A27625AeCB0ddD5"));
     }
 
     /**
      * 更新标签分类名称
      */
     @PutMapping("/category/{id}")
-    boolean updateTagCategoryName(@PathVariable Long id, @RequestParam String name) {
+    Result<Boolean> updateTagCategoryName(@PathVariable Long id, @RequestParam String name) {
         // TODO 获取登录用户信息
-        return tagCategoryService.updateName(id, name, "0xfe731b7ed91C7655B87c062a2A27625AeCB0ddD5");
+        return ResultUtils.createSuccessRes(tagCategoryService.updateName(id, name, "0xfe731b7ed91C7655B87c062a2A27625AeCB0ddD5"));
     }
 
+    /**
+     * 删除标签分类
+     *
+     * @param id 分类id
+     * @return 删除成功
+     */
     @DeleteMapping("/category/{id}")
-    boolean removeTagCategory(@PathVariable String id) {
-        return tagCategoryService.removeById(id);
+    Result<Boolean> removeTagCategory(@PathVariable String id) {
+        return ResultUtils.createSuccessRes(tagCategoryService.removeById(id));
     }
 }

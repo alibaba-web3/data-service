@@ -1,6 +1,7 @@
 package com.web3.service.Address;
 
 import java.io.IOException;
+import java.math.BigInteger;
 
 import com.web3.service.Address.dto.AddressProfileDTO;
 
@@ -19,5 +20,7 @@ public interface AddressService {
     AddressProfileDTO getProfile(String address);
 
     String getWeb3ClientVersion() throws IOException;
+
+    BigInteger getEthBalance(String address) throws IOException;
 
 }

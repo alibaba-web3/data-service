@@ -1,10 +1,13 @@
 package com.web3.service.Tag;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.web3.entity.Tag;
+
 /**
  * @Author: mianyun.yt
  * @Date: 2023/1/3
  */
-public interface TagService {
+public interface TagService extends IService<Tag> {
 
     /**
      * 标签创建
@@ -12,7 +15,5 @@ public interface TagService {
      * @return 创建是否成功
      */
     boolean create();
-
-
 
 }
