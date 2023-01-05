@@ -7,15 +7,15 @@
 # App Info
 # 应用 Jar 包路径
 #APP_HOME=/root/data-service/start/target
-APP_HOME=../start/target
+APP_HOME=/root/data-service/start/target
 # 应用名称
-APP_NAME=start-0.0.1-SNAPSHOT.jar
+APP_NAME=$1
 
 # Shell Info
 
 # 使用说明，用来提示输入参数
 usage() {
-    echo "Usage: sh boot [APP_NAME] [start|stop|restart|status]"
+    echo "Usage: sh appctl [APP_NAME] [start|stop|restart|status]"
     exit 1
 }
 
