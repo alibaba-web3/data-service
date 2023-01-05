@@ -6,7 +6,6 @@
 
 # App Info
 # 应用 Jar 包路径
-#APP_HOME=/root/data-service/start/target
 APP_HOME=/root/data-service/start/target
 # 应用名称
 APP_NAME=$1
