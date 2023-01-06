@@ -16,7 +16,7 @@ APP_ENV=$2
 
 # 使用说明，用来提示输入参数
 usage() {
-    echo "Usage: sh appctl [APP_NAME] [start|stop|restart|status]"
+    echo "Usage: sh appctl [APP_NAME] [APP_ENV] [start|stop|restart|status]"
     exit 1
 }
 
