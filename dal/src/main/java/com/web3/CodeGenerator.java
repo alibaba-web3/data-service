@@ -15,16 +15,20 @@ public class CodeGenerator {
 
     public static void main(String[] args) {
 
+        // 指定输出目录
+        String outputDir = "/Users/thomsonyang/Desktop/code/opensource/data-service/dal/src/main/java";
+        String mapperDir = "/Users/thomsonyang/Desktop/code/opensource/data-service/dal/src/main/resources/mapper";
+
         FastAutoGenerator.create("jdbc:mysql://alibaba-web3.mysql.polardb.singapore.rds.aliyuncs.com:3306/service", "web3", "Alibaba_web3_data")
             .globalConfig(builder -> {
                 builder.author("mianyun") // 设置作者
                     //.enableSwagger() // 开启 swagger 模式
-                    .outputDir("/Users/thomsonyang/Desktop/code/opensource/data-service/dal/src/main/java"); // 指定输出目录
+                    .outputDir(outputDir);
             })
             .packageConfig(builder -> {
                 builder.parent("com.web3") // 设置父包名
                     .moduleName("generate")// 设置父包模块名
-                    .pathInfo(Collections.singletonMap(OutputFile.xml, "/Users/thomsonyang/Desktop/code/opensource/data-service/dal/src/main/resources/mapper")); // 设置mapperXml生成路径
+                    .pathInfo(Collections.singletonMap(OutputFile.xml, mapperDir)); // 设置mapperXml生成路径
             })
             .strategyConfig(builder -> {
                 builder
