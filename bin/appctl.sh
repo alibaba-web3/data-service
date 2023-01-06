@@ -9,6 +9,8 @@
 APP_HOME=./
 # 应用名称
 APP_NAME=$1
+# 指定启动环境
+APP_ENV=$2
 
 # Shell Info
 
@@ -38,7 +40,7 @@ start(){
         if [ $? -eq "0" ]; then
                 echo "${APP_NAME} is already running, PID=${PID}"
         else
-                nohup java -jar ${APP_HOME}/${APP_NAME} &
+                nohup java -jar -Dspring.config.location=classpath:/${APP_ENV} ${APP_HOME}/${APP_NAME} &
                 PID=$(echo $!)
                 echo ""
                 echo "${APP_NAME} start success, PID=$!"
@@ -72,7 +74,7 @@ status(){
         fi
 }
 
-case $2 in
+case $3 in
 "start")
         start
         ;;
