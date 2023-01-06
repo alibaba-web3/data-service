@@ -40,7 +40,7 @@ start(){
         if [ $? -eq "0" ]; then
                 echo "${APP_NAME} is already running, PID=${PID}"
         else
-                nohup java -jar -Dspring.config.location=classpath:/${APP_ENV} ${APP_HOME}/${APP_NAME} &
+                nohup java -jar -Dspring.profiles.active=${APP_ENV} ${APP_HOME}/${APP_NAME} &
                 PID=$(echo $!)
                 echo ""
                 echo "${APP_NAME} start success, PID=$!"
