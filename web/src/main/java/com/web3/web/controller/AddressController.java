@@ -1,0 +1,42 @@
+package com.web3.web.controller;
+
+import java.io.IOException;
+
+import com.web3.web.entity.vo.AddressProfileVO;
+import com.web3.service.address.AddressService;
+import com.web3.service.address.dto.AddressProfileDTO;
+import jakarta.annotation.Resource;
+import org.springframework.beans.BeanUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * @Author: mianyun.yt
+ * @Date: 2022/12/23
+ */
+@RestController
+@RequestMapping("/api/address")
+public class AddressController {
+
+    @Resource
+    private AddressService addressService;
+
+    @GetMapping("/profile")
+    AddressProfileVO getProfile(@RequestParam String address) {
+        AddressProfileDTO dto = addressService.getProfile(address);
+        if (dto == null) {
+            return null;
+        }
+        AddressProfileVO result = new AddressProfileVO();
+        BeanUtils.copyProperties(dto, result);
+        return result;
+    }
+
+    @GetMapping("/version")
+    String getVersion() throws IOException {
+        return addressService.getWeb3ClientVersion();
+    }
+
+}
