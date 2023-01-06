@@ -6,16 +6,17 @@
 
 # App Info
 # 应用 Jar 包路径
-#APP_HOME=/root/data-service/start/target
-APP_HOME=../start/target
+APP_HOME=./
 # 应用名称
-APP_NAME=start-0.0.1-SNAPSHOT.jar
+APP_NAME=$1
+# 指定启动环境
+APP_ENV=$2
 
 # Shell Info
 
 # 使用说明，用来提示输入参数
 usage() {
-    echo "Usage: sh boot [APP_NAME] [start|stop|restart|status]"
+    echo "Usage: sh appctl [APP_NAME] [APP_ENV] [start|stop|restart|status]"
     exit 1
 }
 
@@ -39,8 +40,9 @@ start(){
         if [ $? -eq "0" ]; then
                 echo "${APP_NAME} is already running, PID=${PID}"
         else
-                nohup java -jar ${APP_HOME}/${APP_NAME} &
+                nohup java -jar -Dspring.config.location=classpath:/${APP_ENV} ${APP_HOME}/${APP_NAME} &
                 PID=$(echo $!)
+                echo ""
                 echo "${APP_NAME} start success, PID=$!"
         fi
 }
@@ -72,7 +74,7 @@ status(){
         fi
 }
 
-case $2 in
+case $3 in
 "start")
         start
         ;;
