@@ -22,7 +22,7 @@ public interface TagCategoryService extends IService<TagCategory> {
      * 创建标签分类
      *
      * @param name     分类名称
-     * @param operator
+     * @param operator 操作人
      * @return 调用是否成功
      */
     boolean create(String name,String operator);
