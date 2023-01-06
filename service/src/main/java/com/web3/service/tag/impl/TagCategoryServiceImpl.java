@@ -1,7 +1,9 @@
 package com.web3.service.tag.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.web3.entity.TagCategory;
+import com.web3.framework.exception.ParamException;
 import com.web3.mapper.TagCategoryMapper;
 import com.web3.service.tag.TagCategoryService;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,12 @@ public class TagCategoryServiceImpl extends ServiceImpl<TagCategoryMapper, TagCa
 
     @Override
     public boolean create(String name, String operator) {
+        // 重名校验
+        QueryWrapper<TagCategory> wrapper = new QueryWrapper<>();
+        wrapper.eq("name", name);
+        if (count(wrapper) > 0) {
+            throw new ParamException("400", "category name is duplicate");
+        }
 
         TagCategory tagCategory = new TagCategory();
         tagCategory.setName(name);
