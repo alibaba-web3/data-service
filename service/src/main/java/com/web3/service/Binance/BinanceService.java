@@ -19,4 +19,6 @@ public interface BinanceService {
      */
     List<KLineDTO> getKLines(String symbol, String interval);
 
+    String getTickerPrice(String symbol);
+
 }

@@ -9,6 +9,7 @@ import com.web3.common.DateUtils;
 import com.web3.service.Binance.BinanceApi;
 import com.web3.service.Binance.BinanceService;
 import com.web3.service.Binance.dto.KLineDTO;
+import com.web3.service.Binance.dto.TickerPriceDTO;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -58,5 +59,16 @@ public class BinanceServiceImpl implements BinanceService {
         kLineDTO.setBuyingTurnover(kline.get(10));
 
         return kLineDTO;
+    }
+
+    @Override
+    public String getTickerPrice(String symbol) {
+        TickerPriceDTO dto = binanceApi.getTickerPrice(symbol);
+
+        if (dto == null) {
+            return null;
+        }
+
+        return dto.getPrice();
     }
 }

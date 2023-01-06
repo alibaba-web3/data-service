@@ -39,8 +39,8 @@ public class BinanceController {
     }
 
     @GetMapping("/tickerPrice")
-    TickerPriceDTO getTickerPrice(@RequestParam String symbol) {
-        return binanceApi.getTickerPrice(symbol);
+    String getTickerPrice(@RequestParam String symbol) {
+        return binanceService.getTickerPrice(symbol);
     }
 
 }
