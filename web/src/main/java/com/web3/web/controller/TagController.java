@@ -2,6 +2,10 @@ package com.web3.web.controller;
 
 import java.util.List;
 
+import com.web3.entity.AddressTag;
+import com.web3.entity.Tag;
+import com.web3.service.tag.AddressTagService;
+import com.web3.service.tag.TagService;
 import com.web3.web.entity.ResultUtils;
 import com.web3.entity.TagCategory;
 import com.web3.web.entity.vo.Result;
@@ -26,6 +30,12 @@ public class TagController {
 
     @Resource
     private TagCategoryService tagCategoryService;
+
+    @Resource
+    private TagService tagService;
+
+    @Resource
+    private AddressTagService addressTagService;
 
     /**
      * 标签分类列表
@@ -63,4 +73,39 @@ public class TagController {
     Result<Boolean> removeTagCategory(@PathVariable String id) {
         return ResultUtils.createSuccessRes(tagCategoryService.removeById(id));
     }
+
+    /**
+     * 标签列表
+     */
+    @GetMapping("/list")
+    Result<List<Tag>> listTag() {
+        return ResultUtils.createSuccessRes(tagService.list());
+    }
+
+    /**
+     * 创建标签
+     */
+    @PostMapping("")
+    Result<Boolean> createTag(@RequestParam String name, @RequestParam String categoryId, @RequestParam(required = false) String note) {
+        // TODO 获取登录用户信息
+        return ResultUtils.createSuccessRes(tagService.create(name, categoryId, note, "0", "0xfe731b7ed91C7655B87c062a2A27625AeCB0ddD5"));
+    }
+
+    /**
+     * 地址打上标签
+     */
+    @PostMapping("/address")
+    Result<AddressTag> createAddressTag(@RequestParam String address, @RequestParam String tagId) {
+        // TODO 获取登录用户信息
+        return ResultUtils.createSuccessRes(addressTagService.create(address, tagId, "user", "0xfe731b7ed91C7655B87c062a2A27625AeCB0ddD5"));
+    }
+
+    /**
+     * 地址的标签列表
+     */
+    @GetMapping("/address")
+    Result<List<AddressTag>> listAddressTag(@RequestParam String address) {
+        return ResultUtils.createSuccessRes(addressTagService.listByAddress(address));
+    }
+
 }

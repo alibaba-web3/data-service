@@ -14,6 +14,6 @@ public interface TagService extends IService<Tag> {
      *
      * @return 创建是否成功
      */
-    boolean create();
+    boolean create(String name, String categoryId, String note, String official, String operator);
 
 }

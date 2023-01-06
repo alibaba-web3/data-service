@@ -1,5 +1,7 @@
 package com.web3.service.tag;
 
+import java.util.List;
+
 import com.web3.entity.AddressTag;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -12,5 +14,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2023-01-06
  */
 public interface AddressTagService extends IService<AddressTag> {
+
+    AddressTag create(String address, String tagId, String origin, String operator);
+
+    List<AddressTag> listByAddress(String address);
 
 }

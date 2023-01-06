@@ -14,7 +14,16 @@ import org.springframework.stereotype.Service;
 public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagService {
 
     @Override
-    public boolean create() {
-        return false;
+    public boolean create(String name, String categoryId, String note, String official, String operator) {
+
+        Tag tag = new Tag();
+        tag.setName(name);
+        tag.setCategoryId(categoryId);
+        tag.setNote(note);
+        tag.setOfficial(official);
+        tag.setCreator(operator);
+        tag.setModifier(operator);
+
+        return save(tag);
     }
 }

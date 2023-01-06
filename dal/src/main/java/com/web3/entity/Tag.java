@@ -71,4 +71,9 @@ public class Tag implements Serializable {
      * 是否官方 0,1
      */
     private String official;
+
+    /**
+     * 标签描述
+     */
+    private String note;
 }
