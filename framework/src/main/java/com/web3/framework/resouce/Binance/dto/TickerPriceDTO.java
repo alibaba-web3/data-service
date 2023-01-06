@@ -1,4 +1,4 @@
-package com.web3.framework.Binance.dto;
+package com.web3.framework.resouce.Binance.dto;
 
 import lombok.Data;
 

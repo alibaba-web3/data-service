@@ -1,9 +1,9 @@
-package com.web3.framework.Binance;
+package com.web3.framework.resouce.Binance;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
-import com.web3.framework.Binance.dto.TickerPriceDTO;
+import com.web3.framework.resouce.Binance.dto.TickerPriceDTO;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;

@@ -1,4 +1,4 @@
-package com.web3.framework.Binance;
+package com.web3.framework.resouce.Binance;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;

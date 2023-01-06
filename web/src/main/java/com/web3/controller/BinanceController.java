@@ -1,8 +1,8 @@
 package com.web3.controller;
 
-import com.web3.framework.Binance.BinanceApi;
-import com.web3.framework.Binance.BinanceService;
-import com.web3.framework.Binance.dto.KLineDTO;
+import com.web3.framework.resouce.Binance.BinanceApi;
+import com.web3.framework.resouce.Binance.BinanceService;
+import com.web3.framework.resouce.Binance.dto.KLineDTO;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

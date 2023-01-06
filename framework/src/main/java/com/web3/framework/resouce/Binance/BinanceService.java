@@ -1,8 +1,8 @@
-package com.web3.framework.Binance;
+package com.web3.framework.resouce.Binance;
 
 import java.util.List;
 
-import com.web3.framework.Binance.dto.KLineDTO;
+import com.web3.framework.resouce.Binance.dto.KLineDTO;
 
 /**
  * @Author: mianyun.yt
