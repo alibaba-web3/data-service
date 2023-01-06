@@ -1,15 +1,15 @@
-package com.web3.service.Binance.impl;
+package com.web3.framework.Binance.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.web3.common.DateUtils;
-import com.web3.service.Binance.BinanceApi;
-import com.web3.service.Binance.BinanceService;
-import com.web3.service.Binance.dto.KLineDTO;
-import com.web3.service.Binance.dto.TickerPriceDTO;
+import com.web3.framework.Binance.BinanceApi;
+import com.web3.framework.Binance.BinanceService;
+import com.web3.framework.Binance.dto.TickerPriceDTO;
+import com.web3.framework.Binance.dto.KLineDTO;
+import com.web3.framework.utils.DateUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;

@@ -1,4 +1,4 @@
-package com.web3.service.Binance.dto;
+package com.web3.framework.Binance.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

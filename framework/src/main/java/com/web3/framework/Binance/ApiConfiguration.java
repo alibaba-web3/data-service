@@ -1,7 +1,5 @@
-package com.web3.service.Binance;
+package com.web3.framework.Binance;
 
-import com.web3.common.EnvUtils;
-import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
