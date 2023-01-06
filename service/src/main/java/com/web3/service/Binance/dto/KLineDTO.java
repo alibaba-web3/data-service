@@ -18,9 +18,19 @@ public class KLineDTO {
     private LocalDateTime openTime;
 
     /**
+     * k 线开始时间戳
+     */
+    private Long openTimestamp;
+
+    /**
      * k 线结束时间
      */
     private LocalDateTime closeTime;
+
+    /**
+     * k 线结束时间戳
+     */
+    private Long closeTimestamp;
 
     /**
      * 开盘价

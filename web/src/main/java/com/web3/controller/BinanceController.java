@@ -5,6 +5,7 @@ import java.util.List;
 import com.web3.service.Binance.BinanceApi;
 import com.web3.service.Binance.BinanceService;
 import com.web3.service.Binance.dto.KLineDTO;
+import com.web3.service.Binance.dto.TickerPriceDTO;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +36,11 @@ public class BinanceController {
         @RequestParam(required = false) String startTime, @RequestParam(required = false) String endTime,
         @RequestParam(defaultValue = "500") Integer limit) {
         return binanceService.getKLines(symbol, interval);
+    }
+
+    @GetMapping("/tickerPrice")
+    TickerPriceDTO getTickerPrice(@RequestParam String symbol) {
+        return binanceApi.getTickerPrice(symbol);
     }
 
 }

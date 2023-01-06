@@ -3,6 +3,7 @@ package com.web3.service.Binance;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+import com.web3.service.Binance.dto.TickerPriceDTO;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
@@ -21,12 +22,13 @@ public interface BinanceApi {
 
     /**
      * 获取k线数据
-     *
-     * @return
      */
     @GetExchange("/api/v3/klines")
     ArrayList<ArrayList<BigDecimal>> getKLines(@RequestParam String symbol, @RequestParam String interval,
-        @RequestParam(required = false) String startTime, @RequestParam(required = false) String endTime,
+        @RequestParam(required = false) Long startTime, @RequestParam(required = false) Long endTime,
         @RequestParam(defaultValue = "500") Integer limit);
+
+    @GetExchange("/api/v3/ticker/price")
+    TickerPriceDTO getTickerPrice(@RequestParam String symbol);
 
 }

@@ -10,6 +10,13 @@ import com.web3.service.Binance.dto.KLineDTO;
  */
 public interface BinanceService {
 
+    /**
+     * 获取最近 1500 根 k 线
+     *
+     * @param symbol   交易对
+     * @param interval K线间隔
+     * @return
+     */
     List<KLineDTO> getKLines(String symbol, String interval);
 
 }
