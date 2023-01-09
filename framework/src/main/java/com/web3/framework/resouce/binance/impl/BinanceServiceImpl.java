@@ -26,7 +26,7 @@ public class BinanceServiceImpl implements BinanceService {
 
     @Override
     public List<KLineDTO> getKLines(String symbol, String interval) {
-        Integer maxLimit = 1500;
+        Integer maxLimit = 1000;
         return getKLines(symbol, interval, null, null, maxLimit);
     }
 
