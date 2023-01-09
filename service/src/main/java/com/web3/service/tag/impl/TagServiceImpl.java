@@ -1,8 +1,8 @@
 package com.web3.service.tag.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.web3.entity.Tag;
-import com.web3.mapper.TagMapper;
+import com.web3.dal.meta.entity.Tag;
+import com.web3.dal.meta.mapper.TagMapper;
 import com.web3.service.tag.TagService;
 import org.springframework.stereotype.Service;
 

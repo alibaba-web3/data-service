@@ -1,6 +1,6 @@
-package com.web3.mapper;
+package com.web3.dal.meta.mapper;
 
-import com.web3.entity.Tag;
+import com.web3.dal.meta.entity.Tag;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

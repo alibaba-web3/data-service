@@ -2,12 +2,12 @@ package com.web3.web.controller;
 
 import java.util.List;
 
-import com.web3.entity.AddressTag;
-import com.web3.entity.Tag;
+import com.web3.dal.meta.entity.AddressTag;
+import com.web3.dal.meta.entity.Tag;
 import com.web3.service.tag.AddressTagService;
 import com.web3.service.tag.TagService;
 import com.web3.web.entity.ResultUtils;
-import com.web3.entity.TagCategory;
+import com.web3.dal.meta.entity.TagCategory;
 import com.web3.web.entity.vo.Result;
 import com.web3.service.tag.TagCategoryService;
 import jakarta.annotation.Resource;

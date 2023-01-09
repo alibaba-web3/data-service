@@ -2,7 +2,7 @@ package com.web3.service.tag;
 
 import java.util.List;
 
-import com.web3.entity.AddressTag;
+import com.web3.dal.meta.entity.AddressTag;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

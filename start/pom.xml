@@ -54,7 +54,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.web3.start.Application</mainClass>
+                    <mainClass>com.web3.Application</mainClass>
                 </configuration>
                 <executions>
                     <execution>
