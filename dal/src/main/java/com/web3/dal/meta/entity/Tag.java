@@ -1,4 +1,4 @@
-package com.web3.entity;
+package com.web3.dal.meta.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

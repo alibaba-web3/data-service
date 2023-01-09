@@ -1,7 +1,7 @@
 package com.web3.service.tag;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.web3.entity.Tag;
+import com.web3.dal.meta.entity.Tag;
 
 /**
  * @Author: mianyun.yt

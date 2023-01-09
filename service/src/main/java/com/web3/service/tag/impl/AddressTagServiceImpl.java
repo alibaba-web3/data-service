@@ -3,10 +3,10 @@ package com.web3.service.tag.impl;
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.web3.entity.AddressTag;
+import com.web3.dal.meta.entity.AddressTag;
 import com.web3.entity.Tag;
 import com.web3.framework.exception.ParamException;
-import com.web3.mapper.AddressTagMapper;
+import com.web3.dal.meta.mapper.AddressTagMapper;
 import com.web3.service.tag.AddressTagService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.web3.service.tag.TagService;

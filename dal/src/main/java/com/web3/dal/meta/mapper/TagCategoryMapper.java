@@ -1,6 +1,6 @@
-package com.web3.mapper;
+package com.web3.dal.meta.mapper;
 
-import com.web3.entity.TagCategory;
+import com.web3.dal.meta.entity.TagCategory;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

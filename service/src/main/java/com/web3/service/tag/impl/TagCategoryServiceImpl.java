@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.web3.entity.TagCategory;
 import com.web3.framework.exception.ParamException;
 import com.web3.mapper.TagCategoryMapper;
+import com.web3.dal.meta.entity.TagCategory;
+import com.web3.dal.meta.mapper.TagCategoryMapper;
 import com.web3.service.tag.TagCategoryService;
 import org.springframework.stereotype.Service;
 
