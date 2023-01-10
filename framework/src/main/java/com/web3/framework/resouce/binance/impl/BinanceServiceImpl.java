@@ -67,4 +67,29 @@ public class BinanceServiceImpl implements BinanceService {
 
         return dto.getPrice();
     }
+
+    @Override
+    public List<String> getAllSymbol() {
+        List<TickerPriceDTO> tickerPriceDTOList = binanceApi.getAllTickerPrice();
+
+        if (CollectionUtils.isEmpty(tickerPriceDTOList)) {
+            return null;
+        }
+
+        return tickerPriceDTOList.stream().map(TickerPriceDTO::getSymbol).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<String> getAllUsdtSymbol() {
+        List<TickerPriceDTO> tickerPriceDTOList = binanceApi.getAllTickerPrice();
+
+        if (CollectionUtils.isEmpty(tickerPriceDTOList)) {
+            return null;
+        }
+
+        return tickerPriceDTOList.stream()
+            .map(TickerPriceDTO::getSymbol)
+            .filter(symbol -> symbol.contains("USDT"))
+            .collect(Collectors.toList());
+    }
 }

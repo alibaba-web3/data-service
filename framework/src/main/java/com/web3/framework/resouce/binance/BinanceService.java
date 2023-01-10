@@ -22,4 +22,14 @@ public interface BinanceService {
 
     String getTickerPrice(String symbol);
 
+    /**
+     * 查询所有的交易对(包含 btc、eth 计价的交易对)
+     */
+    List<String> getAllSymbol();
+
+    /**
+     * 查询所有 USDT 计价的交易对
+     */
+    List<String> getAllUsdtSymbol();
+
 }
