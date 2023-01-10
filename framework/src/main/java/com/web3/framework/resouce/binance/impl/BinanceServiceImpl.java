@@ -2,6 +2,7 @@ package com.web3.framework.resouce.binance.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,11 +26,6 @@ public class BinanceServiceImpl implements BinanceService {
     private BinanceApi binanceApi;
 
     @Override
-    public List<KLineDTO> getKLines(String symbol, String interval) {
-        Integer maxLimit = 1000;
-        return getKLines(symbol, interval, null, null, maxLimit);
-    }
-
     public List<KLineDTO> getKLines(String symbol, String interval, Long startTime, Long endTime, Integer limit) {
         ArrayList<ArrayList<BigDecimal>> klines = binanceApi.getKLines(symbol, interval, startTime, endTime, limit);
 

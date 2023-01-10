@@ -15,9 +15,10 @@ public interface BinanceService {
      *
      * @param symbol   交易对
      * @param interval K线间隔
+     * @param endTime
      * @return
      */
-    List<KLineDTO> getKLines(String symbol, String interval);
+    List<KLineDTO> getKLines(String symbol, String interval, Long startTime, Long endTime, Integer limit);
 
     String getTickerPrice(String symbol);
 

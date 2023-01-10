@@ -1,10 +1,11 @@
 package com.web3.dal;
 
-import java.util.Collections;
-
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.ConstVal;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Author: mianyun.yt
@@ -13,33 +14,59 @@ import com.baomidou.mybatisplus.generator.config.OutputFile;
 
 public class CodeGenerator {
 
-    public static void main(String[] args) {
 
+    /**
+     * 生成dal层，每次覆盖
+     * @param type data | meta
+     * @param tableName 表名称，多个用,隔开
+     */
+    public static void generate(String type, String tableName) {
         // 指定输出目录
-        String outputDir = "/Users/thomsonyang/Desktop/code/opensource/data-service/dal/src/main/java";
-        String mapperDir = "/Users/thomsonyang/Desktop/code/opensource/data-service/dal/src/main/resources/mapper";
+        String outputDir = System.getProperty("user.dir") + "/dal/src/main/java";
+        String mapperDir = System.getProperty("user.dir") + "/dal/src/main/resources/mapper";
 
-        FastAutoGenerator.create("jdbc:mysql://alibaba-web3.mysql.polardb.singapore.rds.aliyuncs.com:3306/service", "web3", "Alibaba_web3_data")
-            .globalConfig(builder -> {
-                builder.author("mianyun") // 设置作者
-                    //.enableSwagger() // 开启 swagger 模式
-                    .outputDir(outputDir);
-            })
-            .packageConfig(builder -> {
-                builder.parent("com.web3") // 设置父包名
-                    .moduleName("generate")// 设置父包模块名
-                    .pathInfo(Collections.singletonMap(OutputFile.xml, mapperDir)); // 设置mapperXml生成路径
-            })
-            .strategyConfig(builder -> {
-                builder
-                    .addInclude("address_tag") // 设置需要生成的表名。多张表 , 分隔
-                    .entityBuilder()
-                    .logicDeleteColumnName("deleted")
-                    .enableFileOverride()
-                    .enableLombok()
-                    .serviceBuilder()
-                    .convertServiceFileName((entityName -> entityName + ConstVal.SERVICE)); // service 文件名
-            })
-            .execute();
+        Map<OutputFile, String> pathInfo = new HashMap<>();
+        // 设置mapperXml生成路径
+        pathInfo.put(OutputFile.xml, mapperDir);
+
+        FastAutoGenerator.create("jdbc:mysql://alibaba-web3.mysql.polardb.singapore.rds.aliyuncs.com:3306/blockchain", "web3", "Alibaba_web3_data")
+                .globalConfig(builder -> {
+                    // 设置作者
+                    builder.author("system")
+                            // 开启 swagger 模式
+                            //.enableSwagger()
+                            .outputDir(outputDir);
+                })
+                .packageConfig(builder -> {
+                    // 设置父包名
+                    builder.parent("com.web3.dal")
+                            // 设置父包模块名
+                            .moduleName(type)
+                            .pathInfo(pathInfo);
+                })
+                .strategyConfig(builder -> {
+                    // 设置需要生成的表名。多张表 , 分隔
+                    builder.addInclude(tableName)
+                            .entityBuilder()
+                            //.logicDeleteColumnName("deleted")
+                            .enableFileOverride()
+                            .enableLombok()
+                            .serviceBuilder()
+                            // service 文件名
+                            .convertServiceFileName((entityName -> entityName + ConstVal.SERVICE));
+                }).templateConfig(builder -> {
+                    // 不生成controller
+                    builder.controller("")
+                            //.service("")
+                            //.serviceImpl("")
+                    ;
+                })
+                .execute();
     }
+
+    public static void main(String[] args) {
+        generate("data", "price_1d");
+
+    }
+
 }
