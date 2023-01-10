@@ -2,6 +2,7 @@ package com.web3.framework.resouce.binance;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.web3.framework.resouce.binance.dto.TickerPriceDTO;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,7 +29,18 @@ public interface BinanceApi {
         @RequestParam(required = false) Long startTime, @RequestParam(required = false) Long endTime,
         @RequestParam(defaultValue = "500") Integer limit);
 
+    /**
+     * 获取单个交易对价格
+     *
+     * @param symbol 交易对，例 ETHUSDT
+     */
     @GetExchange("/api/v3/ticker/price")
     TickerPriceDTO getTickerPrice(@RequestParam String symbol);
+
+    /**
+     * 获取所有现货交易对价格
+     */
+    @GetExchange("/api/v3/ticker/price")
+    List<TickerPriceDTO> getAllTickerPrice();
 
 }
