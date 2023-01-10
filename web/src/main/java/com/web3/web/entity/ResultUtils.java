@@ -16,7 +16,7 @@ public class ResultUtils {
     public static <T> Result<T> createSuccessRes(T data) {
         Result<T> result = new Result<>();
 
-        result.setContent(data);
+        result.setData(data);
         result.setSuccess(true);
         result.setCode(200);
         result.setMessage("success");
@@ -30,7 +30,7 @@ public class ResultUtils {
     public static Result<Boolean> createFailRes(Integer code, String message) {
         Result<Boolean> result = new Result<>();
 
-        result.setContent(false);
+        result.setData(false);
         result.setSuccess(false);
         result.setCode(code);
         result.setMessage(message);
@@ -41,7 +41,7 @@ public class ResultUtils {
     public static <T> Result<T> createFailRes(Integer code, String message, T data) {
         Result<T> result = new Result<>();
 
-        result.setContent(data);
+        result.setData(data);
         result.setSuccess(false);
         result.setCode(code);
         result.setMessage(message);
@@ -55,7 +55,7 @@ public class ResultUtils {
     public static Result<Boolean> createClientFailRes(String message) {
         Result<Boolean> result = new Result<>();
 
-        result.setContent(false);
+        result.setData(false);
         result.setSuccess(false);
         result.setCode(400);
         result.setMessage(message);

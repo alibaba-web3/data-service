@@ -11,6 +11,6 @@ import lombok.EqualsAndHashCode;
 @Data
 public class Result<T> extends BasicResult {
 
-    private T content;
+    private T data;
 
 }

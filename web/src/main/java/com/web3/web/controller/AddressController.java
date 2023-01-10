@@ -2,9 +2,11 @@ package com.web3.web.controller;
 
 import java.io.IOException;
 
+import com.web3.web.entity.ResultUtils;
 import com.web3.web.entity.vo.AddressProfileVO;
 import com.web3.service.address.AddressService;
 import com.web3.service.address.dto.AddressProfileDTO;
+import com.web3.web.entity.vo.Result;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,19 +26,19 @@ public class AddressController {
     private AddressService addressService;
 
     @GetMapping("/profile")
-    AddressProfileVO getProfile(@RequestParam String address) {
+    Result<AddressProfileVO> getProfile(@RequestParam String address) {
         AddressProfileDTO dto = addressService.getProfile(address);
         if (dto == null) {
-            return null;
+            return ResultUtils.createSuccessRes(null);
         }
         AddressProfileVO result = new AddressProfileVO();
         BeanUtils.copyProperties(dto, result);
-        return result;
+        return ResultUtils.createSuccessRes(result);
     }
 
     @GetMapping("/version")
-    String getVersion() throws IOException {
-        return addressService.getWeb3ClientVersion();
+    Result<String> getVersion() throws IOException {
+        return ResultUtils.createSuccessRes(addressService.getWeb3ClientVersion());
     }
 
 }
