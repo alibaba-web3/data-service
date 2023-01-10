@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author system
  * @since 2023-01-09
  */
-public interface Price1dService extends IService<Price1d> {
+public interface Price1dMapperService extends IService<Price1d> {
 
 }

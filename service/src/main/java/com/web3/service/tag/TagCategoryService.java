@@ -1,8 +1,5 @@
 package com.web3.service.tag;
 
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.web3.dal.meta.entity.TagCategory;
-
 /**
  * @Author: mianyun.yt
  * @Date: 2023/1/3
@@ -16,7 +13,7 @@ import com.web3.dal.meta.entity.TagCategory;
  * @author mianyun
  * @since 2023-01-04
  */
-public interface TagCategoryService extends IService<TagCategory> {
+public interface TagCategoryService {
 
     /**
      * 创建标签分类

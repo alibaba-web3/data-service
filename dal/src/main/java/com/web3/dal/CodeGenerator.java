@@ -53,7 +53,7 @@ public class CodeGenerator {
                             .enableLombok()
                             .serviceBuilder()
                             // service 文件名
-                            .convertServiceFileName((entityName -> entityName + ConstVal.SERVICE));
+                            .convertServiceFileName((entityName -> entityName + "Mapper" + ConstVal.SERVICE));
                 }).templateConfig(builder -> {
                     // 不生成controller
                     builder.controller("")

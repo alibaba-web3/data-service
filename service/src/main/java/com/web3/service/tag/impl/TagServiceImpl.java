@@ -1,9 +1,9 @@
 package com.web3.service.tag.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.web3.dal.meta.entity.Tag;
-import com.web3.dal.meta.mapper.TagMapper;
+import com.web3.dal.meta.service.TagMapperService;
 import com.web3.service.tag.TagService;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,7 +11,10 @@ import org.springframework.stereotype.Service;
  * @Date: 2023/1/3
  */
 @Service
-public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagService {
+public class TagServiceImpl implements TagService {
+
+    @Resource
+    private TagMapperService tagMapperService;
 
     @Override
     public boolean create(String name, String categoryId, String note, String official, String operator) {
@@ -24,6 +27,6 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
         tag.setCreator(operator);
         tag.setModifier(operator);
 
-        return save(tag);
+        return tagMapperService.save(tag);
     }
 }

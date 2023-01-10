@@ -2,7 +2,7 @@ package com.web3.dal.data.service.impl;
 
 import com.web3.dal.data.entity.Price1d;
 import com.web3.dal.data.mapper.Price1dMapper;
-import com.web3.dal.data.service.Price1dService;
+import com.web3.dal.data.service.Price1dMapperService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2023-01-09
  */
 @Service
-public class Price1dServiceImpl extends ServiceImpl<Price1dMapper, Price1d> implements Price1dService {
+public class Price1dMapperServiceImpl extends ServiceImpl<Price1dMapper, Price1d> implements Price1dMapperService {
 
 }

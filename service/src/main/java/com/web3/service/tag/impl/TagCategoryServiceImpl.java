@@ -1,11 +1,11 @@
 package com.web3.service.tag.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.web3.dal.meta.entity.TagCategory;
-import com.web3.dal.meta.mapper.TagCategoryMapper;
+import com.web3.dal.meta.service.TagCategoryMapperService;
 import com.web3.framework.exception.ParamException;
 import com.web3.service.tag.TagCategoryService;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,14 +17,18 @@ import org.springframework.stereotype.Service;
  * @since 2023-01-04
  */
 @Service
-public class TagCategoryServiceImpl extends ServiceImpl<TagCategoryMapper, TagCategory> implements TagCategoryService {
+public class TagCategoryServiceImpl implements TagCategoryService {
+
+    @Resource
+    private TagCategoryMapperService tagCategoryMapperService;
+
 
     @Override
     public boolean create(String name, String operator) {
         // 重名校验
         QueryWrapper<TagCategory> wrapper = new QueryWrapper<>();
         wrapper.eq("name", name);
-        if (count(wrapper) > 0) {
+        if (tagCategoryMapperService.count(wrapper) > 0) {
             throw new ParamException("400", "category name is duplicate");
         }
 
@@ -33,7 +37,7 @@ public class TagCategoryServiceImpl extends ServiceImpl<TagCategoryMapper, TagCa
         tagCategory.setCreator(operator);
         tagCategory.setModifier(operator);
 
-        return this.save(tagCategory);
+        return tagCategoryMapperService.save(tagCategory);
     }
 
     @Override
@@ -44,6 +48,6 @@ public class TagCategoryServiceImpl extends ServiceImpl<TagCategoryMapper, TagCa
         tagCategory.setName(name);
         tagCategory.setModifier(operator);
 
-        return this.updateById(tagCategory);
+        return tagCategoryMapperService.updateById(tagCategory);
     }
 }
