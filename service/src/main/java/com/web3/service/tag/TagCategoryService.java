@@ -5,6 +5,11 @@ package com.web3.service.tag;
  * @Date: 2023/1/3
  */
 
+import java.io.Serializable;
+import java.util.List;
+
+import com.web3.dal.meta.entity.TagCategory;
+
 /**
  * <p>
  * 标签分类 服务类
@@ -22,8 +27,12 @@ public interface TagCategoryService {
      * @param operator 操作人
      * @return 调用是否成功
      */
-    boolean create(String name,String operator);
+    boolean create(String name, String operator);
 
-    boolean updateName(Long id,String name,String operator);
+    boolean updateName(Long id, String name, String operator);
+
+    List<TagCategory> list();
+
+    boolean removeById(Serializable id);
 
 }

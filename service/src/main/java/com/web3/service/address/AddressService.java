@@ -21,6 +21,12 @@ public interface AddressService {
 
     String getWeb3ClientVersion() throws IOException;
 
+    /**
+     * 查询最新 eth 余额
+     *
+     * @param address 地址
+     * @return eth 余额（wei）
+     */
     BigInteger getEthBalance(String address) throws IOException;
 
 }

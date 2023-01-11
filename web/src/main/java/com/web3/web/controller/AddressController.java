@@ -43,8 +43,8 @@ public class AddressController {
     }
 
     @GetMapping("/balance")
-    Result<BigInteger> getBalance(@RequestParam String balance) throws IOException {
-        return ResultUtils.createSuccessRes(addressService.getEthBalance(balance));
+    Result<BigInteger> getBalance(@RequestParam String address) throws IOException {
+        return ResultUtils.createSuccessRes(addressService.getEthBalance(address));
     }
 
 }

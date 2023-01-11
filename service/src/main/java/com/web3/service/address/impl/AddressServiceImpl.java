@@ -8,6 +8,8 @@ import com.web3.service.address.dto.AddressProfileDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameter;
+import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.Web3ClientVersion;
 import org.web3j.protocol.http.HttpService;
 
@@ -22,10 +24,7 @@ public class AddressServiceImpl implements AddressService {
 
     private final Web3j web3;
 
-    @Value("${ethereum.node.rpc}")
-    private String nodeRpcUrl;
-
-    public AddressServiceImpl() {
+    public AddressServiceImpl(@Value("${ethereum.node.rpc}") String nodeRpcUrl) {
         this.web3 = Web3j.build(new HttpService(nodeRpcUrl));
     }
 
@@ -43,6 +42,8 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public BigInteger getEthBalance(String address) throws IOException {
-        return web3.ethGetBalance(address, null).send().getBalance();
+        EthGetBalance ethGetBalance = web3.ethGetBalance(address, DefaultBlockParameter.valueOf("latest")).send();
+
+        return ethGetBalance.getBalance();
     }
 }

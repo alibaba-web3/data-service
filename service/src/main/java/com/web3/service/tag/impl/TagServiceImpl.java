@@ -1,5 +1,7 @@
 package com.web3.service.tag.impl;
 
+import java.util.List;
+
 import com.web3.dal.meta.entity.Tag;
 import com.web3.dal.meta.service.TagMapperService;
 import com.web3.service.tag.TagService;
@@ -28,5 +30,10 @@ public class TagServiceImpl implements TagService {
         tag.setModifier(operator);
 
         return tagMapperService.save(tag);
+    }
+
+    @Override
+    public List<Tag> list() {
+        return tagMapperService.list();
     }
 }

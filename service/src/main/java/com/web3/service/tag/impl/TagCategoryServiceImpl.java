@@ -1,5 +1,8 @@
 package com.web3.service.tag.impl;
 
+import java.io.Serializable;
+import java.util.List;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.web3.dal.meta.entity.TagCategory;
 import com.web3.dal.meta.service.TagCategoryMapperService;
@@ -21,7 +24,6 @@ public class TagCategoryServiceImpl implements TagCategoryService {
 
     @Resource
     private TagCategoryMapperService tagCategoryMapperService;
-
 
     @Override
     public boolean create(String name, String operator) {
@@ -49,5 +51,15 @@ public class TagCategoryServiceImpl implements TagCategoryService {
         tagCategory.setModifier(operator);
 
         return tagCategoryMapperService.updateById(tagCategory);
+    }
+
+    @Override
+    public List<TagCategory> list() {
+        return tagCategoryMapperService.list();
+    }
+
+    @Override
+    public boolean removeById(Serializable id) {
+        return tagCategoryMapperService.removeById(id);
     }
 }
