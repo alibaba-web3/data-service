@@ -13,3 +13,6 @@ http://8.222.145.211
 
 swagger:
 http://8.222.145.211/swagger-ui/index.html#/
+
+Jenkins: 
+http://8.222.145.211:9000
