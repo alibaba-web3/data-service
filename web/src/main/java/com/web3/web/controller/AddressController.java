@@ -1,11 +1,12 @@
 package com.web3.web.controller;
 
 import java.io.IOException;
+import java.math.BigInteger;
 
-import com.web3.web.entity.ResultUtils;
-import com.web3.web.entity.vo.AddressProfileVO;
 import com.web3.service.address.AddressService;
 import com.web3.service.address.dto.AddressProfileDTO;
+import com.web3.web.entity.ResultUtils;
+import com.web3.web.entity.vo.AddressProfileVO;
 import com.web3.web.entity.vo.Result;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
@@ -39,6 +40,11 @@ public class AddressController {
     @GetMapping("/version")
     Result<String> getVersion() throws IOException {
         return ResultUtils.createSuccessRes(addressService.getWeb3ClientVersion());
+    }
+
+    @GetMapping("/balance")
+    Result<BigInteger> getBalance(@RequestParam String balance) throws IOException {
+        return ResultUtils.createSuccessRes(addressService.getEthBalance(balance));
     }
 
 }
