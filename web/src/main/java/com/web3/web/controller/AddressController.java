@@ -1,6 +1,7 @@
 package com.web3.web.controller;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import com.web3.service.address.AddressService;
@@ -43,7 +44,7 @@ public class AddressController {
     }
 
     @GetMapping("/balance")
-    Result<BigInteger> getBalance(@RequestParam String address) throws IOException {
+    Result<BigDecimal> getBalance(@RequestParam String address) throws IOException {
         return ResultUtils.createSuccessRes(addressService.getEthBalance(address));
     }
 

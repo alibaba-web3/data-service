@@ -1,6 +1,7 @@
 package com.web3.service.address.impl;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import com.web3.service.address.AddressService;
@@ -8,10 +9,11 @@ import com.web3.service.address.dto.AddressProfileDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.DefaultBlockParameter;
+import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.Web3ClientVersion;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.utils.Convert;
 
 /**
  * 地址 service
@@ -41,9 +43,16 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public BigInteger getEthBalance(String address) throws IOException {
-        EthGetBalance ethGetBalance = web3.ethGetBalance(address, DefaultBlockParameter.valueOf("latest")).send();
+    public BigInteger getEthWeiBalance(String address) throws IOException {
+        EthGetBalance ethGetBalance = web3.ethGetBalance(address, DefaultBlockParameterName.LATEST).send();
 
         return ethGetBalance.getBalance();
+    }
+
+    @Override
+    public BigDecimal getEthBalance(String address) throws IOException {
+        BigInteger wei = getEthWeiBalance(address);
+
+        return Convert.fromWei(String.valueOf(wei), Convert.Unit.ETHER);
     }
 }

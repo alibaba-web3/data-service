@@ -1,6 +1,7 @@
 package com.web3.service.address;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import com.web3.service.address.dto.AddressProfileDTO;
@@ -27,6 +28,14 @@ public interface AddressService {
      * @param address 地址
      * @return eth 余额（wei）
      */
-    BigInteger getEthBalance(String address) throws IOException;
+    BigInteger getEthWeiBalance(String address) throws IOException;
+
+    /**
+     * 查询最新 eth 余额
+     *
+     * @param address 地址
+     * @return eth 余额（wei）
+     */
+    BigDecimal getEthBalance(String address) throws IOException;
 
 }
