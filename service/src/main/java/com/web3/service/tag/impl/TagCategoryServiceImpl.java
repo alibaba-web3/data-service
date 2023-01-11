@@ -8,6 +8,8 @@ import com.web3.service.tag.TagCategoryService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 标签分类 服务实现类
@@ -22,6 +24,15 @@ public class TagCategoryServiceImpl implements TagCategoryService {
     @Resource
     private TagCategoryMapperService tagCategoryMapperService;
 
+    @Override
+    public List<TagCategory> list() {
+        return tagCategoryMapperService.list();
+    }
+
+    @Override
+    public boolean removeById(String id) {
+        return tagCategoryMapperService.removeById(id);
+    }
 
     @Override
     public boolean create(String name, String operator) {

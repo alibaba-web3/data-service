@@ -2,6 +2,7 @@ package com.web3.dal.meta.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.web3.dal.meta.entity.TagCategory;
+import org.springframework.stereotype.Component;
 
 /**
  * @Author: smy

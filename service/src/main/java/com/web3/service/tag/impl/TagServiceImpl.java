@@ -6,6 +6,8 @@ import com.web3.service.tag.TagService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @Author: mianyun.yt
  * @Date: 2023/1/3
@@ -28,5 +30,10 @@ public class TagServiceImpl implements TagService {
         tag.setModifier(operator);
 
         return tagMapperService.save(tag);
+    }
+
+    @Override
+    public List<Tag> list() {
+        return tagMapperService.list();
     }
 }

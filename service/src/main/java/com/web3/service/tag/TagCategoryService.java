@@ -5,6 +5,10 @@ package com.web3.service.tag;
  * @Date: 2023/1/3
  */
 
+import com.web3.dal.meta.entity.TagCategory;
+
+import java.util.List;
+
 /**
  * <p>
  * 标签分类 服务类
@@ -15,6 +19,9 @@ package com.web3.service.tag;
  */
 public interface TagCategoryService {
 
+    List<TagCategory> list();
+
+    boolean removeById(String id);
     /**
      * 创建标签分类
      *
