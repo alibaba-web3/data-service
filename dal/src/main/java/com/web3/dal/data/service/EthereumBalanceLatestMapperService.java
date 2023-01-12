@@ -1,6 +1,8 @@
-package com.web3.dal.meta.service;
+package com.web3.dal.data.service;
 
-import com.web3.dal.meta.entity.EthereumBalanceLatest;
+import java.util.List;
+
+import com.web3.dal.data.entity.EthereumBalanceLatest;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -12,5 +14,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2023-01-11
  */
 public interface EthereumBalanceLatestMapperService extends IService<EthereumBalanceLatest> {
+
+    List<EthereumBalanceLatest> listAmountEmpty();
+
+    List<EthereumBalanceLatest> listAmountNotEmpty();
 
 }

@@ -1,6 +1,8 @@
-package com.web3.dal.meta.entity;
+package com.web3.dal.data.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import lombok.Getter;
@@ -19,6 +21,7 @@ import lombok.Setter;
 @TableName("ethereum_balance_latest")
 public class EthereumBalanceLatest implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

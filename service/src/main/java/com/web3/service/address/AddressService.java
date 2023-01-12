@@ -3,6 +3,7 @@ package com.web3.service.address;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 
 import com.web3.service.address.dto.AddressProfileDTO;
 
@@ -37,5 +38,24 @@ public interface AddressService {
      * @return eth 余额（wei）
      */
     BigDecimal getEthBalance(String address) throws IOException;
+
+    /**
+     * 更新最新余额表数据
+     *
+     * @param address 钱包地址
+     */
+    void updateLatestBalance(String address);
+
+    /**
+     * 批量更新余额表数据
+     *
+     * @param addressList 地址列表
+     */
+    void updateLatestBalanceBatch(List<String> addressList) throws InterruptedException;
+
+    /**
+     * 批量更新余额为空的数据
+     */
+    void updateLatestBalanceBatch();
 
 }

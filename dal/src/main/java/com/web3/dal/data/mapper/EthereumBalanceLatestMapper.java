@@ -1,6 +1,6 @@
-package com.web3.dal.meta.mapper;
+package com.web3.dal.data.mapper;
 
-import com.web3.dal.meta.entity.EthereumBalanceLatest;
+import com.web3.dal.data.entity.EthereumBalanceLatest;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
