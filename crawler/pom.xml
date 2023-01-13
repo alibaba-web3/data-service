@@ -7,11 +7,9 @@
         <groupId>com.web3</groupId>
         <artifactId>data-service</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>web</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>crawler</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -22,23 +20,17 @@
     <dependencies>
         <dependency>
             <groupId>com.web3</groupId>
-            <artifactId>service</artifactId>
+            <artifactId>dal</artifactId>
         </dependency>
         <dependency>
             <groupId>com.web3</groupId>
-            <artifactId>crawler</artifactId>
+            <artifactId>framework</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.web3</groupId>
+            <artifactId>service</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
 
     </dependencies>
 
