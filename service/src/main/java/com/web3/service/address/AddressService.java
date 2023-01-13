@@ -32,12 +32,22 @@ public interface AddressService {
     BigInteger getEthWeiBalance(String address) throws IOException;
 
     /**
+     * 指定区块高度查询 eth 余额
+     *
+     * @param address 地址
+     * @return eth 余额（wei）
+     */
+    public BigInteger getEthWeiBalance(String address, BigInteger blockNumber) throws IOException;
+
+    /**
      * 查询最新 eth 余额
      *
      * @param address 地址
      * @return eth 余额（wei）
      */
     BigDecimal getEthBalance(String address) throws IOException;
+
+    public BigDecimal getEthBalance(String address,BigInteger blockNumber) throws IOException;
 
     /**
      * 更新最新余额表数据

@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.Web3ClientVersion;
@@ -77,9 +78,22 @@ public class AddressServiceImpl implements AddressService {
         return ethGetBalance.getBalance();
     }
 
+    public BigInteger getEthWeiBalance(String address, BigInteger blockNumber) throws IOException {
+        EthGetBalance ethGetBalance = web3.ethGetBalance(address, DefaultBlockParameter.valueOf(blockNumber)).send();
+
+        return ethGetBalance.getBalance();
+    }
+
     @Override
     public BigDecimal getEthBalance(String address) throws IOException {
         BigInteger wei = getEthWeiBalance(address);
+
+        return Convert.fromWei(String.valueOf(wei), Convert.Unit.ETHER);
+    }
+
+    @Override
+    public BigDecimal getEthBalance(String address, BigInteger blockNumber) throws IOException {
+        BigInteger wei = getEthWeiBalance(address, blockNumber);
 
         return Convert.fromWei(String.valueOf(wei), Convert.Unit.ETHER);
     }
