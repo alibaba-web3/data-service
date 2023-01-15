@@ -29,7 +29,12 @@ public class CodeGenerator {
         // 设置mapperXml生成路径
         pathInfo.put(OutputFile.xml, mapperDir);
 
-        FastAutoGenerator.create("jdbc:mysql://alibaba-web3.mysql.polardb.singapore.rds.aliyuncs.com:3306/blockchain", "web3", "Alibaba_web3_data")
+        String dbName = "service";
+        if ("data".equals(type)) {
+            dbName = "blockchain";
+        }
+
+        FastAutoGenerator.create("jdbc:mysql://alibaba-web3.mysql.polardb.singapore.rds.aliyuncs.com:3306/" + dbName, "web3", "Alibaba_web3_data")
                 .globalConfig(builder -> {
                     // 设置作者
                     builder.author("system")
@@ -48,8 +53,9 @@ public class CodeGenerator {
                     // 设置需要生成的表名。多张表 , 分隔
                     builder.addInclude(tableName)
                             .entityBuilder()
-                            //.logicDeleteColumnName("deleted")
+                            .logicDeleteColumnName("deleted")
                             .enableFileOverride()
+                            .disableSerialVersionUID()
                             .enableLombok()
                             .serviceBuilder()
                             // service 文件名
@@ -65,7 +71,9 @@ public class CodeGenerator {
     }
 
     public static void main(String[] args) {
-        generate("data", "price_1d");
+        //generate("meta", "data_metric,crawler_task");
+        generate("meta", "crawler_task");
+        //generate("data", "ethereum_blocks");
 
     }
 
