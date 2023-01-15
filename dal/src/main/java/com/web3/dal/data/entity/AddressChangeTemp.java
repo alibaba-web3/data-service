@@ -1,5 +1,6 @@
 package com.web3.dal.data.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serial;
@@ -29,6 +30,7 @@ public class AddressChangeTemp implements Serializable {
     /**
      * 地址
      */
+    @TableId
     private String address;
 
     /**

@@ -73,6 +73,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public BigInteger getEthWeiBalance(String address) throws IOException {
+        // TODO 增加重试机制
         EthGetBalance ethGetBalance = web3.ethGetBalance(address, DefaultBlockParameterName.LATEST).send();
 
         return ethGetBalance.getBalance();

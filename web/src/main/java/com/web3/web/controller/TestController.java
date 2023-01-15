@@ -3,12 +3,14 @@ package com.web3.web.controller;
 import com.web3.crawler.dto.Task;
 import com.web3.crawler.processors.Price1dProcessor;
 import com.web3.service.address.AddressService;
+import com.web3.service.address.BalanceService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @Author: smy
@@ -24,15 +26,23 @@ public class TestController {
     @Resource
     private AddressService addressService;
 
+    @Resource
+    private BalanceService balanceService;
+
     @GetMapping("/executePrice1dJob")
     public void executePrice1dJob() {
         Task task = new Task();
-        task.setScheduleTime(new Date());
+        task.setScheduleTime(LocalDateTime.now());
         price1dProcessor.execute(task);
     }
 
     @GetMapping("/executeFillBalance")
     public void executeFillBalance() {
         addressService.updateLatestBalanceBatch();
+    }
+
+    @GetMapping("/executeAddBalanceRecord")
+    public void executeAddBalanceRecord(@RequestParam LocalDateTime start, @RequestParam LocalDateTime end) {
+        balanceService.addBalanceRecord(start, end);
     }
 }

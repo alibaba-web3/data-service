@@ -21,6 +21,11 @@ public interface AddressService {
      */
     AddressProfileDTO getProfile(String address);
 
+    /**
+     * 查询 geth 信息
+     *
+     * @return geth 版本
+     */
     String getWeb3ClientVersion() throws IOException;
 
     /**
@@ -47,7 +52,13 @@ public interface AddressService {
      */
     BigDecimal getEthBalance(String address) throws IOException;
 
-    public BigDecimal getEthBalance(String address,BigInteger blockNumber) throws IOException;
+    /**
+     * 指定区块高度查询 eth 余额
+     *
+     * @param address 地址
+     * @return eth 余额（wei）
+     */
+    BigDecimal getEthBalance(String address, BigInteger blockNumber) throws IOException;
 
     /**
      * 更新最新余额表数据
