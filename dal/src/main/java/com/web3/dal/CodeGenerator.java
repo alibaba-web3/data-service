@@ -1,8 +1,12 @@
 package com.web3.dal;
 
+import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.ConstVal;
+import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
+import com.baomidou.mybatisplus.generator.config.converts.MySqlTypeConvert;
+import com.baomidou.mybatisplus.generator.config.rules.DateType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +38,9 @@ public class CodeGenerator {
             dbName = "blockchain";
         }
 
-        FastAutoGenerator.create("jdbc:mysql://alibaba-web3.mysql.polardb.singapore.rds.aliyuncs.com:3306/" + dbName, "web3", "Alibaba_web3_data")
+        FastAutoGenerator.create(new DataSourceConfig.Builder("jdbc:mysql://alibaba-web3.mysql.polardb.singapore.rds.aliyuncs.com:3306/" + dbName,
+                "web3",
+                "Alibaba_web3_data").typeConvert(new MyDbTypeConvert()))
                 .globalConfig(builder -> {
                     // 设置作者
                     builder.author("system")

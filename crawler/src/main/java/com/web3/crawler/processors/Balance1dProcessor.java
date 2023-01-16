@@ -7,6 +7,7 @@ import com.web3.dal.meta.service.CrawlerTaskMapperService;
 import com.web3.crawler.annotation.ProcessorConfig;
 import com.web3.crawler.dto.Task;
 import com.web3.framework.resouce.ethereum.EthereumService;
+import com.web3.service.address.BalanceService;
 import groovy.lang.Tuple2;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import jakarta.annotation.Resource;
@@ -31,24 +32,28 @@ public class Balance1dProcessor implements IProcessor {
 
 
     @Resource
+    private BalanceService balanceService;
+
+    @Resource
     private TaskService taskService;
 
     @Override
     public void execute(Task task) {
         task.setStatus(TaskStatus.Running);
+        task.addExtraInfo("begin_time", task.getScheduleTime().plusDays(-1));
+        task.addExtraInfo("end_time", task.getScheduleTime());
         taskService.record(task);
-        //TODO balance fetch
         try {
             task.setStatus(TaskStatus.Success);
         } catch (Throwable e) {
             task.setStatus(TaskStatus.Failed);
-            task.setExtraInfo(e.getMessage());
+            task.addExtraInfo("error_msg", e.getMessage());
         }
         taskService.record(task);
     }
 
     public void _do(Task task) throws Exception {
-        _do(task);
+        balanceService.addBalanceRecord(task.getScheduleTime().plusDays(-1), task.getScheduleTime());
     }
 
 }

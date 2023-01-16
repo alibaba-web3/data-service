@@ -5,6 +5,7 @@ import com.web3.crawler.constants.TaskType;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -33,5 +34,12 @@ public class Task {
      * 任务状态
      */
     private TaskStatus status = TaskStatus.Start;
-    private Object extraInfo;
+    private Map<String, Object> extraInfo;
+
+    public void addExtraInfo(String key, Object info) {
+        if (extraInfo == null) {
+            extraInfo = new HashMap<>(8);
+        }
+        extraInfo.put(key, info);
+    }
 }

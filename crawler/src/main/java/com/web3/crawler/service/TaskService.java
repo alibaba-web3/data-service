@@ -18,7 +18,12 @@ public class TaskService {
     private CrawlerTaskMapperService crawlerTaskMapperService;
 
     public void record(Task task) {
-        CrawlerTask crawlerTask = new CrawlerTask();
+        CrawlerTask crawlerTask;
+        if (task.getId() == null) {
+            crawlerTask = new CrawlerTask();
+        } else {
+            crawlerTask = crawlerTaskMapperService.getById(task.getId());
+        }
         crawlerTask.setStatus(task.getStatus().name());
         crawlerTask.setProcessor(task.getProcessor());
         crawlerTask.setScheduleTime(task.getScheduleTime());
