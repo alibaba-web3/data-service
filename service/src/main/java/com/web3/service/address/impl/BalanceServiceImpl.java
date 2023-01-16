@@ -72,6 +72,7 @@ public class BalanceServiceImpl implements BalanceService {
             // 日维度开始、结束时间
             LocalDateTime s;
             LocalDateTime e;
+            LocalDateTime now = LocalDateTime.now();
 
             if (i == 0) {
                 s = localDateTime;
@@ -130,6 +131,7 @@ public class BalanceServiceImpl implements BalanceService {
                         addressChangeTemp.setTime(firstBlock.getTimestamp());
                         addressChangeTemp.setAmountRaw(new BigDecimal(weiBalance));
                         addressChangeTemp.setAmount(etherBalance);
+                        addressChangeTemp.setGmtCreate(now);
 
                         addressChangeTempMapperService.save(addressChangeTemp);
                     } else if (exit.getTime().isBefore(lastBlock.getTimestamp())) {
