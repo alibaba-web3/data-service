@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @Author: smy
@@ -42,7 +43,7 @@ public class TestController {
     }
 
     @GetMapping("/executeAddBalanceRecord")
-    public void executeAddBalanceRecord(@RequestParam String start, @RequestParam String end) {
+    public void executeAddBalanceRecord(@RequestParam String start, @RequestParam String end) throws InterruptedException, ExecutionException {
 
         balanceService.addBalanceRecord(LocalDateTime.parse(start), LocalDateTime.parse(end));
     }

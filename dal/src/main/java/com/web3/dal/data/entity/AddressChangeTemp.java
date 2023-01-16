@@ -1,5 +1,6 @@
 package com.web3.dal.data.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -28,9 +29,14 @@ public class AddressChangeTemp implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 主键
+     */
+    @TableId(value = "id", type = IdType.AUTO)
+    private Long id;
+
+    /**
      * 地址
      */
-    @TableId
     private String address;
 
     /**

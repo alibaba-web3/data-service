@@ -1,6 +1,7 @@
 package com.web3.service.address;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @Author: mianyun.yt
@@ -8,6 +9,6 @@ import java.time.LocalDateTime;
  */
 public interface BalanceService {
 
-    void addBalanceRecord(LocalDateTime start, LocalDateTime end);
+    void addBalanceRecord(LocalDateTime start, LocalDateTime end) throws InterruptedException, ExecutionException;
 
 }
