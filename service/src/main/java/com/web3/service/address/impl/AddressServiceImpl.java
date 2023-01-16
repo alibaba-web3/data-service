@@ -55,7 +55,7 @@ public class AddressServiceImpl implements AddressService {
 
         web3 = Web3j.build(new HttpService(nodeRpcUrl));
 
-        processUpdateExecutor = new ThreadPoolExecutor(100, 100, 0, TimeUnit.SECONDS,
+        processUpdateExecutor = new ThreadPoolExecutor(0, 100, 0, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>());
     }
 

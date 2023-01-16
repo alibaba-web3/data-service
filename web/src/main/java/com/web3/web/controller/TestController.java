@@ -42,7 +42,8 @@ public class TestController {
     }
 
     @GetMapping("/executeAddBalanceRecord")
-    public void executeAddBalanceRecord(@RequestParam LocalDateTime start, @RequestParam LocalDateTime end) {
-        balanceService.addBalanceRecord(start, end);
+    public void executeAddBalanceRecord(@RequestParam String start, @RequestParam String end) {
+
+        balanceService.addBalanceRecord(LocalDateTime.parse(start), LocalDateTime.parse(end));
     }
 }

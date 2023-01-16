@@ -42,7 +42,7 @@ public interface AddressService {
      * @param address 地址
      * @return eth 余额（wei）
      */
-    public BigInteger getEthWeiBalance(String address, BigInteger blockNumber) throws IOException;
+    BigInteger getEthWeiBalance(String address, BigInteger blockNumber) throws IOException;
 
     /**
      * 查询最新 eth 余额
