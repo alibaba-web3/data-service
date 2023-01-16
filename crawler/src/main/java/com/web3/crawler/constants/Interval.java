@@ -7,5 +7,8 @@ package com.web3.crawler.constants;
 public enum Interval {
 
     Hour,
-    Day;
+    Day,
+    Week,
+    Month,
+    Year;
 }
