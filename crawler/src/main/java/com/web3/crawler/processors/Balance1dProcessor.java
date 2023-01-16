@@ -41,9 +41,8 @@ public class Balance1dProcessor implements IProcessor {
     public void execute(Task task) {
         task.setStatus(TaskStatus.Running);
         task.addExtraInfo("begin_time", task.getScheduleTime().plusDays(-1));
-        task.addExtraInfo("end_timee", task.getScheduleTime());
+        task.addExtraInfo("end_time", task.getScheduleTime());
         taskService.record(task);
-        //TODO balance fetch
         try {
             task.setStatus(TaskStatus.Success);
         } catch (Throwable e) {

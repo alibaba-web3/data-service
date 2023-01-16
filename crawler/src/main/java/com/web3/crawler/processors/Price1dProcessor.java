@@ -48,7 +48,7 @@ public class Price1dProcessor implements IProcessor {
             task.setStatus(TaskStatus.Success);
         } catch (Throwable e) {
             task.setStatus(TaskStatus.Failed);
-            task.setExtraInfo(e.getMessage());
+            task.addExtraInfo("error_msg", e.getMessage());
         }
         taskService.record(task);
     }
