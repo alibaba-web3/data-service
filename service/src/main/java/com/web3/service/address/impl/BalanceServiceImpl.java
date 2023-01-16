@@ -79,18 +79,18 @@ public class BalanceServiceImpl implements BalanceService {
                 });
             }
 
-            // 降序排序
+            // 升序排序
             blocksList.sort(Comparator.comparing(EthereumBlocks::getTimestamp));
-            LocalDateTime lastTime = blocksList.get(blocksList.size() - 1).getTimestamp();
+            EthereumBlocks lastBlock = blocksList.get(blocksList.size() - 1);
 
             addressSet.forEach(address -> {
                 try {
-                    BigInteger weiBalance = addressService.getEthWeiBalance(address);
+                    BigInteger weiBalance = addressService.getEthWeiBalance(address, BigInteger.valueOf(lastBlock.getBlockNumber()));
                     BigDecimal etherBalance = Convert.fromWei(String.valueOf(weiBalance), Convert.Unit.ETHER);
 
                     AddressChangeTemp addressChangeTemp = new AddressChangeTemp();
                     addressChangeTemp.setAddress(address);
-                    addressChangeTemp.setTime(lastTime);
+                    addressChangeTemp.setTime(lastBlock.getTimestamp());
                     addressChangeTemp.setAmountRaw(new BigDecimal(weiBalance));
                     addressChangeTemp.setAmount(etherBalance);
 
