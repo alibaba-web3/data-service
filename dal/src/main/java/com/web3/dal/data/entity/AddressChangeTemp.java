@@ -53,4 +53,9 @@ public class AddressChangeTemp implements Serializable {
      * wei单位的余额
      */
     private BigDecimal amountRaw;
+
+    /**
+     * 创建时间
+     */
+    private LocalDateTime gmtCreate;
 }
