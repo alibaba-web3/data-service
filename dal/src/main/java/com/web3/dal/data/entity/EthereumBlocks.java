@@ -21,15 +21,15 @@ public class EthereumBlocks implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer blockNumber;
+    private Long blockNumber;
 
     private String blockHash;
 
     private String parentBlockHash;
 
-    private Integer gasLimit;
+    private Long gasLimit;
 
-    private Integer gasUsed;
+    private Long gasUsed;
 
     private Long baseFeePerGas;
 
@@ -37,7 +37,7 @@ public class EthereumBlocks implements Serializable {
 
     private String miner;
 
-    private Integer nonce;
+    private Long nonce;
 
     private LocalDateTime timestamp;
 

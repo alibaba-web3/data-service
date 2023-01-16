@@ -20,12 +20,12 @@ public class EthereumBlockService {
     @Resource
     private EthereumBlocksMapperService ethereumBlocksMapperService;
 
-    public Integer getBlockNumberByTime(LocalDateTime dateTime) {
+    public Long getBlockNumberByTime(LocalDateTime dateTime) {
         QueryWrapper<EthereumBlocks> queryWrapper = new QueryWrapper<>();
         queryWrapper.le("timestamp", dateTime).orderByDesc("blockNumber");
         EthereumBlocks ethereumBlock = ethereumBlocksMapperService.getOne(queryWrapper);
         if (ethereumBlock == null) {
-            return 0;
+            return 0L;
         }
         return ethereumBlock.getBlockNumber();
     }

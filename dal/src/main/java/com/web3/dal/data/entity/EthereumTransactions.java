@@ -1,7 +1,9 @@
 package com.web3.dal.data.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,31 +27,33 @@ public class EthereumTransactions implements Serializable {
 
     private Integer transactionIndex;
 
-    private Integer blockNumber;
+    private Long blockNumber;
 
     private String blockHash;
 
     private LocalDateTime blockTimestamp;
 
+    @TableField(value = "`from`")
     private String from;
 
+    @TableField(value = "`to`")
     private String to;
 
-    private Long value;
+    private BigInteger value;
 
     private String input;
 
-    private Integer gasUsed;
+    private BigInteger gasUsed;
 
-    private Long gasPrice;
+    private BigInteger gasPrice;
 
-    private Long maxFeePerGas;
+    private BigInteger maxFeePerGas;
 
-    private Long maxPriorityFeePerGas;
+    private BigInteger maxPriorityFeePerGas;
 
-    private Long effectiveGasPrice;
+    private BigInteger effectiveGasPrice;
 
-    private Long cumulativeGasUsed;
+    private BigInteger cumulativeGasUsed;
 
     private Boolean success;
 
