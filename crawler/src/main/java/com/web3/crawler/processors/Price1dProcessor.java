@@ -11,6 +11,7 @@ import com.web3.framework.resouce.binance.BinanceService;
 import com.web3.framework.resouce.binance.dto.KLineDTO;
 import com.web3.framework.utils.DateUtils;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
  * @Date: 2023/1/12 4:02 PM
  */
 @Component
+@Slf4j
 @ProcessorConfig(name = "Price1dProcessor")
 public class Price1dProcessor implements IProcessor {
 

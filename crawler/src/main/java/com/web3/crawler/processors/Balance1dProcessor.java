@@ -11,6 +11,7 @@ import com.web3.service.address.BalanceService;
 import groovy.lang.Tuple2;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.web3j.protocol.core.DefaultBlockParameterNumber;
@@ -27,6 +28,7 @@ import java.util.concurrent.TimeUnit;
  * @Date: 2023/1/12 3:12 PM
  */
 @Component
+@Slf4j
 @ProcessorConfig(name = "Balance1dProcessor")
 public class Balance1dProcessor implements IProcessor {
 
@@ -44,6 +46,8 @@ public class Balance1dProcessor implements IProcessor {
         task.addExtraInfo("end_time", task.getScheduleTime());
         taskService.record(task);
         try {
+            log.info("start per hour balance task {} ", task);
+            _do(task);
             task.setStatus(TaskStatus.Success);
         } catch (Throwable e) {
             task.setStatus(TaskStatus.Failed);
