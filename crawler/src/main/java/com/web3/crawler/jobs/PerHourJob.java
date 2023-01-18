@@ -60,8 +60,8 @@ public class PerHourJob {
     /**
      * 每小时执行一次,晚一分钟减少block数据不全情况
      */
-    //@Scheduled(cron = "0 1 * * * ?", zone = DateUtils.ZERO_TIMEZONE)
-    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
+    @Scheduled(cron = "0 1 * * * ?")
+    //@Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
     public void execute() {
         log.info("---start per hour job---");
         if (CollectionUtils.isEmpty(processors)) {
