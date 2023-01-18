@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  * @Author: smy
  * @Date: 2023/1/12 4:02 PM
  */
-@Component
+@Component("price1dProcessor")
 @Slf4j
 @ProcessorConfig(name = "Price1dProcessor")
 public class Price1dProcessor implements IProcessor {
@@ -46,11 +46,13 @@ public class Price1dProcessor implements IProcessor {
         task.setStatus(TaskStatus.Running);
         taskService.record(task);
         try {
+            log.info("start Price1dProcessor task {} ", task);
             _do(task);
             task.setStatus(TaskStatus.Success);
         } catch (Throwable e) {
             task.setStatus(TaskStatus.Failed);
             task.addExtraInfo("error_msg", e.getMessage());
+            log.error("Price1dProcessor failed, task {}, {}", task, e);
         }
         taskService.record(task);
     }

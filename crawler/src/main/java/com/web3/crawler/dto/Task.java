@@ -1,7 +1,9 @@
 package com.web3.crawler.dto;
 
+import com.web3.crawler.annotation.ProcessorConfig;
 import com.web3.crawler.constants.TaskStatus;
 import com.web3.crawler.constants.TaskType;
+import com.web3.crawler.processors.IProcessor;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -41,5 +43,16 @@ public class Task {
             extraInfo = new HashMap<>(8);
         }
         extraInfo.put(key, info);
+    }
+
+    public static Task generate(IProcessor processor, LocalDateTime scheduleTime,TaskType taskType) {
+        ProcessorConfig processorConfig = processor.getClass().getAnnotation(ProcessorConfig.class);
+        assert processorConfig != null;
+        Task task = new Task();
+        task.setScheduleTime(scheduleTime);
+        task.setProcessor(processorConfig.name());
+        task.setTaskType(taskType);
+        task.setStatus(TaskStatus.Start);
+        return task;
     }
 }
