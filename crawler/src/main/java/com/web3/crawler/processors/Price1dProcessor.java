@@ -58,7 +58,7 @@ public class Price1dProcessor implements IProcessor {
     }
 
     public void _do(Task task) {
-        List<KLineDTO> list = binanceService.getKLines("ETHUSDT", "1d", null, DateUtils.ofLocalDateTime(task.getScheduleTime()), 5);
+        List<KLineDTO> list = binanceService.getKLines("ETHUSDT", "1d", null, DateUtils.convert2Timestamp(task.getScheduleTime()), 5);
         if (CollectionUtils.isEmpty(list)) {
             return;
         }
