@@ -16,7 +16,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.web3.dal.data.entity.AddressChangeTemp;
 import com.web3.dal.data.entity.EthereumBlocks;
 import com.web3.dal.data.entity.EthereumTransactions;
@@ -28,6 +27,7 @@ import com.web3.service.address.AddressService;
 import com.web3.service.address.BalanceService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.web3j.utils.Convert;
@@ -98,11 +98,17 @@ public class BalanceServiceImpl implements BalanceService {
             }
 
             blocksList.forEach(block -> {
-                addressSet.add(block.getMiner());
+                if (StringUtils.isNotEmpty(block.getMiner())) {
+                    addressSet.add(block.getMiner());
+                }
             });
             transactionsList.forEach(transaction -> {
-                addressSet.add(transaction.getFrom());
-                addressSet.add(transaction.getTo());
+                if (StringUtils.isNotEmpty(transaction.getFrom())) {
+                    addressSet.add(transaction.getFrom());
+                }
+                if (StringUtils.isNotEmpty(transaction.getTo())) {
+                    addressSet.add(transaction.getTo());
+                }
             });
 
             // 升序排序

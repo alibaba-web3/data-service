@@ -3,11 +3,9 @@ package com.web3.service.address.impl;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -23,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.web3j.ens.EnsResolver;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
@@ -41,7 +40,7 @@ import org.web3j.utils.Convert;
 @Slf4j
 public class AddressServiceImpl implements AddressService {
 
-    private final Web3j web3;
+    private final Web3j web3j;
 
     @Resource
     private EthereumBalanceLatestMapperService ethereumBalanceLatestMapperService;
@@ -53,7 +52,7 @@ public class AddressServiceImpl implements AddressService {
 
     public AddressServiceImpl(@Value("${ethereum.node.rpc}") String nodeRpcUrl) {
 
-        web3 = Web3j.build(new HttpService(nodeRpcUrl));
+        web3j = Web3j.build(new HttpService(nodeRpcUrl));
 
         processUpdateExecutor = new ThreadPoolExecutor(0, 100, 0, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>());
@@ -61,12 +60,26 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public AddressProfileDTO getProfile(String address) {
-        return null;
+
+        AddressProfileDTO result = new AddressProfileDTO();
+        result.setAddress(address);
+        result.setEns(getEnsDomain(address));
+
+        return result;
+    }
+
+    String getEnsDomain(String address) {
+        EnsResolver ensResolver = new EnsResolver(web3j);
+        try {
+            return ensResolver.reverseResolve(address);
+        } catch (RuntimeException e) {
+            return null;
+        }
     }
 
     @Override
     public String getWeb3ClientVersion() throws IOException {
-        Web3ClientVersion web3ClientVersion = web3.web3ClientVersion().send();
+        Web3ClientVersion web3ClientVersion = web3j.web3ClientVersion().send();
 
         return web3ClientVersion.getWeb3ClientVersion();
     }
@@ -74,13 +87,14 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public BigInteger getEthWeiBalance(String address) throws IOException {
         // TODO 增加重试机制
-        EthGetBalance ethGetBalance = web3.ethGetBalance(address, DefaultBlockParameterName.LATEST).send();
+        EthGetBalance ethGetBalance = web3j.ethGetBalance(address, DefaultBlockParameterName.LATEST).send();
 
         return ethGetBalance.getBalance();
     }
 
+    @Override
     public BigInteger getEthWeiBalance(String address, BigInteger blockNumber) throws IOException {
-        EthGetBalance ethGetBalance = web3.ethGetBalance(address, DefaultBlockParameter.valueOf(blockNumber)).send();
+        EthGetBalance ethGetBalance = web3j.ethGetBalance(address, DefaultBlockParameter.valueOf(blockNumber)).send();
 
         return ethGetBalance.getBalance();
     }

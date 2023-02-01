@@ -9,6 +9,8 @@ import lombok.Data;
 @Data
 public class AddressProfileDTO {
 
+    private String address;
 
+    private String ens;
 
 }
