@@ -2,16 +2,15 @@ package com.web3.crawler.jobs;
 
 import com.web3.crawler.annotation.ProcessorConfig;
 import com.web3.crawler.constants.Interval;
-import com.web3.crawler.constants.TaskStatus;
 import com.web3.crawler.constants.TaskType;
 import com.web3.crawler.dto.Task;
 import com.web3.crawler.processors.IProcessor;
 import com.web3.crawler.service.TaskService;
-import com.web3.framework.utils.DateUtils;
 import com.web3.framework.utils.SpringContext;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -26,6 +25,7 @@ import java.util.concurrent.*;
  * @Date: 2023/1/12 3:13 PM
  */
 @Service
+@Slf4j
 public class PerHourJob {
 
     private final static ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(2, 10, 10L, TimeUnit.MINUTES,
@@ -60,15 +60,18 @@ public class PerHourJob {
     /**
      * 每小时执行一次,晚一分钟减少block数据不全情况
      */
-    @Scheduled(cron = "0 1 * * * ?", zone = DateUtils.ZERO_TIMEZONE)
-    public void execute1() {
+    @Scheduled(cron = "0 1 * * * ?")
+    //@Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
+    public void execute() {
+        log.info("---start per hour job---");
         if (CollectionUtils.isEmpty(processors)) {
             return;
         }
         futureList.clear();
+        LocalDateTime scheduleTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         CountDownLatch downLatch = new CountDownLatch(processors.size());
         processors.forEach(processor -> {
-            Task task = generateTask(processor);
+            Task task = Task.generate(processor, scheduleTime, TaskType.Auto);
             taskService.record(task);
             poolExecutor.submit(() -> processor.run(downLatch, task));
         });
@@ -89,16 +92,7 @@ public class PerHourJob {
         finally {
             futureList.clear();
         }
+        log.info("---end per hour job---");
     }
 
-    private Task generateTask(IProcessor processor) {
-        ProcessorConfig processorConfig = processor.getClass().getAnnotation(ProcessorConfig.class);
-        LocalDateTime scheduleTime = LocalDateTime.now(DateUtils.getZeroZoneId()).truncatedTo(ChronoUnit.SECONDS);
-        Task task = new Task();
-        task.setScheduleTime(scheduleTime);
-        task.setProcessor(processorConfig.name());
-        task.setTaskType(TaskType.Auto);
-        task.setStatus(TaskStatus.Start);
-        return task;
-    }
 }

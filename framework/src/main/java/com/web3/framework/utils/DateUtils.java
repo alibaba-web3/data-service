@@ -28,8 +28,8 @@ public class DateUtils {
         return ofEpochSecond(timestamp / 1000);
     }
 
-    static public long ofLocalDateTime(LocalDateTime dateTime) {
-        return dateTime.toEpochSecond(ZoneOffset.ofHours(8));
+    static public long convert2Timestamp(LocalDateTime dateTime) {
+        return dateTime.toEpochSecond(ZoneOffset.ofHours(8)) * 1000;
     }
 
     /**
