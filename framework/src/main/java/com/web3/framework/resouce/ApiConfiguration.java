@@ -1,5 +1,6 @@
-package com.web3.framework.resouce.binance;
+package com.web3.framework.resouce;
 
+import com.web3.framework.resouce.binance.BinanceApi;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
