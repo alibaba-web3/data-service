@@ -175,6 +175,5 @@ public class AddressServiceImpl implements AddressService {
 
             list = ethereumBalanceLatestMapperService.listAmountEmpty();
         }
-
     }
 }

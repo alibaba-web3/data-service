@@ -1,5 +1,7 @@
 package com.web3.framework.resouce.ethereum;
 
+import java.math.BigInteger;
+
 import org.web3j.protocol.Web3j;
 
 /**
@@ -9,5 +11,12 @@ import org.web3j.protocol.Web3j;
 public interface EthereumService {
 
     Web3j getWeb3j();
+
+    /**
+     * gas 费查询
+     *
+     * @return gas 费
+     */
+    BigInteger getGasPrice();
 
 }
