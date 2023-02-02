@@ -20,6 +20,12 @@ public interface BinanceService {
      */
     List<KLineDTO> getKLines(String symbol, String interval, Long startTime, Long endTime, Integer limit);
 
+    /**
+     * 查询单个交易对价格
+     *
+     * @param symbol 交易对
+     * @return
+     */
     String getTickerPrice(String symbol);
 
     /**

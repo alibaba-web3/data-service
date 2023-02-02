@@ -3,6 +3,8 @@ package com.web3.web.controller;
 import com.web3.framework.resouce.binance.BinanceApi;
 import com.web3.framework.resouce.binance.BinanceService;
 import com.web3.framework.resouce.binance.dto.KLineDTO;
+import com.web3.web.entity.ResultUtils;
+import com.web3.web.entity.vo.Result;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,8 +40,8 @@ public class BinanceController {
     }
 
     @GetMapping("/tickerPrice")
-    String getTickerPrice(@RequestParam String symbol) {
-        return binanceService.getTickerPrice(symbol);
+    Result<String> getTickerPrice(@RequestParam String symbol) {
+        return ResultUtils.createSuccessRes(binanceService.getTickerPrice(symbol));
     }
 
     @GetMapping("/allUsdtSymbol")

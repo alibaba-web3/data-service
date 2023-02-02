@@ -17,6 +17,7 @@ import com.web3.framework.resouce.binance.BinanceService;
 import com.web3.framework.resouce.ethereum.EthereumService;
 import com.web3.service.address.AddressService;
 import com.web3.service.address.dto.AddressProfileDTO;
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,7 +42,7 @@ import org.web3j.utils.Convert;
 @Slf4j
 public class AddressServiceImpl implements AddressService {
 
-    private final Web3j web3j;
+    private Web3j web3j;
 
     @Resource
     private EthereumBalanceLatestMapperService ethereumBalanceLatestMapperService;
@@ -54,8 +55,8 @@ public class AddressServiceImpl implements AddressService {
 
     public ExecutorService processUpdateExecutor;
 
-    public AddressServiceImpl() {
-
+    @PostConstruct
+    public void init() {
         web3j = ethereumService.getWeb3j();
 
         processUpdateExecutor = new ThreadPoolExecutor(0, 100, 0, TimeUnit.SECONDS,
