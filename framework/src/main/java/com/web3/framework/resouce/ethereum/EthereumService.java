@@ -19,4 +19,20 @@ public interface EthereumService {
      */
     BigInteger getGasPrice();
 
+    /**
+     * address 查 ens
+     *
+     * @param address 地址
+     * @return ens 域名
+     */
+    String getEnsDomain(String address);
+
+    /**
+     * ens 转 Address
+     *
+     * @param ens ens 域名
+     * @return Address
+     */
+    String getAddressByEns(String ens);
+
 }

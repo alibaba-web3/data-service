@@ -3,6 +3,7 @@ package com.web3.service.address.impl;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -17,12 +18,13 @@ import com.web3.framework.resouce.binance.BinanceService;
 import com.web3.framework.resouce.ethereum.EthereumService;
 import com.web3.service.address.AddressService;
 import com.web3.service.address.dto.AddressProfileDTO;
+import com.web3.service.address.dto.AddressSearchDTO;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.web3j.crypto.WalletUtils;
 import org.web3j.ens.EnsResolver;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
@@ -68,18 +70,9 @@ public class AddressServiceImpl implements AddressService {
 
         AddressProfileDTO result = new AddressProfileDTO();
         result.setAddress(address);
-        result.setEns(getEnsDomain(address));
+        result.setEns(ethereumService.getEnsDomain(address));
 
         return result;
-    }
-
-    String getEnsDomain(String address) {
-        EnsResolver ensResolver = new EnsResolver(web3j);
-        try {
-            return ensResolver.reverseResolve(address);
-        } catch (RuntimeException e) {
-            return null;
-        }
     }
 
     @Override
@@ -175,5 +168,24 @@ public class AddressServiceImpl implements AddressService {
 
             list = ethereumBalanceLatestMapperService.listAmountEmpty();
         }
+    }
+
+    @Override
+    public List<AddressSearchDTO> search(String searchKey) {
+        AddressSearchDTO dto = new AddressSearchDTO();
+
+        if (WalletUtils.isValidAddress(searchKey)) {
+            // 根据 Address 搜索
+            dto.setAddress(searchKey);
+            dto.setEns(ethereumService.getEnsDomain(searchKey));
+        } else if (EnsResolver.isValidEnsName(searchKey)) {
+            // 根据 ens 搜索
+            dto.setAddress(ethereumService.getAddressByEns(searchKey));
+            dto.setEns(searchKey);
+        } else {
+            // TODO symbol 查询, 依赖 ERC20 数据
+        }
+
+        return Collections.singletonList(dto);
     }
 }

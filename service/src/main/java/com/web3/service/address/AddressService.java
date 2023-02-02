@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 import com.web3.service.address.dto.AddressProfileDTO;
+import com.web3.service.address.dto.AddressSearchDTO;
 
 /**
  * @Author: mianyun.yt
@@ -78,5 +79,13 @@ public interface AddressService {
      * 批量更新余额为空的数据
      */
     void updateLatestBalanceBatch();
+
+    /**
+     * 地址搜索
+     *
+     * @param searchKey 关键词
+     * @return 搜索结果
+     */
+    List<AddressSearchDTO> search(String searchKey);
 
 }

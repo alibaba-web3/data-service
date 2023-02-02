@@ -7,6 +7,7 @@ import com.web3.framework.resouce.ethereum.EthereumService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.web3j.ens.EnsResolver;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.EthGasPrice;
 import org.web3j.protocol.http.HttpService;
@@ -37,6 +38,28 @@ public class EthereumServiceImpl implements EthereumService {
             return ethGasPrice.getGasPrice();
         } catch (IOException e) {
             log.error("get gas price error");
+            return null;
+        }
+    }
+
+    @Override
+    public String getAddressByEns(String ens) {
+        EnsResolver ensResolver = new EnsResolver(web3j);
+
+        try {
+            return ensResolver.resolve(ens);
+        } catch (RuntimeException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public String getEnsDomain(String address) {
+        EnsResolver ensResolver = new EnsResolver(web3j);
+
+        try {
+            return ensResolver.reverseResolve(address);
+        } catch (RuntimeException e) {
             return null;
         }
     }
