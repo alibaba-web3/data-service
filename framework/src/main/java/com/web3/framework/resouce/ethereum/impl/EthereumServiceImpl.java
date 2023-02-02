@@ -1,6 +1,7 @@
 package com.web3.framework.resouce.ethereum.impl;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import com.web3.framework.resouce.ethereum.EthereumService;
@@ -9,8 +10,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.web3j.ens.EnsResolver;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameter;
+import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthGasPrice;
+import org.web3j.protocol.core.methods.response.EthGetBalance;
+import org.web3j.protocol.core.methods.response.Web3ClientVersion;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.utils.Convert;
 
 /**
  * @Author: smy
@@ -62,5 +68,42 @@ public class EthereumServiceImpl implements EthereumService {
         } catch (RuntimeException e) {
             return null;
         }
+    }
+
+
+    @Override
+    public BigInteger getEthWeiBalance(String address, BigInteger blockNumber) throws IOException {
+        EthGetBalance ethGetBalance = web3j.ethGetBalance(address, DefaultBlockParameter.valueOf(blockNumber)).send();
+
+        return ethGetBalance.getBalance();
+    }
+
+    @Override
+    public BigDecimal getEthBalance(String address) throws IOException {
+        BigInteger wei = getEthWeiBalance(address);
+
+        return Convert.fromWei(String.valueOf(wei), Convert.Unit.ETHER);
+    }
+
+    @Override
+    public BigDecimal getEthBalance(String address, BigInteger blockNumber) throws IOException {
+        BigInteger wei = getEthWeiBalance(address, blockNumber);
+
+        return Convert.fromWei(String.valueOf(wei), Convert.Unit.ETHER);
+    }
+
+    @Override
+    public String getWeb3ClientVersion() throws IOException {
+        Web3ClientVersion web3ClientVersion = web3j.web3ClientVersion().send();
+
+        return web3ClientVersion.getWeb3ClientVersion();
+    }
+
+    @Override
+    public BigInteger getEthWeiBalance(String address) throws IOException {
+        // TODO 增加重试机制
+        EthGetBalance ethGetBalance = web3j.ethGetBalance(address, DefaultBlockParameterName.LATEST).send();
+
+        return ethGetBalance.getBalance();
     }
 }

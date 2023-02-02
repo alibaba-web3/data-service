@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.web3.framework.resouce.ethereum.EthereumService;
 import com.web3.service.address.AddressService;
 import com.web3.service.address.dto.AddressProfileDTO;
 import com.web3.service.address.dto.AddressSearchDTO;
@@ -30,6 +31,9 @@ public class AddressController {
     @Resource
     private AddressService addressService;
 
+    @Resource
+    private EthereumService ethereumService;
+
     @GetMapping("/profile")
     Result<AddressProfileVO> getProfile(@RequestParam String address) {
         AddressProfileDTO dto = addressService.getProfile(address);
@@ -43,12 +47,12 @@ public class AddressController {
 
     @GetMapping("/version")
     Result<String> getVersion() throws IOException {
-        return ResultUtils.createSuccessRes(addressService.getWeb3ClientVersion());
+        return ResultUtils.createSuccessRes(ethereumService.getWeb3ClientVersion());
     }
 
     @GetMapping("/balance")
     Result<BigDecimal> getBalance(@RequestParam String address) throws IOException {
-        return ResultUtils.createSuccessRes(addressService.getEthBalance(address));
+        return ResultUtils.createSuccessRes(ethereumService.getEthBalance(address));
     }
 
     @GetMapping("/search")

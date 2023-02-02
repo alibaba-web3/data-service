@@ -1,6 +1,5 @@
 package com.web3.service.address.impl;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collections;
@@ -26,12 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.web3j.crypto.WalletUtils;
 import org.web3j.ens.EnsResolver;
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.DefaultBlockParameter;
-import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.response.EthGetBalance;
-import org.web3j.protocol.core.methods.response.Web3ClientVersion;
-import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Convert;
 
 /**
@@ -43,8 +36,6 @@ import org.web3j.utils.Convert;
 @Service
 @Slf4j
 public class AddressServiceImpl implements AddressService {
-
-    private Web3j web3j;
 
     @Resource
     private EthereumBalanceLatestMapperService ethereumBalanceLatestMapperService;
@@ -59,8 +50,6 @@ public class AddressServiceImpl implements AddressService {
 
     @PostConstruct
     public void init() {
-        web3j = ethereumService.getWeb3j();
-
         processUpdateExecutor = new ThreadPoolExecutor(0, 100, 0, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>());
     }
@@ -76,42 +65,6 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public String getWeb3ClientVersion() throws IOException {
-        Web3ClientVersion web3ClientVersion = web3j.web3ClientVersion().send();
-
-        return web3ClientVersion.getWeb3ClientVersion();
-    }
-
-    @Override
-    public BigInteger getEthWeiBalance(String address) throws IOException {
-        // TODO 增加重试机制
-        EthGetBalance ethGetBalance = web3j.ethGetBalance(address, DefaultBlockParameterName.LATEST).send();
-
-        return ethGetBalance.getBalance();
-    }
-
-    @Override
-    public BigInteger getEthWeiBalance(String address, BigInteger blockNumber) throws IOException {
-        EthGetBalance ethGetBalance = web3j.ethGetBalance(address, DefaultBlockParameter.valueOf(blockNumber)).send();
-
-        return ethGetBalance.getBalance();
-    }
-
-    @Override
-    public BigDecimal getEthBalance(String address) throws IOException {
-        BigInteger wei = getEthWeiBalance(address);
-
-        return Convert.fromWei(String.valueOf(wei), Convert.Unit.ETHER);
-    }
-
-    @Override
-    public BigDecimal getEthBalance(String address, BigInteger blockNumber) throws IOException {
-        BigInteger wei = getEthWeiBalance(address, blockNumber);
-
-        return Convert.fromWei(String.valueOf(wei), Convert.Unit.ETHER);
-    }
-
-    @Override
     public void updateLatestBalance(String address) {
         String price = binanceService.getTickerPrice("ETHUSDT");
         updateLatestBalance(address, price);
@@ -119,7 +72,7 @@ public class AddressServiceImpl implements AddressService {
 
     public void updateLatestBalance(String address, String price) {
         try {
-            BigInteger weiBalance = getEthWeiBalance(address);
+            BigInteger weiBalance = ethereumService.getEthWeiBalance(address);
             BigDecimal etherBalance = Convert.fromWei(String.valueOf(weiBalance), Convert.Unit.ETHER);
             BigDecimal value = etherBalance.multiply(BigDecimal.valueOf(Float.parseFloat(price)));
 

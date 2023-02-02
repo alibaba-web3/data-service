@@ -22,6 +22,7 @@ import com.web3.dal.data.entity.EthereumTransactions;
 import com.web3.dal.data.service.AddressChangeTempMapperService;
 import com.web3.dal.data.service.EthereumBlocksMapperService;
 import com.web3.dal.data.service.EthereumTransactionsMapperService;
+import com.web3.framework.resouce.ethereum.EthereumService;
 import com.web3.framework.utils.DateUtils;
 import com.web3.service.address.AddressService;
 import com.web3.service.address.BalanceService;
@@ -42,6 +43,9 @@ public class BalanceServiceImpl implements BalanceService {
 
     @Resource
     private AddressService addressService;
+
+    @Resource
+    private EthereumService ethereumService;
 
     @Resource
     private AddressChangeTempMapperService addressChangeTempMapperService;
@@ -129,7 +133,7 @@ public class BalanceServiceImpl implements BalanceService {
                     AddressChangeTemp exit = addressChangeTempMapperService.getOne(queryWrapper);
 
                     if (exit == null) {
-                        BigInteger weiBalance = addressService.getEthWeiBalance(address, BigInteger.valueOf(lastBlock.getBlockNumber()));
+                        BigInteger weiBalance = ethereumService.getEthWeiBalance(address, BigInteger.valueOf(lastBlock.getBlockNumber()));
                         BigDecimal etherBalance = Convert.fromWei(String.valueOf(weiBalance), Convert.Unit.ETHER);
 
                         AddressChangeTemp addressChangeTemp = new AddressChangeTemp();
@@ -141,7 +145,7 @@ public class BalanceServiceImpl implements BalanceService {
 
                         addressChangeTempMapperService.save(addressChangeTemp);
                     } else if (exit.getTime().isBefore(lastBlock.getTimestamp())) {
-                        BigInteger weiBalance = addressService.getEthWeiBalance(address, BigInteger.valueOf(lastBlock.getBlockNumber()));
+                        BigInteger weiBalance = ethereumService.getEthWeiBalance(address, BigInteger.valueOf(lastBlock.getBlockNumber()));
                         BigDecimal etherBalance = Convert.fromWei(String.valueOf(weiBalance), Convert.Unit.ETHER);
 
                         AddressChangeTemp addressChangeTemp = new AddressChangeTemp();
