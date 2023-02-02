@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.web3.dal.data.entity.EthereumBalanceLatest;
 import com.web3.dal.data.service.EthereumBalanceLatestMapperService;
 import com.web3.framework.resouce.binance.BinanceService;
+import com.web3.framework.resouce.ethereum.EthereumService;
 import com.web3.service.address.AddressService;
 import com.web3.service.address.dto.AddressProfileDTO;
 import jakarta.annotation.Resource;
@@ -48,11 +49,14 @@ public class AddressServiceImpl implements AddressService {
     @Resource
     private BinanceService binanceService;
 
+    @Resource
+    private EthereumService ethereumService;
+
     public ExecutorService processUpdateExecutor;
 
-    public AddressServiceImpl(@Value("${ethereum.node.rpc}") String nodeRpcUrl) {
+    public AddressServiceImpl() {
 
-        web3j = Web3j.build(new HttpService(nodeRpcUrl));
+        web3j = ethereumService.getWeb3j();
 
         processUpdateExecutor = new ThreadPoolExecutor(0, 100, 0, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>());

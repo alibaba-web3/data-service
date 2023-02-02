@@ -13,17 +13,15 @@ import org.web3j.protocol.http.HttpService;
 @Service
 public class EthereumServiceImpl implements EthereumService {
 
-    private Web3j web3;
-    @Value("${ethereum.node.rpc}")
-    private String nodeRpcUrl;
+    private final Web3j web3j;
 
-    public EthereumServiceImpl() {
-        this.web3 = Web3j.build(new HttpService(nodeRpcUrl));
+    public EthereumServiceImpl(@Value("${ethereum.node.rpc}") String nodeRpcUrl) {
+        this.web3j = Web3j.build(new HttpService(nodeRpcUrl));
     }
 
 
     @Override
     public Web3j getWeb3j() {
-        return web3;
+        return web3j;
     }
 }
