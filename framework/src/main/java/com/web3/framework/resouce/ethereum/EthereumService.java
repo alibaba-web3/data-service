@@ -76,4 +76,12 @@ public interface EthereumService {
      */
     BigDecimal getEthBalance(String address, BigInteger blockNumber) throws IOException;
 
+    /**
+     * 获取以太坊账户类型
+     *
+     * @param address 地址
+     * @return Integer 类型(外部-1 | 合约-2)
+     */
+    Integer getAccountType(String address);
+
 }

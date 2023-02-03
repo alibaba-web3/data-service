@@ -13,4 +13,6 @@ public class AddressProfileVO {
 
     private String ens;
 
+    private Integer type;
+
 }

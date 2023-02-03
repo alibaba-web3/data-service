@@ -13,4 +13,6 @@ public class AddressProfileDTO {
 
     private String ens;
 
+    private Integer type;
+
 }
