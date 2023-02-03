@@ -15,6 +15,15 @@ import java.util.List;
  */
 public interface AddressTagService {
 
+    /**
+     * 地址打标
+     *
+     * @param address  被打标的地址
+     * @param tagId    标签 id
+     * @param origin   打标来源
+     * @param operator 操作人
+     * @return 地址标签
+     */
     AddressTag create(String address, String tagId, String origin, String operator);
 
     /**

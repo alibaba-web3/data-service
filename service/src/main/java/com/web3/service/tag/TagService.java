@@ -3,6 +3,7 @@ package com.web3.service.tag;
 import java.util.List;
 
 import com.web3.dal.meta.entity.Tag;
+import com.web3.service.tag.dto.TagDTO;
 
 /**
  * @Author: mianyun.yt
@@ -17,6 +18,6 @@ public interface TagService {
      */
     boolean create(String name, String categoryId, String note, String official, String operator);
 
-    List<Tag> list();
+    List<TagDTO> list();
 
 }

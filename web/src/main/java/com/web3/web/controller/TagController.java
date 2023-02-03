@@ -7,6 +7,7 @@ import com.web3.dal.meta.entity.Tag;
 import com.web3.service.tag.AddressTagService;
 import com.web3.service.tag.TagService;
 import com.web3.service.tag.dto.AddressTagDTO;
+import com.web3.service.tag.dto.TagDTO;
 import com.web3.web.entity.ResultUtils;
 import com.web3.dal.meta.entity.TagCategory;
 import com.web3.web.entity.vo.Result;
@@ -79,7 +80,7 @@ public class TagController {
      * 标签列表
      */
     @GetMapping("/list")
-    Result<List<Tag>> listTag() {
+    Result<List<TagDTO>> listTag() {
         return ResultUtils.createSuccessRes(tagService.list());
     }
 
