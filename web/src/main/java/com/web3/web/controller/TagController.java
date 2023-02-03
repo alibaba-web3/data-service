@@ -6,6 +6,7 @@ import com.web3.dal.meta.entity.AddressTag;
 import com.web3.dal.meta.entity.Tag;
 import com.web3.service.tag.AddressTagService;
 import com.web3.service.tag.TagService;
+import com.web3.service.tag.dto.AddressTagDTO;
 import com.web3.web.entity.ResultUtils;
 import com.web3.dal.meta.entity.TagCategory;
 import com.web3.web.entity.vo.Result;
@@ -104,7 +105,7 @@ public class TagController {
      * 地址的标签列表
      */
     @GetMapping("/address")
-    Result<List<AddressTag>> listAddressTag(@RequestParam String address) {
+    Result<List<AddressTagDTO>> listAddressTag(@RequestParam String address) {
         return ResultUtils.createSuccessRes(addressTagService.listByAddress(address));
     }
 

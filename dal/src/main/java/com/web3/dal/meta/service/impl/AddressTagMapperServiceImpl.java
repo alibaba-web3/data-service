@@ -1,5 +1,8 @@
 package com.web3.dal.meta.service.impl;
 
+import java.util.List;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.web3.dal.meta.entity.AddressTag;
 import com.web3.dal.meta.mapper.AddressTagMapper;
@@ -12,4 +15,12 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class AddressTagMapperServiceImpl extends ServiceImpl<AddressTagMapper, AddressTag> implements AddressTagMapperService {
+
+    @Override
+    public List<AddressTag> listByAddress(String address) {
+        QueryWrapper<AddressTag> wrapper = new QueryWrapper<>();
+        wrapper.eq("address", address);
+
+        return list(wrapper);
+    }
 }

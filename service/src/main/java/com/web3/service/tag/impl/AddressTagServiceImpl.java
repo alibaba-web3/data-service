@@ -1,16 +1,18 @@
 package com.web3.service.tag.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import java.util.List;
+
 import com.web3.dal.meta.entity.AddressTag;
 import com.web3.dal.meta.entity.Tag;
 import com.web3.dal.meta.service.AddressTagMapperService;
 import com.web3.dal.meta.service.TagMapperService;
 import com.web3.framework.exception.ParamException;
 import com.web3.service.tag.AddressTagService;
+import com.web3.service.tag.dto.AddressTagDTO;
 import jakarta.annotation.Resource;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import org.springframework.util.CollectionUtils;
 
 /**
  * <p>
@@ -50,11 +52,17 @@ public class AddressTagServiceImpl implements AddressTagService {
     }
 
     @Override
-    public List<AddressTag> listByAddress(String address) {
+    public List<AddressTagDTO> listByAddress(String address) {
 
-        QueryWrapper<AddressTag> wrapper = new QueryWrapper<>();
-        wrapper.eq("address", address);
+        List<AddressTag> addressTagList = addressTagMapperService.listByAddress(address);
+        if (CollectionUtils.isEmpty(addressTagList)) {
+            return null;
+        }
 
-        return addressTagMapperService.list(wrapper);
+        return addressTagList.stream().map(addressTag -> {
+            AddressTagDTO dto = new AddressTagDTO();
+            BeanUtils.copyProperties(addressTag, dto);
+            return dto;
+        }).toList();
     }
 }

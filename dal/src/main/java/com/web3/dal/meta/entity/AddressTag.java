@@ -78,4 +78,9 @@ public class AddressTag implements Serializable {
      * 标签来源：  user 用户打标 system 系统打标 spider 爬虫 nansen (具体外部平台名称)
      */
     private String origin;
+
+    /**
+     * 标签名称
+     */
+    private String name;
 }
