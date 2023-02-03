@@ -60,6 +60,7 @@ public class AddressServiceImpl implements AddressService {
         AddressProfileDTO result = new AddressProfileDTO();
         result.setAddress(address);
         result.setEns(ethereumService.getEnsDomain(address));
+        result.setType(ethereumService.getAccountType(address));
 
         return result;
     }
