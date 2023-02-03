@@ -4,6 +4,7 @@ import com.web3.crawler.dto.Task;
 import com.web3.crawler.processors.Price1dProcessor;
 import com.web3.framework.resouce.defillama.DefillamaApi;
 import com.web3.framework.resouce.defillama.dto.HistoryTvlRes;
+import com.web3.framework.resouce.defillama.dto.ProtocolRes;
 import com.web3.service.address.AddressService;
 import com.web3.service.address.BalanceService;
 import jakarta.annotation.Resource;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -56,5 +58,10 @@ public class TestController {
     @GetMapping("/historyTvl")
     public HistoryTvlRes getHistoryTvl(@RequestParam String symbol) {
         return defillamaApi.getHistoryTvl(symbol);
+    }
+
+    @GetMapping("/protocols")
+    public List<ProtocolRes> getProtocols() {
+        return defillamaApi.getProtocols();
     }
 }
