@@ -12,7 +12,9 @@ import java.util.concurrent.TimeUnit;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.web3.dal.data.entity.EthereumBalanceLatest;
+import com.web3.dal.data.entity.EthereumErc20;
 import com.web3.dal.data.service.EthereumBalanceLatestMapperService;
+import com.web3.dal.data.service.EthereumErc20MapperService;
 import com.web3.framework.resouce.binance.BinanceService;
 import com.web3.framework.resouce.ethereum.EthereumService;
 import com.web3.service.address.AddressService;
@@ -45,6 +47,9 @@ public class AddressServiceImpl implements AddressService {
 
     @Resource
     private EthereumService ethereumService;
+
+    @Resource
+    private EthereumErc20MapperService ethereumErc20MapperService;
 
     public ExecutorService processUpdateExecutor;
 
@@ -136,7 +141,16 @@ public class AddressServiceImpl implements AddressService {
             dto.setAddress(ethereumService.getAddressByEns(searchKey));
             dto.setEns(searchKey);
         } else {
-            // TODO symbol 查询, 依赖 ERC20 数据
+            // 根据 symbol 搜索
+            List<EthereumErc20> erc20List = ethereumErc20MapperService.searchBySymbol(searchKey);
+            if (!CollectionUtils.isEmpty(erc20List)) {
+                return erc20List.stream().map(erc20 -> {
+                    AddressSearchDTO addressSearchDTO = new AddressSearchDTO();
+                    addressSearchDTO.setSymbol(erc20.getSymbol());
+                    addressSearchDTO.setAddress(erc20.getContractAddress());
+                    return addressSearchDTO;
+                }).toList();
+            }
         }
 
         return Collections.singletonList(dto);
