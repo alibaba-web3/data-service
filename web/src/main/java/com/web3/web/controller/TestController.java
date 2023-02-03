@@ -2,6 +2,8 @@ package com.web3.web.controller;
 
 import com.web3.crawler.dto.Task;
 import com.web3.crawler.processors.Price1dProcessor;
+import com.web3.framework.resouce.defillama.DefillamaApi;
+import com.web3.framework.resouce.defillama.dto.HistoryTvlRes;
 import com.web3.service.address.AddressService;
 import com.web3.service.address.BalanceService;
 import jakarta.annotation.Resource;
@@ -30,6 +32,9 @@ public class TestController {
     @Resource
     private BalanceService balanceService;
 
+    @Resource
+    private DefillamaApi defillamaApi;
+
     @GetMapping("/executePrice1dJob")
     public void executePrice1dJob() {
         Task task = new Task();
@@ -46,5 +51,10 @@ public class TestController {
     public void executeAddBalanceRecord(@RequestParam String start, @RequestParam String end) throws InterruptedException, ExecutionException {
 
         balanceService.addBalanceRecord(LocalDateTime.parse(start), LocalDateTime.parse(end));
+    }
+
+    @GetMapping("/historyTvl")
+    public HistoryTvlRes getHistoryTvl(@RequestParam String symbol) {
+        return defillamaApi.getHistoryTvl(symbol);
     }
 }
