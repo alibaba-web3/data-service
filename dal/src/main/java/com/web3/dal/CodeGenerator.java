@@ -78,8 +78,8 @@ public class CodeGenerator {
 
     public static void main(String[] args) {
         //generate("meta", "data_metric,crawler_task");
-        generate("meta", "crawler_task");
-        //generate("data", "ethereum_blocks");
+        //generate("meta", "crawler_task");
+        generate("data", "tvl_1d");
 
     }
 

@@ -3,12 +3,14 @@ package com.web3.framework.resouce.defillama.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 /**
  * @author thomsonyang
  */
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class HistoryTvlRes {
 
     private List<Object> chains;
