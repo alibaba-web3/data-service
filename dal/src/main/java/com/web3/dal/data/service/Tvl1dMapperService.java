@@ -16,4 +16,12 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface Tvl1dMapperService extends IService<Tvl1d> {
 
+    /**
+     * 查询最新的 tvl 数据
+     *
+     * @param protocol 协议
+     * @return tvl数据
+     */
+    Tvl1d getLatestTvl(String protocol);
+
 }

@@ -1,7 +1,5 @@
 package com.web3.service.tvl;
 
-import java.io.IOException;
-
 /**
  * @Author: mianyun.yt
  * @Date: 2023/2/6
@@ -13,6 +11,6 @@ public interface TvlService {
      *
      * @param protocol 协议名
      */
-    void sync(String protocol) throws IOException;
+    void sync(String protocol);
 
 }

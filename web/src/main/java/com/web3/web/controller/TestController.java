@@ -72,7 +72,7 @@ public class TestController {
     }
 
     @PostMapping("/tvl/sync")
-    public Boolean syncTvl(@RequestParam String protocol) throws IOException {
+    public Boolean syncTvl(@RequestParam String protocol) {
         tvlService.sync(protocol);
         return true;
     }
