@@ -3,8 +3,11 @@ package com.web3.web.controller;
 import com.web3.crawler.dto.Task;
 import com.web3.crawler.processors.Price1dProcessor;
 import com.web3.framework.resouce.defillama.DefillamaApi;
+import com.web3.framework.resouce.defillama.StablecoinApi;
+import com.web3.framework.resouce.defillama.dto.AllStableCoinRes;
 import com.web3.framework.resouce.defillama.dto.HistoryTvlRes;
 import com.web3.framework.resouce.defillama.dto.ProtocolRes;
+import com.web3.framework.resouce.defillama.dto.StableCoinHistory;
 import com.web3.service.address.AddressService;
 import com.web3.service.address.BalanceService;
 import com.web3.service.defi.DefiService;
@@ -38,6 +41,9 @@ public class TestController {
 
     @Resource
     private DefillamaApi defillamaApi;
+
+    @Resource
+    private StablecoinApi stablecoinApi;
 
     @Resource
     private DefiService defiService;
@@ -80,5 +86,15 @@ public class TestController {
     public Boolean syncAllProtocol() {
         defiService.syncAllProtocolTvl();
         return true;
+    }
+
+    @GetMapping("/allStablecoin")
+    public AllStableCoinRes getAllStablecoin() {
+        return stablecoinApi.getAllStablecoin();
+    }
+
+    @GetMapping("/stablecoinHistory")
+    public List<StableCoinHistory> getAllStablecoin(@RequestParam Integer stablecoin) {
+        return stablecoinApi.getStablecoinHistory(stablecoin);
     }
 }

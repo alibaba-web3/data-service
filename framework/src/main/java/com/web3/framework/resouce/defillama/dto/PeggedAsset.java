@@ -2,6 +2,7 @@ package com.web3.framework.resouce.defillama.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 /**
@@ -9,23 +10,26 @@ import lombok.Data;
  * @Date: 2023/2/9
  */
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PeggedAsset {
 
-    public String id;
+    private String id;
 
-    public String name;
+    private String name;
 
-    public String symbol;
-    public String gecko_id;
-    public String pegType;
-    public String priceSource;
-    public String pegMechanism;
-    public CirculatingPegged circulating;
-    public CirculatingPegged circulatingPrevDay;
-    public CirculatingPegged circulatingPrevWeek;
-    public CirculatingPegged circulatingPrevMonth;
+    private String symbol;
+    private String gecko_id;
+    private String pegType;
+    private String priceSource;
+    private String pegMechanism;
+    private CirculatingPegged circulating;
+    //private CirculatingPegged circulatingPrevDay;
+    //private CirculatingPegged circulatingPrevWeek;
+    //private CirculatingPegged circulatingPrevMonth;
 
-    public List<String> chains;
-    public double price;
+    //private Object chainCirculating;
+
+    private List<String> chains;
+    private double price;
 
 }
