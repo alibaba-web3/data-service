@@ -4,6 +4,7 @@ import java.time.Duration;
 
 import com.web3.framework.resouce.binance.BinanceApi;
 import com.web3.framework.resouce.defillama.DefillamaApi;
+import com.web3.framework.resouce.defillama.StablecoinApi;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +29,9 @@ public class ApiConfiguration {
 
     @Value("${defillama.api.url}")
     private String defillamaApiUrl;
+
+    @Value("${defillama.stablecoins.url}")
+    private String stablecoinApiUrl;
 
     @Value("${proxy.host}")
     private String proxyHost;
@@ -60,10 +64,7 @@ public class ApiConfiguration {
 
     @Bean
     DefillamaApi defillamaApi() {
-        final int size = 16 * 1024 * 1024;
-        final ExchangeStrategies strategies = ExchangeStrategies.builder()
-            .codecs(codecs -> codecs.defaultCodecs().maxInMemorySize(size))
-            .build();
+        final ExchangeStrategies strategies = getDefillamaStrategies();
 
         WebClient client = WebClient.builder().baseUrl(defillamaApiUrl).exchangeStrategies(strategies).build();
 
@@ -73,6 +74,28 @@ public class ApiConfiguration {
             .build();
 
         return factory.createClient(DefillamaApi.class);
+    }
+
+    @Bean
+    StablecoinApi stablecoinApi() {
+
+        final ExchangeStrategies strategies = getDefillamaStrategies();
+
+        WebClient client = WebClient.builder().baseUrl(stablecoinApiUrl).exchangeStrategies(strategies).build();
+
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory
+            .builder(WebClientAdapter.forClient(client))
+            .blockTimeout(Duration.ofSeconds(30))
+            .build();
+
+        return factory.createClient(StablecoinApi.class);
+    }
+
+    ExchangeStrategies getDefillamaStrategies() {
+        final int size = 16 * 1024 * 1024;
+        return ExchangeStrategies.builder()
+            .codecs(codecs -> codecs.defaultCodecs().maxInMemorySize(size))
+            .build();
     }
 
 }
