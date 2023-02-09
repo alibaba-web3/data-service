@@ -13,4 +13,9 @@ public interface TvlService {
      */
     void sync(String protocol);
 
+    /**
+     * 所有协议 tvl 数据导入数据库
+     */
+    void syncAllProtocol();
+
 }

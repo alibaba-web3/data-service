@@ -76,4 +76,10 @@ public class TestController {
         tvlService.sync(protocol);
         return true;
     }
+
+    @PostMapping("/tvl/syncAllProtocol")
+    public Boolean syncAllProtocol() {
+        tvlService.syncAllProtocol();
+        return true;
+    }
 }

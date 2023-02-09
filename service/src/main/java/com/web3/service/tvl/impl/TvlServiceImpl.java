@@ -8,6 +8,7 @@ import com.web3.dal.data.entity.Tvl1d;
 import com.web3.dal.data.service.Tvl1dMapperService;
 import com.web3.framework.resouce.defillama.DefillamaApi;
 import com.web3.framework.resouce.defillama.dto.HistoryTvlRes;
+import com.web3.framework.resouce.defillama.dto.ProtocolRes;
 import com.web3.framework.utils.DateUtils;
 import com.web3.service.tvl.TvlService;
 import jakarta.annotation.Resource;
@@ -65,9 +66,18 @@ public class TvlServiceImpl implements TvlService {
             .toList();
 
         if (!CollectionUtils.isEmpty(tvl1dList)) {
-            log.info("sync {} tvl data", protocol);
+            log.info("sync {} tvl data, {}", protocol, tvl1dList.size());
             tvl1dMapperService.saveBatch(tvl1dList);
         }
 
+    }
+
+    @Override
+    public void syncAllProtocol() {
+        List<ProtocolRes> protocolList = defillamaApi.getProtocols();
+
+        protocolList.stream().parallel().forEach(protocol -> {
+            sync(protocol.getName());
+        });
     }
 }

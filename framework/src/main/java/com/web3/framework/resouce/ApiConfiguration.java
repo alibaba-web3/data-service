@@ -69,7 +69,7 @@ public class ApiConfiguration {
 
         HttpServiceProxyFactory factory = HttpServiceProxyFactory
             .builder(WebClientAdapter.forClient(client))
-            .blockTimeout(Duration.ofSeconds(20))
+            .blockTimeout(Duration.ofSeconds(30))
             .build();
 
         return factory.createClient(DefillamaApi.class);
