@@ -7,7 +7,7 @@ import com.web3.framework.resouce.defillama.dto.HistoryTvlRes;
 import com.web3.framework.resouce.defillama.dto.ProtocolRes;
 import com.web3.service.address.AddressService;
 import com.web3.service.address.BalanceService;
-import com.web3.service.tvl.TvlService;
+import com.web3.service.defi.DefiService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -41,7 +40,7 @@ public class TestController {
     private DefillamaApi defillamaApi;
 
     @Resource
-    private TvlService tvlService;
+    private DefiService defiService;
 
     @GetMapping("/executePrice1dJob")
     public void executePrice1dJob() {
@@ -73,13 +72,13 @@ public class TestController {
 
     @PostMapping("/tvl/sync")
     public Boolean syncTvl(@RequestParam String protocol) {
-        tvlService.sync(protocol);
+        defiService.sync(protocol);
         return true;
     }
 
     @PostMapping("/tvl/syncAllProtocol")
     public Boolean syncAllProtocol() {
-        tvlService.syncAllProtocol();
+        defiService.syncAllProtocol();
         return true;
     }
 }

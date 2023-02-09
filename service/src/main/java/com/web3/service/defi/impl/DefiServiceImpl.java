@@ -1,4 +1,4 @@
-package com.web3.service.tvl.impl;
+package com.web3.service.defi.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -10,7 +10,7 @@ import com.web3.framework.resouce.defillama.DefillamaApi;
 import com.web3.framework.resouce.defillama.dto.HistoryTvlRes;
 import com.web3.framework.resouce.defillama.dto.ProtocolRes;
 import com.web3.framework.utils.DateUtils;
-import com.web3.service.tvl.TvlService;
+import com.web3.service.defi.DefiService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ import org.springframework.util.CollectionUtils;
  */
 @Service
 @Slf4j
-public class TvlServiceImpl implements TvlService {
+public class DefiServiceImpl implements DefiService {
 
     @Resource
     private Tvl1dMapperService tvl1dMapperService;

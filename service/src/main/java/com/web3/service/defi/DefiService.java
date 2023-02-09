@@ -1,10 +1,10 @@
-package com.web3.service.tvl;
+package com.web3.service.defi;
 
 /**
  * @Author: mianyun.yt
  * @Date: 2023/2/6
  */
-public interface TvlService {
+public interface DefiService {
 
     /**
      * tvl 数据导入数据库
