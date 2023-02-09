@@ -11,11 +11,11 @@ public interface DefiService {
      *
      * @param protocol 协议名
      */
-    void sync(String protocol);
+    void syncTvl(String protocol);
 
     /**
      * 所有协议 tvl 数据导入数据库
      */
-    void syncAllProtocol();
+    void syncAllProtocolTvl();
 
 }

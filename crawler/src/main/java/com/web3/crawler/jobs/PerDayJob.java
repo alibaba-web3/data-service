@@ -20,7 +20,7 @@ public class PerDayJob {
      */
     @Scheduled(cron = "0 0 2 * * ?")
     public void execute() {
-        defiService.syncAllProtocol();
+        defiService.syncAllProtocolTvl();
     }
 
 }

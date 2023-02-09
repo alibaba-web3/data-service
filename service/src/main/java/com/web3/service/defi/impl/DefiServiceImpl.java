@@ -31,7 +31,7 @@ public class DefiServiceImpl implements DefiService {
     private DefillamaApi defillamaApi;
 
     @Override
-    public void sync(String protocol) {
+    public void syncTvl(String protocol) {
         HistoryTvlRes historyTvlRes = defillamaApi.getHistoryTvl(protocol);
 
         if (historyTvlRes == null || CollectionUtils.isEmpty(historyTvlRes.getTvl())) {
@@ -73,11 +73,11 @@ public class DefiServiceImpl implements DefiService {
     }
 
     @Override
-    public void syncAllProtocol() {
+    public void syncAllProtocolTvl() {
         List<ProtocolRes> protocolList = defillamaApi.getProtocols();
 
         protocolList.stream().parallel().forEach(protocol -> {
-            sync(protocol.getName());
+            syncTvl(protocol.getName());
         });
     }
 }

@@ -72,13 +72,13 @@ public class TestController {
 
     @PostMapping("/tvl/sync")
     public Boolean syncTvl(@RequestParam String protocol) {
-        defiService.sync(protocol);
+        defiService.syncTvl(protocol);
         return true;
     }
 
     @PostMapping("/tvl/syncAllProtocol")
     public Boolean syncAllProtocol() {
-        defiService.syncAllProtocol();
+        defiService.syncAllProtocolTvl();
         return true;
     }
 }
