@@ -14,7 +14,15 @@ public class EnvUtils {
     private String env;
 
     public Boolean isLocal() {
-        return env.equals("local");
+        return "local".equals(env);
+    }
+
+    public Boolean isStage() {
+        return "stage".equals(env);
+    }
+
+    public Boolean isProd() {
+        return "prod".equals(env);
     }
 
     public String getEnv() {
