@@ -11,7 +11,7 @@ public interface DefiService {
      *
      * @param protocol 协议名
      */
-    void syncTvl(String protocol);
+    void syncTvl(String protocol) throws InterruptedException;
 
     /**
      * 所有协议 tvl 数据导入数据库

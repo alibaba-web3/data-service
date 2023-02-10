@@ -77,7 +77,7 @@ public class TestController {
     }
 
     @PostMapping("/tvl/sync")
-    public Boolean syncTvl(@RequestParam String protocol) {
+    public Boolean syncTvl(@RequestParam String protocol) throws InterruptedException {
         defiService.syncTvl(protocol);
         return true;
     }

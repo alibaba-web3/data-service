@@ -31,8 +31,15 @@ public class DefiServiceImpl implements DefiService {
     private DefillamaApi defillamaApi;
 
     @Override
-    public void syncTvl(String protocol) {
-        HistoryTvlRes historyTvlRes = defillamaApi.getHistoryTvl(protocol);
+    public void syncTvl(String protocol) throws InterruptedException {
+        HistoryTvlRes historyTvlRes;
+        try {
+            historyTvlRes = defillamaApi.getHistoryTvl(protocol);
+        } catch (Exception e) {
+            log.error("get {} tvl error and retry", protocol);
+            Thread.sleep(5 * 1000);
+            historyTvlRes = defillamaApi.getHistoryTvl(protocol);
+        }
 
         if (historyTvlRes == null || CollectionUtils.isEmpty(historyTvlRes.getTvl())) {
             return;
@@ -45,12 +52,13 @@ public class DefiServiceImpl implements DefiService {
         //HistoryTvlRes historyTvlRes = mapper.readValue(new File("/Users/thomsonyang/Desktop/code/opensource/data-service/service/src/main/java/com/web3/service/tvl/impl/crv.json"),
         //    HistoryTvlRes.class);
 
+        String protocolName = historyTvlRes.getName();
         List<Tvl1d> tvl1dList = historyTvlRes.getTvl().stream().map(tvl -> {
 
                 Tvl1d tvl1d = new Tvl1d();
                 tvl1d.setTvl(BigDecimal.valueOf(tvl.getTotalLiquidityUSD()));
                 tvl1d.setDate(DateUtils.ofEpochSecond(tvl.getDate()));
-                tvl1d.setName(historyTvlRes.getName());
+                tvl1d.setName(protocolName);
 
                 return tvl1d;
             })
