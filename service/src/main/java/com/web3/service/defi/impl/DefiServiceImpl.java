@@ -77,7 +77,11 @@ public class DefiServiceImpl implements DefiService {
         List<ProtocolRes> protocolList = defillamaApi.getProtocols();
 
         protocolList.stream().parallel().forEach(protocol -> {
-            syncTvl(protocol.getName());
+            try {
+                syncTvl(protocol.getName());
+            } catch (Exception e) {
+                log.error("{} tvl sync error", protocol, e);
+            }
         });
     }
 }
