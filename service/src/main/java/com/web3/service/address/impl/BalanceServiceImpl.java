@@ -26,6 +26,7 @@ import com.web3.framework.resouce.ethereum.EthereumService;
 import com.web3.framework.utils.DateUtils;
 import com.web3.service.address.AddressService;
 import com.web3.service.address.BalanceService;
+import com.web3.service.address.dto.BalanceChangeAddressInfo;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -90,35 +91,14 @@ public class BalanceServiceImpl implements BalanceService {
             }
 
             // 当天余额变化的地址
-            Set<String> addressSet = new HashSet<>();
-            Future<List<EthereumBlocks>> blocksListFuture = processBalanceExecutor.submit(() -> ethereumBlocksMapperService.list(s, e));
-            Future<List<EthereumTransactions>> transactionsListFuture = processBalanceExecutor.submit(() -> ethereumTransactionsMapperService.list(s, e));
+            BalanceChangeAddressInfo balanceChangeAddressInfo = getBalanceChangeAddress(s, e);
+            Set<String> addressSet = balanceChangeAddressInfo.getAddressSet();
+            EthereumBlocks firstBlock = balanceChangeAddressInfo.getFirstBlock();
+            EthereumBlocks lastBlock = balanceChangeAddressInfo.getLastBlock();
 
-            List<EthereumBlocks> blocksList = blocksListFuture.get();
-            List<EthereumTransactions> transactionsList = transactionsListFuture.get();
-
-            if (CollectionUtils.isEmpty(blocksList) || CollectionUtils.isEmpty(transactionsList)) {
+            if (CollectionUtils.isEmpty(addressSet)) {
                 return;
             }
-
-            blocksList.forEach(block -> {
-                if (StringUtils.isNotEmpty(block.getMiner())) {
-                    addressSet.add(block.getMiner());
-                }
-            });
-            transactionsList.forEach(transaction -> {
-                if (StringUtils.isNotEmpty(transaction.getFrom())) {
-                    addressSet.add(transaction.getFrom());
-                }
-                if (StringUtils.isNotEmpty(transaction.getTo())) {
-                    addressSet.add(transaction.getTo());
-                }
-            });
-
-            // 升序排序
-            blocksList.sort(Comparator.comparing(EthereumBlocks::getTimestamp));
-            EthereumBlocks firstBlock = blocksList.get(0);
-            EthereumBlocks lastBlock = blocksList.get(blocksList.size() - 1);
 
             log.info("number of address to update: {} {}", addressSet.size(), s);
             CountDownLatch countDownLatch = new CountDownLatch(addressSet.size());
@@ -165,10 +145,64 @@ public class BalanceServiceImpl implements BalanceService {
                     log.info("number of address has bean updated: {}", addressSet.size() - countDownLatch.getCount());
                 }
             }));
+
             countDownLatch.await();
             addressSet.clear();
         }
 
     }
 
+    @Override
+    public void fillHistoryRecord() {
+        AddressChangeTemp latest = addressChangeTempMapperService.getLatest();
+        LocalDateTime now = LocalDateTime.now();
+
+        List<LocalDateTime> localDateTimeList = DateUtils.getBetweenDate(latest.getTime(), now);
+
+        for (int i = 0; i <localDateTimeList.size() ; i++) {
+
+        }
+    }
+
+    BalanceChangeAddressInfo getBalanceChangeAddress(LocalDateTime start, LocalDateTime end) throws ExecutionException, InterruptedException {
+
+        BalanceChangeAddressInfo result = new BalanceChangeAddressInfo();
+
+        // 当天余额变化的地址
+        Set<String> addressSet = new HashSet<>();
+        Future<List<EthereumBlocks>> blocksListFuture = processBalanceExecutor.submit(() -> ethereumBlocksMapperService.list(start, end));
+        Future<List<EthereumTransactions>> transactionsListFuture = processBalanceExecutor.submit(() -> ethereumTransactionsMapperService.list(start, end));
+
+        List<EthereumBlocks> blocksList = blocksListFuture.get();
+        List<EthereumTransactions> transactionsList = transactionsListFuture.get();
+
+        if (CollectionUtils.isEmpty(blocksList) || CollectionUtils.isEmpty(transactionsList)) {
+            return result;
+        }
+
+        blocksList.forEach(block -> {
+            if (StringUtils.isNotEmpty(block.getMiner())) {
+                addressSet.add(block.getMiner());
+            }
+        });
+        transactionsList.forEach(transaction -> {
+            if (StringUtils.isNotEmpty(transaction.getFrom())) {
+                addressSet.add(transaction.getFrom());
+            }
+            if (StringUtils.isNotEmpty(transaction.getTo())) {
+                addressSet.add(transaction.getTo());
+            }
+        });
+
+        // 升序排序
+        blocksList.sort(Comparator.comparing(EthereumBlocks::getTimestamp));
+        EthereumBlocks firstBlock = blocksList.get(0);
+        EthereumBlocks lastBlock = blocksList.get(blocksList.size() - 1);
+
+        result.setAddressSet(addressSet);
+        result.setFirstBlock(firstBlock);
+        result.setLastBlock(lastBlock);
+
+        return result;
+    }
 }
