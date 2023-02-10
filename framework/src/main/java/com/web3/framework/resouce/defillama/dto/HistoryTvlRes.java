@@ -29,6 +29,8 @@ public class HistoryTvlRes {
 
     private String name;
 
+    private String symbol;
+
     private List<Tvl> tvl;
 
     private String twitter;

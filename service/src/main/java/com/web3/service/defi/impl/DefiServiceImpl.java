@@ -53,12 +53,14 @@ public class DefiServiceImpl implements DefiService {
         //    HistoryTvlRes.class);
 
         String protocolName = historyTvlRes.getName();
+        String symbol = historyTvlRes.getSymbol();
         List<Tvl1d> tvl1dList = historyTvlRes.getTvl().stream().map(tvl -> {
 
                 Tvl1d tvl1d = new Tvl1d();
                 tvl1d.setTvl(BigDecimal.valueOf(tvl.getTotalLiquidityUSD()));
                 tvl1d.setDate(DateUtils.ofEpochSecond(tvl.getDate()));
                 tvl1d.setName(protocolName);
+                tvl1d.setSymbol(symbol);
 
                 return tvl1d;
             })
@@ -82,14 +84,26 @@ public class DefiServiceImpl implements DefiService {
 
     @Override
     public void syncAllProtocolTvl() {
-        List<ProtocolRes> protocolList = defillamaApi.getProtocols();
+        List<ProtocolRes> protocolList = getTopProtocol(30);
 
-        protocolList.stream().forEach(protocol -> {
+        protocolList.stream().parallel().forEach(protocol -> {
             try {
-                syncTvl(protocol.getName());
+                syncTvl(protocol.getSlug());
             } catch (Exception e) {
                 log.error("{} tvl sync error", protocol, e);
             }
         });
+    }
+
+    public List<ProtocolRes> getTopProtocol(Integer topNumber) {
+        List<ProtocolRes> protocolList = defillamaApi.getProtocols();
+        protocolList.sort((a, b) -> {
+            if (a.getTvl().equals(b.getTvl())) {
+                return 0;
+            }
+            return b.getTvl() - a.getTvl() > 0 ? 1 : -1;
+        });
+
+        return protocolList.subList(0, topNumber);
     }
 }

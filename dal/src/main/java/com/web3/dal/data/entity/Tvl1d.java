@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,6 +33,8 @@ public class Tvl1d {
      * 协议名称
      */
     private String name;
+
+    private String symbol;
 
     /**
      * 日期
