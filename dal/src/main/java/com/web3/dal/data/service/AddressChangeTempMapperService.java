@@ -13,4 +13,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface AddressChangeTempMapperService extends IService<AddressChangeTemp> {
 
+    /**
+     * 查询最新的数据
+     *
+     * @return 地址
+     */
+    AddressChangeTemp getLatest();
+
 }
