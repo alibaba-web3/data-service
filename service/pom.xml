@@ -25,6 +25,11 @@
             <groupId>com.web3</groupId>
             <artifactId>dal</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.web3</groupId>
+            <artifactId>framework</artifactId>
+        </dependency>
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -36,10 +41,7 @@
             <artifactId>lombok</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.web3j</groupId>
-            <artifactId>core</artifactId>
-        </dependency>
+
 
     </dependencies>
 
