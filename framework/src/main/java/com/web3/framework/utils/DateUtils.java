@@ -1,7 +1,11 @@
 package com.web3.framework.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.FastTimeZone;
 
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -14,9 +18,12 @@ import java.util.TimeZone;
  * @Author: mianyun.yt
  * @Date: 2023/1/6
  */
+@Slf4j
 public class DateUtils {
 
     public final static String ZERO_TIMEZONE = "GMT+00:00";
+
+    public final static String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
 
     /**
      * 时间戳转 LocalDateTime
@@ -30,6 +37,17 @@ public class DateUtils {
 
     static public long convert2Timestamp(LocalDateTime dateTime) {
         return dateTime.toEpochSecond(ZoneOffset.ofHours(8)) * 1000;
+    }
+
+    static public Date convert2Date(long timestamp) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS);
+        dateFormat.setTimeZone(TimeZone.getTimeZone(ZERO_TIMEZONE));
+        try {
+            return dateFormat.parse(dateFormat.format(new Date(timestamp * 1000L)));
+        } catch (ParseException e) {
+            log.error("convert2Date error: {}", e.getMessage());
+        }
+        return null;
     }
 
     /**

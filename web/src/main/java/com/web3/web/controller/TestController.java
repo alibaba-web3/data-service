@@ -11,6 +11,7 @@ import com.web3.framework.resouce.defillama.dto.StableCoinHistory;
 import com.web3.service.address.AddressService;
 import com.web3.service.address.BalanceService;
 import com.web3.service.defi.DefiService;
+import com.web3.service.pos.EthereumV2Service;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,6 +53,9 @@ public class TestController {
 
     @NacosValue(value = "${useLocalCache}", autoRefreshed = true)
     private Integer useLocalCache;
+
+    @Resource
+    private EthereumV2Service ethereumV2Service;
 
     @GetMapping("/executePrice1dJob")
     public void executePrice1dJob() {
@@ -107,4 +111,10 @@ public class TestController {
     public Integer get() {
         return useLocalCache;
     }
+
+    @GetMapping("/activeValidators")
+    public void activeValidators() {
+        ethereumV2Service.syncActiveValidators();
+    }
+
 }
