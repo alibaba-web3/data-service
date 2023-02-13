@@ -162,9 +162,9 @@
                 <version>3.0.14</version>
             </dependency>
             <dependency>
-                <groupId>com.alibaba.boot</groupId>
-                <artifactId>nacos-config-spring-boot-starter</artifactId>
-                <version>0.2.12</version>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+                <version>2022.0.0.0-RC1</version>
             </dependency>
 
         </dependencies>

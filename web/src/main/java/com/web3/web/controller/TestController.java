@@ -1,5 +1,9 @@
 package com.web3.web.controller;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
 import com.web3.crawler.dto.Task;
 import com.web3.crawler.processors.Price1dProcessor;
 import com.web3.framework.resouce.defillama.DefillamaApi;
@@ -12,17 +16,13 @@ import com.web3.service.address.AddressService;
 import com.web3.service.address.BalanceService;
 import com.web3.service.defi.DefiService;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
-import com.alibaba.nacos.api.config.annotation.NacosValue;
 
 /**
  * @Author: smy
@@ -30,6 +30,7 @@ import com.alibaba.nacos.api.config.annotation.NacosValue;
  */
 @RestController
 @RequestMapping("/test")
+@RefreshScope
 public class TestController {
 
     @Resource
@@ -50,7 +51,7 @@ public class TestController {
     @Resource
     private DefiService defiService;
 
-    @NacosValue(value = "${useLocalCache}", autoRefreshed = true)
+    @Value(value = "${field}")
     private Integer useLocalCache;
 
     @GetMapping("/executePrice1dJob")
