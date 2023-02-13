@@ -15,6 +15,7 @@ import com.web3.framework.resouce.defillama.dto.StableCoinHistory;
 import com.web3.service.address.AddressService;
 import com.web3.service.address.BalanceService;
 import com.web3.service.defi.DefiService;
+import com.web3.service.pos.EthereumV2Service;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -53,6 +54,9 @@ public class TestController {
 
     @Value(value = "${field}")
     private Integer useLocalCache;
+
+    @Resource
+    private EthereumV2Service ethereumV2Service;
 
     @GetMapping("/executePrice1dJob")
     public void executePrice1dJob() {
@@ -108,4 +112,10 @@ public class TestController {
     public Integer get() {
         return useLocalCache;
     }
+
+    @GetMapping("/activeValidators")
+    public void activeValidators() {
+        ethereumV2Service.syncActiveValidators();
+    }
+
 }
