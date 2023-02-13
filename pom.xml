@@ -161,6 +161,11 @@
                 <artifactId>groovy</artifactId>
                 <version>3.0.14</version>
             </dependency>
+            <dependency>
+                <groupId>com.alibaba.boot</groupId>
+                <artifactId>nacos-config-spring-boot-starter</artifactId>
+                <version>0.2.12</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>

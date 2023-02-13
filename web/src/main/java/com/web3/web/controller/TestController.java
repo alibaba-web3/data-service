@@ -22,6 +22,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import com.alibaba.nacos.api.config.annotation.NacosValue;
+
 /**
  * @Author: smy
  * @Date: 2023/1/9 5:08 PM
@@ -47,6 +49,9 @@ public class TestController {
 
     @Resource
     private DefiService defiService;
+
+    @NacosValue(value = "${useLocalCache}", autoRefreshed = true)
+    private Integer useLocalCache;
 
     @GetMapping("/executePrice1dJob")
     public void executePrice1dJob() {
@@ -96,5 +101,10 @@ public class TestController {
     @GetMapping("/stablecoinHistory")
     public List<StableCoinHistory> getAllStablecoin(@RequestParam Integer stablecoin) {
         return stablecoinApi.getStablecoinHistory(stablecoin);
+    }
+
+    @GetMapping("/get")
+    public Integer get() {
+        return useLocalCache;
     }
 }

@@ -1,5 +1,9 @@
 package com.web3;
 
+import java.util.TimeZone;
+
+import com.alibaba.nacos.spring.context.annotation.config.NacosPropertySource;
+
 import com.web3.framework.utils.DateUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,13 +11,12 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 
-import java.util.TimeZone;
-
 /**
  * @author smy
  */
-@SpringBootApplication(scanBasePackages = {"com.web3"},
-        exclude = {DataSourceAutoConfiguration.class, DataSourceTransactionManagerAutoConfiguration.class,HibernateJpaAutoConfiguration.class})
+
+@SpringBootApplication(scanBasePackages = {"com.web3"}, exclude = {DataSourceAutoConfiguration.class, DataSourceTransactionManagerAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
+@NacosPropertySource(dataId = "example", autoRefreshed = true)
 public class Application {
     public static void main(String[] args) {
         /**
