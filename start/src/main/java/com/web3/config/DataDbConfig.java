@@ -5,6 +5,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -21,10 +22,24 @@ import javax.sql.DataSource;
 @MapperScan(basePackages = {"com.web3.dal.data.mapper"}, sqlSessionFactoryRef = "sqlSessionFactoryData")
 public class DataDbConfig {
 
+    @Value(value = "${data.jdbcUrl}")
+    private String jdbcUrl;
+
+    @Value(value = "${data.username}")
+    private String username;
+
+    @Value(value = "${data.password}")
+    private String password;
+
     @Bean(name = "dataDataSource")
     @ConfigurationProperties(prefix = "data")
     public DataSource defaultDataSource() {
-        return DataSourceBuilder.create().build();
+        DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
+        dataSourceBuilder.driverClassName("com.mysql.cj.jdbc.Driver");
+        dataSourceBuilder.url(jdbcUrl);
+        dataSourceBuilder.username(username);
+        dataSourceBuilder.password(password);
+        return dataSourceBuilder.build();
     }
 
     @Bean(name = "sqlSessionFactoryData")
