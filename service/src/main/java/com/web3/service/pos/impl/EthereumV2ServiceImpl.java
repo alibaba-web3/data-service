@@ -1,5 +1,6 @@
 package com.web3.service.pos.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.web3.dal.data.entity.EthereumV2Data;
 import com.web3.dal.data.service.EthereumV2MapperService;
 import com.web3.framework.resouce.glassnode.GlassNodeApi;
@@ -39,7 +40,8 @@ public class EthereumV2ServiceImpl implements EthereumV2Service {
     public void syncActiveValidators() {
         List<GlassNodeEthV2Res> glassNodeEthV2Res = glassNodeApi.activeValidators(ETH_ASSETS, glassNodeApiKey);
         if (!CollectionUtils.isEmpty(glassNodeEthV2Res)) {
-            ethereumV2MapperService.saveOrUpdateBatchData(buildData(glassNodeEthV2Res, "activeValidators"));
+            log.info("syncActiveValidators: {}", JSON.toJSONString(glassNodeEthV2Res));
+            ethereumV2MapperService.batchInsertOrUpdateData(buildData(glassNodeEthV2Res, "activeValidators"));
         }
     }
 
@@ -47,7 +49,8 @@ public class EthereumV2ServiceImpl implements EthereumV2Service {
     public void syncDepositsCount() {
         List<GlassNodeEthV2Res> glassNodeEthV2Res = glassNodeApi.depositsCount(ETH_ASSETS, glassNodeApiKey);
         if (!CollectionUtils.isEmpty(glassNodeEthV2Res)) {
-            ethereumV2MapperService.saveOrUpdateBatchData(buildData(glassNodeEthV2Res, "depositsCount"));
+            log.info("syncDepositsCount: {}", JSON.toJSONString(glassNodeEthV2Res));
+            ethereumV2MapperService.batchInsertOrUpdateData(buildData(glassNodeEthV2Res, "depositsCount"));
         }
     }
 
@@ -55,7 +58,8 @@ public class EthereumV2ServiceImpl implements EthereumV2Service {
     public void syncAvgEffectiveBalance() {
         List<GlassNodeEthV2Res> glassNodeEthV2Res = glassNodeApi.avgEffectiveBalance(ETH_ASSETS, glassNodeApiKey);
         if (!CollectionUtils.isEmpty(glassNodeEthV2Res)) {
-            ethereumV2MapperService.saveOrUpdateBatchData(buildData(glassNodeEthV2Res, "avgEffectiveBalance"));
+            log.info("syncAvgEffectiveBalance: {}", JSON.toJSONString(glassNodeEthV2Res));
+            ethereumV2MapperService.batchInsertOrUpdateData(buildData(glassNodeEthV2Res, "avgEffectiveBalance"));
         }
     }
 
@@ -63,7 +67,8 @@ public class EthereumV2ServiceImpl implements EthereumV2Service {
     public void syncEffectiveBalanceSum() {
         List<GlassNodeEthV2Res> glassNodeEthV2Res = glassNodeApi.effectiveBalanceSum(ETH_ASSETS, glassNodeApiKey);
         if (!CollectionUtils.isEmpty(glassNodeEthV2Res)) {
-            ethereumV2MapperService.saveOrUpdateBatchData(buildData(glassNodeEthV2Res, "effectiveBalanceSum"));
+            log.info("syncEffectiveBalanceSum: {}", JSON.toJSONString(glassNodeEthV2Res));
+            ethereumV2MapperService.batchInsertOrUpdateData(buildData(glassNodeEthV2Res, "effectiveBalanceSum"));
         }
     }
 
@@ -71,7 +76,8 @@ public class EthereumV2ServiceImpl implements EthereumV2Service {
     public void syncEpochHeight() {
         List<GlassNodeEthV2Res> glassNodeEthV2Res = glassNodeApi.epochHeight(ETH_ASSETS, glassNodeApiKey);
         if (!CollectionUtils.isEmpty(glassNodeEthV2Res)) {
-            ethereumV2MapperService.saveOrUpdateBatchData(buildData(glassNodeEthV2Res, "epochHeight"));
+            log.info("syncEpochHeight: {}", JSON.toJSONString(glassNodeEthV2Res));
+            ethereumV2MapperService.batchInsertOrUpdateData(buildData(glassNodeEthV2Res, "epochHeight"));
         }
     }
 
@@ -79,7 +85,8 @@ public class EthereumV2ServiceImpl implements EthereumV2Service {
     public void syncEstAnnualRoiValidator() {
         List<GlassNodeEthV2Res> glassNodeEthV2Res = glassNodeApi.estAnnualRoiValidator(ETH_ASSETS, glassNodeApiKey);
         if (!CollectionUtils.isEmpty(glassNodeEthV2Res)) {
-            ethereumV2MapperService.saveOrUpdateBatchData(buildData(glassNodeEthV2Res, "estAnnualRoiValidator"));
+            log.info("syncEstAnnualRoiValidator: {}", JSON.toJSONString(glassNodeEthV2Res));
+            ethereumV2MapperService.batchInsertOrUpdateData(buildData(glassNodeEthV2Res, "estAnnualRoiValidator"));
         }
     }
 
@@ -87,7 +94,8 @@ public class EthereumV2ServiceImpl implements EthereumV2Service {
     public void syncParticipationRate() {
         List<GlassNodeEthV2Res> glassNodeEthV2Res = glassNodeApi.participationRate(ETH_ASSETS, glassNodeApiKey);
         if (!CollectionUtils.isEmpty(glassNodeEthV2Res)) {
-            ethereumV2MapperService.saveOrUpdateBatchData(buildData(glassNodeEthV2Res, "participationRate"));
+            log.info("syncParticipationRate: {}", JSON.toJSONString(glassNodeEthV2Res));
+            ethereumV2MapperService.batchInsertOrUpdateData(buildData(glassNodeEthV2Res, "participationRate"));
         }
     }
 
@@ -95,7 +103,8 @@ public class EthereumV2ServiceImpl implements EthereumV2Service {
     public void syncTotalDepositsCount() {
         List<GlassNodeEthV2Res> glassNodeEthV2Res = glassNodeApi.stakingTotalDepositsCount(ETH_ASSETS, glassNodeApiKey);
         if (!CollectionUtils.isEmpty(glassNodeEthV2Res)) {
-            ethereumV2MapperService.saveOrUpdateBatchData(buildData(glassNodeEthV2Res, "totalDepositsCount"));
+            log.info("syncTotalDepositsCount: {}", JSON.toJSONString(glassNodeEthV2Res));
+            ethereumV2MapperService.batchInsertOrUpdateData(buildData(glassNodeEthV2Res, "totalDepositsCount"));
         }
     }
 
@@ -103,7 +112,8 @@ public class EthereumV2ServiceImpl implements EthereumV2Service {
     public void syncTotalValidatorsCount() {
         List<GlassNodeEthV2Res> glassNodeEthV2Res = glassNodeApi.totalValidatorsCount(ETH_ASSETS, glassNodeApiKey);
         if (!CollectionUtils.isEmpty(glassNodeEthV2Res)) {
-            ethereumV2MapperService.saveOrUpdateBatchData(buildData(glassNodeEthV2Res, "totalValidatorsCount"));
+            log.info("syncTotalValidatorsCount: {}", JSON.toJSONString(glassNodeEthV2Res));
+            ethereumV2MapperService.batchInsertOrUpdateData(buildData(glassNodeEthV2Res, "totalValidatorsCount"));
         }
     }
 
@@ -111,7 +121,8 @@ public class EthereumV2ServiceImpl implements EthereumV2Service {
     public void syncTotalVolumeSum() {
         List<GlassNodeEthV2Res> glassNodeEthV2Res = glassNodeApi.stakingTotalVolumeSum(ETH_ASSETS, glassNodeApiKey);
         if (!CollectionUtils.isEmpty(glassNodeEthV2Res)) {
-            ethereumV2MapperService.saveOrUpdateBatchData(buildData(glassNodeEthV2Res, "totalVolumeSum"));
+            log.info("syncTotalVolumeSum: {}", JSON.toJSONString(glassNodeEthV2Res));
+            ethereumV2MapperService.batchInsertOrUpdateData(buildData(glassNodeEthV2Res, "totalVolumeSum"));
         }
     }
 
@@ -119,7 +130,8 @@ public class EthereumV2ServiceImpl implements EthereumV2Service {
     public void syncNewValidatorsCount() {
         List<GlassNodeEthV2Res> glassNodeEthV2Res = glassNodeApi.stakingValidatorsCount(ETH_ASSETS, glassNodeApiKey);
         if (!CollectionUtils.isEmpty(glassNodeEthV2Res)) {
-            ethereumV2MapperService.saveOrUpdateBatchData(buildData(glassNodeEthV2Res, "newValidatorsCount"));
+            log.info("syncNewValidatorsCount: {}", JSON.toJSONString(glassNodeEthV2Res));
+            ethereumV2MapperService.batchInsertOrUpdateData(buildData(glassNodeEthV2Res, "newValidatorsCount"));
         }
     }
 
@@ -127,7 +139,8 @@ public class EthereumV2ServiceImpl implements EthereumV2Service {
     public void syncNewVolumeSum() {
         List<GlassNodeEthV2Res> glassNodeEthV2Res = glassNodeApi.stakingVolumeSum(ETH_ASSETS, glassNodeApiKey);
         if (!CollectionUtils.isEmpty(glassNodeEthV2Res)) {
-            ethereumV2MapperService.saveOrUpdateBatchData(buildData(glassNodeEthV2Res, "newVolumeSum"));
+            log.info("syncNewVolumeSum: {}", JSON.toJSONString(glassNodeEthV2Res));
+            ethereumV2MapperService.batchInsertOrUpdateData(buildData(glassNodeEthV2Res, "newVolumeSum"));
         }
     }
 
@@ -135,7 +148,8 @@ public class EthereumV2ServiceImpl implements EthereumV2Service {
     public void syncAvgValidatorBalance() {
         List<GlassNodeEthV2Res> glassNodeEthV2Res = glassNodeApi.validatorBalanceMean(ETH_ASSETS, glassNodeApiKey);
         if (!CollectionUtils.isEmpty(glassNodeEthV2Res)) {
-            ethereumV2MapperService.saveOrUpdateBatchData(buildData(glassNodeEthV2Res, "avgValidatorBalance"));
+            log.info("syncAvgValidatorBalance: {}", JSON.toJSONString(glassNodeEthV2Res));
+            ethereumV2MapperService.batchInsertOrUpdateData(buildData(glassNodeEthV2Res, "avgValidatorBalance"));
         }
     }
 
@@ -143,7 +157,8 @@ public class EthereumV2ServiceImpl implements EthereumV2Service {
     public void syncVoluntaryExitCount() {
         List<GlassNodeEthV2Res> glassNodeEthV2Res = glassNodeApi.voluntaryExitCount(ETH_ASSETS, glassNodeApiKey);
         if (!CollectionUtils.isEmpty(glassNodeEthV2Res)) {
-            ethereumV2MapperService.saveOrUpdateBatchData(buildData(glassNodeEthV2Res, "voluntaryExitCount"));
+            log.info("syncVoluntaryExitCount: {}", JSON.toJSONString(glassNodeEthV2Res));
+            ethereumV2MapperService.batchInsertOrUpdateData(buildData(glassNodeEthV2Res, "voluntaryExitCount"));
         }
     }
 

@@ -1,13 +1,13 @@
 package com.web3.dal.data.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -24,6 +24,7 @@ public class EthereumV2Data implements Serializable {
     /**
      * 主键
      */
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
@@ -44,7 +45,7 @@ public class EthereumV2Data implements Serializable {
     /**
      * 平均有效余额
      */
-    private BigDecimal avgEffectiveBalance;
+    private Double avgEffectiveBalance;
 
     /**
      * 总有效余额
@@ -59,12 +60,12 @@ public class EthereumV2Data implements Serializable {
     /**
      * 验证者预估年度发行投资回报率
      */
-    private BigDecimal estAnnualRoiValidator;
+    private Double estAnnualRoiValidator;
 
     /**
      * 参与率
      */
-    private BigDecimal participationRate;
+    private Double participationRate;
 
     /**
      * ETH2存款合约的交易总数
@@ -94,7 +95,7 @@ public class EthereumV2Data implements Serializable {
     /**
      * 验证者的平均总质押余额
      */
-    private BigDecimal avgValidatorBalance;
+    private Double avgValidatorBalance;
 
     /**
      * 自愿退出验证者池的验证者总数

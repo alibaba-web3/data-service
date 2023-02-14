@@ -4,7 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import com.alibaba.nacos.api.config.annotation.NacosValue;
 import com.web3.crawler.dto.Task;
+import com.web3.crawler.jobs.EthereumV2Job;
 import com.web3.crawler.processors.Price1dProcessor;
 import com.web3.framework.resouce.defillama.DefillamaApi;
 import com.web3.framework.resouce.defillama.StablecoinApi;
@@ -53,6 +55,10 @@ public class TestController {
     private DefiService defiService;
 
     @Value(value = "${field}")
+    @Resource
+    private EthereumV2Job ethereumV2Job;
+
+    @NacosValue(value = "${useLocalCache}", autoRefreshed = true)
     private Integer useLocalCache;
 
     @Resource
@@ -113,9 +119,9 @@ public class TestController {
         return useLocalCache;
     }
 
-    @GetMapping("/activeValidators")
-    public void activeValidators() {
-        ethereumV2Service.syncActiveValidators();
+    @GetMapping("/ethereumV2Job")
+    public void ethereumV2Job() throws InterruptedException, NoSuchMethodException {
+        ethereumV2Job.execute();
     }
 
 }
