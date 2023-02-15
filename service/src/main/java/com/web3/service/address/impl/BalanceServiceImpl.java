@@ -127,7 +127,6 @@ public class BalanceServiceImpl implements BalanceService {
             ).get();
 
             addressChangeTempMapperService.replaceIntoBatch(entityList);
-            addressSet.clear();
         }
 
     }
@@ -153,10 +152,11 @@ public class BalanceServiceImpl implements BalanceService {
         Future<List<EthereumBlocks>> blocksListFuture = processBalanceExecutor.submit(() -> ethereumBlocksMapperService.list(start, end));
         Future<List<EthereumTransactions>> transactionsListFuture = processBalanceExecutor.submit(() -> ethereumTransactionsMapperService.list(start, end));
 
-        List<EthereumBlocks> blocksList = blocksListFuture.get(120, TimeUnit.SECONDS);
-        List<EthereumTransactions> transactionsList = transactionsListFuture.get(120, TimeUnit.SECONDS);
+        List<EthereumBlocks> blocksList = blocksListFuture.get(180, TimeUnit.SECONDS);
+        List<EthereumTransactions> transactionsList = transactionsListFuture.get(180, TimeUnit.SECONDS);
 
         if (CollectionUtils.isEmpty(blocksList) || CollectionUtils.isEmpty(transactionsList)) {
+            log.info("blocks or transactions set is empty {} {}", blocksList.size(), transactionsList.size());
             return result;
         }
 
