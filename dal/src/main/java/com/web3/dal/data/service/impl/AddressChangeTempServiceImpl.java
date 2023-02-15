@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.web3.dal.data.entity.AddressChangeTemp;
 import com.web3.dal.data.mapper.AddressChangeTempMapper;
 import com.web3.dal.data.service.AddressChangeTempMapperService;
+import org.apache.commons.collections4.ListUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -32,10 +33,21 @@ public class AddressChangeTempServiceImpl extends ServiceImpl<AddressChangeTempM
 
     @Override
     public void replaceIntoBatch(List<AddressChangeTemp> list) {
+
+        int maxSize = 20000;
+
         if (CollectionUtils.isEmpty(list)) {
             return;
         }
 
-        baseMapper.replaceIntoBatch(list);
+        if (list.size() > maxSize) {
+            List<List<AddressChangeTemp>> partitionList = ListUtils.partition(list, maxSize);
+            for (List<AddressChangeTemp> partition : partitionList) {
+                baseMapper.replaceIntoBatch(partition);
+            }
+        } else {
+            baseMapper.replaceIntoBatch(list);
+        }
+
     }
 }
