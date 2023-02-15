@@ -1,5 +1,6 @@
 package com.web3.dal.data.service;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.web3.dal.data.entity.EthereumV2Data;
 
@@ -18,4 +19,7 @@ public interface EthereumV2MapperService extends IService<EthereumV2Data> {
      * @return
      */
     boolean saveOrUpdateBatchData(List<EthereumV2Data> list);
+
+    void batchInsertOrUpdateData(List<EthereumV2Data> list);
+
 }

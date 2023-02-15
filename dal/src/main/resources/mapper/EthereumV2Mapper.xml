@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.web3.dal.data.mapper.EthereumV2Mapper">
+    <insert id="batchInsertOrUpdate" parameterType="java.util.List">
+        <foreach collection="list" item="ele" index="index" separator=";" open="" close="">
+            INSERT INTO ethereum_beacon_data
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="ele.timestamp != null">timestamp,</if>
+                <if test="ele.activeValidators != null">active_validators,</if>
+                <if test="ele.depositsCount != null">deposits_count,</if>
+                <if test="ele.avgEffectiveBalance != null">avg_effective_balance,</if>
+                <if test="ele.effectiveBalanceSum != null">effective_balance_sum,</if>
+                <if test="ele.epochHeight != null">epoch_height,</if>
+                <if test="ele.estAnnualRoiValidator != null">est_annual_roi_validator,</if>
+                <if test="ele.participationRate != null">participation_rate,</if>
+                <if test="ele.totalDepositsCount != null">total_deposits_count,</if>
+                <if test="ele.totalValidatorsCount != null">total_validators_count,</if>
+                <if test="ele.totalVolumeSum != null">total_volume_sum,</if>
+                <if test="ele.newValidatorsCount != null">new_validators_count,</if>
+                <if test="ele.newVolumeSum != null">new_volume_sum,</if>
+                <if test="ele.avgValidatorBalance != null">avg_validator_balance,</if>
+                <if test="ele.voluntaryExitCount != null">voluntary_exit_count,</if>
+            </trim>
+            values
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="ele.timestamp != null">#{ele.timestamp},</if>
+                <if test="ele.activeValidators != null">#{ele.activeValidators},</if>
+                <if test="ele.depositsCount != null">#{ele.depositsCount},</if>
+                <if test="ele.avgEffectiveBalance != null">#{ele.avgEffectiveBalance},</if>
+                <if test="ele.effectiveBalanceSum != null">#{ele.effectiveBalanceSum},</if>
+                <if test="ele.epochHeight != null">#{ele.epochHeight},</if>
+                <if test="ele.estAnnualRoiValidator != null">#{ele.estAnnualRoiValidator},</if>
+                <if test="ele.participationRate != null">#{ele.participationRate},</if>
+                <if test="ele.totalDepositsCount != null">#{ele.totalDepositsCount},</if>
+                <if test="ele.totalValidatorsCount != null">#{ele.totalValidatorsCount},</if>
+                <if test="ele.totalVolumeSum != null">#{ele.totalVolumeSum},</if>
+                <if test="ele.newValidatorsCount != null">#{ele.newValidatorsCount},</if>
+                <if test="ele.newVolumeSum != null">#{ele.newVolumeSum},</if>
+                <if test="ele.avgValidatorBalance != null">#{ele.avgValidatorBalance},</if>
+                <if test="ele.voluntaryExitCount != null">#{ele.voluntaryExitCount},</if>
+            </trim>
+            ON DUPLICATE KEY UPDATE
+            <trim suffixOverrides=",">
+                <if test="ele.timestamp != null">timestamp = #{ele.timestamp},</if>
+                <if test="ele.activeValidators != null">active_validators = #{ele.activeValidators},</if>
+                <if test="ele.depositsCount != null">deposits_count = #{ele.depositsCount},</if>
+                <if test="ele.avgEffectiveBalance != null">avg_effective_balance = #{ele.avgEffectiveBalance},</if>
+                <if test="ele.effectiveBalanceSum != null">effective_balance_sum = #{ele.effectiveBalanceSum},</if>
+                <if test="ele.epochHeight != null">epoch_height = #{ele.epochHeight},</if>
+                <if test="ele.estAnnualRoiValidator != null">est_annual_roi_validator = #{ele.estAnnualRoiValidator},
+                </if>
+                <if test="ele.participationRate != null">participation_rate = #{ele.participationRate},</if>
+                <if test="ele.totalDepositsCount != null">total_deposits_count = #{ele.totalDepositsCount},</if>
+                <if test="ele.totalValidatorsCount != null">total_validators_count = #{ele.totalValidatorsCount},</if>
+                <if test="ele.totalVolumeSum != null">total_volume_sum = #{ele.totalVolumeSum},</if>
+                <if test="ele.newValidatorsCount != null">new_validators_count = #{ele.newValidatorsCount},</if>
+                <if test="ele.newVolumeSum != null">new_volume_sum = #{ele.newVolumeSum},</if>
+                <if test="ele.avgValidatorBalance != null">avg_validator_balance = #{ele.avgValidatorBalance},</if>
+                <if test="ele.voluntaryExitCount != null">voluntary_exit_count = #{ele.voluntaryExitCount},</if>
+            </trim>
+        </foreach>
+    </insert>
+</mapper>
