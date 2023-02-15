@@ -1,4 +1,4 @@
-package com.web3.service.address.impl;
+package com.web3.service.Address.impl;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -98,7 +98,7 @@ public class BalanceServiceImpl implements BalanceService {
             EthereumBlocks lastBlock = balanceChangeAddressInfo.getLastBlock();
 
             if (CollectionUtils.isEmpty(addressSet)) {
-                return;
+                continue;
             }
 
             log.info("number of address to update: {} {}", addressSet.size(), s);
