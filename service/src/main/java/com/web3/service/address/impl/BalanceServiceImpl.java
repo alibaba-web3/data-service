@@ -153,7 +153,7 @@ public class BalanceServiceImpl implements BalanceService {
         List<EthereumTransactions> transactionsList = transactionsListFuture.get(180, TimeUnit.SECONDS);
 
         if (CollectionUtils.isEmpty(blocksList) || CollectionUtils.isEmpty(transactionsList)) {
-            log.info("blocks or transactions set is empty {} {}", blocksList.size(), transactionsList.size());
+            log.info("blocks or transactions set is empty {} {} {} {}", start, end, blocksList.size(), transactionsList.size());
             return result;
         }
 
