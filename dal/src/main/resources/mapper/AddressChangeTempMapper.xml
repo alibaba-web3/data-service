@@ -2,4 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.web3.dal.data.mapper.AddressChangeTempMapper">
 
+    <insert id="replaceIntoBatch">
+        replace into address_change_temp
+        (address, time, amount, amount_raw)
+        VALUES
+        <foreach collection="list" item="it" separator=",">
+            ( #{it.address},#{it.time},#{it.amount_raw},#{it.amount})
+        </foreach>
+    </insert>
 </mapper>

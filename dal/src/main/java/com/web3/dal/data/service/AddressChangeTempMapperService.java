@@ -1,5 +1,7 @@
 package com.web3.dal.data.service;
 
+import java.util.List;
+
 import com.web3.dal.data.entity.AddressChangeTemp;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -19,5 +21,12 @@ public interface AddressChangeTempMapperService extends IService<AddressChangeTe
      * @return 地址
      */
     AddressChangeTemp getLatest();
+
+    /**
+     * 批量插入
+     *
+     * @param list
+     */
+    void replaceIntoBatch(List<AddressChangeTemp> list);
 
 }

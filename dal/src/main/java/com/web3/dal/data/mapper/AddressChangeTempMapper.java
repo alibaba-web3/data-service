@@ -1,5 +1,7 @@
 package com.web3.dal.data.mapper;
 
+import java.util.List;
+
 import com.web3.dal.data.entity.AddressChangeTemp;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -12,5 +14,12 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @since 2023-01-13
  */
 public interface AddressChangeTempMapper extends BaseMapper<AddressChangeTemp> {
+
+    /**
+     * replace into 批量插入
+     *
+     * @param list
+     */
+    void replaceIntoBatch(List<AddressChangeTemp> list);
 
 }
