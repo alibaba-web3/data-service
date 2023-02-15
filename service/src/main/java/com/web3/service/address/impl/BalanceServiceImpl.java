@@ -83,12 +83,9 @@ public class BalanceServiceImpl implements BalanceService {
             if (i == 0) {
                 s = localDateTime;
                 e = LocalDateTime.of(localDateTime.getYear(), localDateTime.getMonth(), localDateTime.getDayOfMonth() + 1, 0, 0);
-            } else if (i == localDateTimeList.size() - 1) {
-                s = LocalDateTime.of(localDateTime.getYear(), localDateTime.getMonth(), localDateTime.getDayOfMonth(), 0, 0);
-                e = s.plusDays(1);
             } else {
                 s = LocalDateTime.of(localDateTime.getYear(), localDateTime.getMonth(), localDateTime.getDayOfMonth(), 0, 0);
-                e = localDateTime;
+                e = s.plusDays(1);
             }
 
             // 当天余额变化的地址
