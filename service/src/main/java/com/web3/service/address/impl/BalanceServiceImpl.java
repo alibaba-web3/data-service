@@ -14,6 +14,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import com.web3.dal.data.entity.AddressChangeTemp;
@@ -60,12 +61,12 @@ public class BalanceServiceImpl implements BalanceService {
     public ExecutorService processBalanceExecutor;
 
     public BalanceServiceImpl() {
-        processBalanceExecutor = new ThreadPoolExecutor(200, 200, 0, TimeUnit.SECONDS,
+        processBalanceExecutor = new ThreadPoolExecutor(100, 300, 0, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>());
     }
 
     @Override
-    public void addBalanceRecord(LocalDateTime start, LocalDateTime end) throws InterruptedException, ExecutionException {
+    public void addBalanceRecord(LocalDateTime start, LocalDateTime end) throws InterruptedException, ExecutionException, TimeoutException {
         List<LocalDateTime> localDateTimeList = DateUtils.getBetweenDate(start, end);
 
         for (int i = 0; i < localDateTimeList.size(); i++) {
@@ -102,7 +103,8 @@ public class BalanceServiceImpl implements BalanceService {
 
             log.info("number of address to update: {} {}", addressSet.size(), s);
 
-            List<AddressChangeTemp> entityList = processBalanceExecutor.submit(() ->
+            List<AddressChangeTemp> entityList = processBalanceExecutor.submit(
+                () ->
                     addressSet.stream().parallel().map(address -> {
                             try {
                                 BigInteger weiBalance = ethereumService.getEthWeiBalance(address, BigInteger.valueOf(lastBlock.getBlockNumber()));
@@ -115,15 +117,14 @@ public class BalanceServiceImpl implements BalanceService {
                                 addressChangeTemp.setAddress(address);
 
                                 return addressChangeTemp;
-
                             } catch (Exception exception) {
                                 log.error(String.format("add eth balance record error: %s", address), exception);
                                 return null;
                             }
                         })
                         .filter(Objects::nonNull)
-                        .collect(Collectors.toList()))
-                .get();
+                        .toList()
+            ).get();
 
             addressChangeTempMapperService.replaceIntoBatch(entityList);
             addressSet.clear();
@@ -143,7 +144,7 @@ public class BalanceServiceImpl implements BalanceService {
         }
     }
 
-    BalanceChangeAddressInfo getBalanceChangeAddress(LocalDateTime start, LocalDateTime end) throws ExecutionException, InterruptedException {
+    BalanceChangeAddressInfo getBalanceChangeAddress(LocalDateTime start, LocalDateTime end) throws ExecutionException, InterruptedException, TimeoutException {
 
         BalanceChangeAddressInfo result = new BalanceChangeAddressInfo();
 
@@ -152,8 +153,8 @@ public class BalanceServiceImpl implements BalanceService {
         Future<List<EthereumBlocks>> blocksListFuture = processBalanceExecutor.submit(() -> ethereumBlocksMapperService.list(start, end));
         Future<List<EthereumTransactions>> transactionsListFuture = processBalanceExecutor.submit(() -> ethereumTransactionsMapperService.list(start, end));
 
-        List<EthereumBlocks> blocksList = blocksListFuture.get();
-        List<EthereumTransactions> transactionsList = transactionsListFuture.get();
+        List<EthereumBlocks> blocksList = blocksListFuture.get(120, TimeUnit.SECONDS);
+        List<EthereumTransactions> transactionsList = transactionsListFuture.get(120, TimeUnit.SECONDS);
 
         if (CollectionUtils.isEmpty(blocksList) || CollectionUtils.isEmpty(transactionsList)) {
             return result;

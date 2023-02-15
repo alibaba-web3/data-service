@@ -3,6 +3,7 @@ package com.web3.web.controller;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import com.alibaba.nacos.api.config.annotation.NacosValue;
 import com.web3.crawler.dto.Task;
@@ -77,7 +78,7 @@ public class TestController {
     }
 
     @GetMapping("/executeAddBalanceRecord")
-    public void executeAddBalanceRecord(@RequestParam String start, @RequestParam String end) throws InterruptedException, ExecutionException {
+    public void executeAddBalanceRecord(@RequestParam String start, @RequestParam String end) throws InterruptedException, ExecutionException, TimeoutException {
 
         balanceService.addBalanceRecord(LocalDateTime.parse(start), LocalDateTime.parse(end));
     }
