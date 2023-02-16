@@ -6,7 +6,7 @@
         (symbol, date, source, open_time, close_time,open,height,close,low,volume,turnover,trading_volume,buying_volume,buying_turnover)
         VALUES
         <foreach collection="list" item="it" separator=",">
-            ( #{it.date},#{it.source},#{it.symbol},#{it.openTime},#{it.closeTime},#{it.open},#{it.height},
+            (#{it.symbol},#{it.date},#{it.source},#{it.openTime},#{it.closeTime},#{it.open},#{it.height},
              #{it.close},#{it.low},#{it.volume},#{it.turnover},#{it.tradingVolume},#{it.buyingVolume},#{it.buyingTurnover})
         </foreach>
     </insert>
