@@ -36,7 +36,12 @@ public class BinanceController {
     List<KLineDTO> getKLines(@RequestParam String symbol, @RequestParam String interval,
         @RequestParam(required = false) Long startTime, @RequestParam(required = false) Long endTime,
         @RequestParam(defaultValue = "500") Integer limit) {
-        return binanceService.getKLines(symbol, interval, startTime, endTime, limit);
+        return binanceService.getKlines(symbol, interval, startTime, endTime, limit);
+    }
+
+    @GetMapping("/allKlines")
+    List<KLineDTO> getAllKlines(@RequestParam String symbol, @RequestParam String interval) {
+        return binanceService.getAllKlines(symbol, interval);
     }
 
     @GetMapping("/tickerPrice")
