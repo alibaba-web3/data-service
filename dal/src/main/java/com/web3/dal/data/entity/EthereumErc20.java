@@ -22,9 +22,6 @@ import lombok.Setter;
 @TableName("ethereum_erc20")
 public class EthereumErc20 {
 
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
-
     private String contractAddress;
 
     private String name;
