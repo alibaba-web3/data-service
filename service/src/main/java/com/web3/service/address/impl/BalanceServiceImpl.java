@@ -3,6 +3,8 @@ package com.web3.service.Address.impl;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -23,11 +25,15 @@ import com.web3.dal.data.entity.EthereumTransactions;
 import com.web3.dal.data.service.AddressChangeTempMapperService;
 import com.web3.dal.data.service.EthereumBlocksMapperService;
 import com.web3.dal.data.service.EthereumTransactionsMapperService;
+import com.web3.framework.consts.GuavaCacheKeys;
+import com.web3.framework.resouce.binance.BinanceService;
 import com.web3.framework.resouce.ethereum.EthereumService;
 import com.web3.framework.utils.DateUtils;
+import com.web3.framework.utils.GuavaCacheUtils;
 import com.web3.service.address.AddressService;
 import com.web3.service.address.BalanceService;
 import com.web3.service.address.dto.BalanceChangeAddressInfo;
+import com.web3.service.address.param.TransformBalanceReq;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -48,6 +54,9 @@ public class BalanceServiceImpl implements BalanceService {
 
     @Resource
     private EthereumService ethereumService;
+
+    @Resource
+    private BinanceService binanceService;
 
     @Resource
     private AddressChangeTempMapperService addressChangeTempMapperService;
@@ -138,6 +147,54 @@ public class BalanceServiceImpl implements BalanceService {
         for (int i = 0; i < localDateTimeList.size(); i++) {
 
         }
+    }
+
+    @Override
+    public BigDecimal transformBalance(TransformBalanceReq req) {
+        if (Objects.isNull(req) || StringUtils.isBlank(req.getDealPair())) {
+            return new BigDecimal(0);
+        }
+        String tickerPrice = binanceService.getTickerPrice(req.getDealPair());
+        log.info("BalanceService#transformBalance#getTickerPrice dealPair: {}, tickerPrice: {}", req.getDealPair(), tickerPrice);
+        if (StringUtils.isBlank(tickerPrice)) {
+            return new BigDecimal(0);
+        }
+        BigDecimal price = new BigDecimal(tickerPrice);
+        return req.getCount() == null ? new BigDecimal(0) : price.multiply(req.getCount());
+    }
+
+    @Override
+    public Map<String, BigDecimal> transformBalance(List<TransformBalanceReq> req) {
+        if (CollectionUtils.isEmpty(req)) {
+            return null;
+        }
+        Map<String, BigDecimal> map = new HashMap<>(req.size());
+        try {
+            CountDownLatch countDownLatch = new CountDownLatch(req.size());
+            req.forEach(item -> processBalanceExecutor.submit(() -> {
+                map.put(item.getFromAsset(), transformBalance(item));
+                countDownLatch.countDown();
+            }));
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            log.error("BalanceService#batchTransformBalance error: {}", e.getMessage());
+            throw new RuntimeException(e);
+        }
+        return map;
+    }
+
+    @Override
+    public BigDecimal balanceValueTrend(String address, String assetsType, BigDecimal balanceValue) {
+        if (StringUtils.isAnyBlank(address, assetsType)) {
+            return new BigDecimal(0);
+        }
+        String key = GuavaCacheKeys.BALANCE_VALUE_KEY_PREFIX.concat(address).concat(assetsType);
+        BigDecimal oldBalanceValue = (BigDecimal) GuavaCacheUtils.get(key);
+        GuavaCacheUtils.put(key, balanceValue);
+        if (Objects.nonNull(oldBalanceValue)) {
+            return balanceValue.subtract(oldBalanceValue);
+        }
+        return new BigDecimal(0);
     }
 
     BalanceChangeAddressInfo getBalanceChangeAddress(LocalDateTime start, LocalDateTime end) throws ExecutionException, InterruptedException, TimeoutException {
