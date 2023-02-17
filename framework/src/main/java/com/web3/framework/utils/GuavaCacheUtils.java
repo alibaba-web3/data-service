@@ -3,6 +3,7 @@ package com.web3.framework.utils;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import jakarta.annotation.PostConstruct;
+import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
@@ -10,6 +11,7 @@ import java.util.concurrent.TimeUnit;
  * @Author fuxian
  * @Date 2023/2/16
  */
+@Component
 public class GuavaCacheUtils {
     /**
      * 缓存值的最大数量
