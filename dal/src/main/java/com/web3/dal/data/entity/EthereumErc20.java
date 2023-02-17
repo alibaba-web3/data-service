@@ -1,6 +1,7 @@
 package com.web3.dal.data.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.math.BigDecimal;
@@ -46,6 +47,7 @@ public class EthereumErc20 {
 
     private BigDecimal marketCapUsdLatest;
 
+    @TableField(value = "volume_usd_24h")
     private BigDecimal volumeUsd24h;
 
     private LocalDateTime lastUpdated;

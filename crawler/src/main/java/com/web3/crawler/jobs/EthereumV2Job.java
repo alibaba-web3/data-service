@@ -21,8 +21,6 @@ import java.util.concurrent.*;
 @Service
 public class EthereumV2Job {
 
-    private static final Integer TASK_COUNT = 14;
-
     @Resource
     private EthereumV2Service ethereumV2Service;
 
