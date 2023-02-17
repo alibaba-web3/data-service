@@ -74,7 +74,7 @@ public class BalanceServiceImpl implements BalanceService {
     public ExecutorService processBalanceExecutor;
 
     public BalanceServiceImpl() {
-        processBalanceExecutor = new ThreadPoolExecutor(200, 200, 10, TimeUnit.SECONDS,
+        processBalanceExecutor = new ThreadPoolExecutor(500, 500, 10, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>());
     }
 
