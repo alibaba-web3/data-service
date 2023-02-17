@@ -20,9 +20,11 @@ import java.util.concurrent.TimeoutException;
 
 import com.web3.dal.data.entity.AddressChangeTemp;
 import com.web3.dal.data.entity.EthereumBlocks;
+import com.web3.dal.data.entity.EthereumTraces;
 import com.web3.dal.data.entity.EthereumTransactions;
 import com.web3.dal.data.service.AddressChangeTempMapperService;
 import com.web3.dal.data.service.EthereumBlocksMapperService;
+import com.web3.dal.data.service.EthereumTracesMapperService;
 import com.web3.dal.data.service.EthereumTransactionsMapperService;
 import com.web3.framework.consts.GuavaCacheKeys;
 import com.web3.framework.resouce.binance.BinanceService;
@@ -65,6 +67,9 @@ public class BalanceServiceImpl implements BalanceService {
 
     @Resource
     private EthereumTransactionsMapperService ethereumTransactionsMapperService;
+
+    @Resource
+    private EthereumTracesMapperService ethereumTracesMapperService;
 
     public ExecutorService processBalanceExecutor;
 
@@ -188,7 +193,7 @@ public class BalanceServiceImpl implements BalanceService {
             return new BigDecimal(0);
         }
         String key = GuavaCacheKeys.BALANCE_VALUE_KEY_PREFIX.concat(address).concat(assetsType);
-        BigDecimal oldBalanceValue = (BigDecimal) GuavaCacheUtils.get(key);
+        BigDecimal oldBalanceValue = (BigDecimal)GuavaCacheUtils.get(key);
         GuavaCacheUtils.put(key, balanceValue);
         if (Objects.nonNull(oldBalanceValue)) {
             return balanceValue.subtract(oldBalanceValue);
@@ -204,9 +209,11 @@ public class BalanceServiceImpl implements BalanceService {
         Set<String> addressSet = new HashSet<>();
         Future<List<EthereumBlocks>> blocksListFuture = processBalanceExecutor.submit(() -> ethereumBlocksMapperService.list(start, end));
         Future<List<EthereumTransactions>> transactionsListFuture = processBalanceExecutor.submit(() -> ethereumTransactionsMapperService.list(start, end));
+        //Future<List<EthereumTraces>> traceListFuture = processBalanceExecutor.submit(() -> ethereumTracesMapperService.list(start, end));
 
         List<EthereumBlocks> blocksList = blocksListFuture.get(1800, TimeUnit.SECONDS);
         List<EthereumTransactions> transactionsList = transactionsListFuture.get(1800, TimeUnit.SECONDS);
+        //List<EthereumTraces> traceList = traceListFuture.get(1800, TimeUnit.SECONDS);
 
         if (CollectionUtils.isEmpty(blocksList) || CollectionUtils.isEmpty(transactionsList)) {
             log.info("blocks or transactions set is empty {} {} {} {}", start, end, blocksList.size(), transactionsList.size());
@@ -226,6 +233,14 @@ public class BalanceServiceImpl implements BalanceService {
                 addressSet.add(transaction.getTo());
             }
         });
+        //traceList.forEach(trace->{
+        //    if (StringUtils.isNotEmpty(trace.getFrom())) {
+        //        addressSet.add(trace.getFrom());
+        //    }
+        //    if (StringUtils.isNotEmpty(trace.getTo())) {
+        //        addressSet.add(trace.getTo());
+        //    }
+        //});
 
         // 升序排序
         blocksList.sort(Comparator.comparing(EthereumBlocks::getTimestamp));
