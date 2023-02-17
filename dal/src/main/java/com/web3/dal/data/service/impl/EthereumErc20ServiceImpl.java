@@ -31,7 +31,6 @@ public class EthereumErc20ServiceImpl extends ServiceImpl<EthereumErc20Mapper, E
     public List<EthereumErc20> listByContractAddress(List<String> contractAddressList) {
         QueryWrapper<EthereumErc20> queryWrapper = new QueryWrapper<>();
         queryWrapper.in("contract_address", contractAddressList);
-        List<EthereumErc20> list = list(queryWrapper);
-        return list;
+        return list(queryWrapper);
     }
 }
