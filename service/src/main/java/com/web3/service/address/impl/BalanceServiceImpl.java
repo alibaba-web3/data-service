@@ -1,4 +1,4 @@
-package com.web3.service.Address.impl;
+package com.web3.service.address.impl;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -17,7 +17,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
 
 import com.web3.dal.data.entity.AddressChangeTemp;
 import com.web3.dal.data.entity.EthereumBlocks;
@@ -70,7 +69,7 @@ public class BalanceServiceImpl implements BalanceService {
     public ExecutorService processBalanceExecutor;
 
     public BalanceServiceImpl() {
-        processBalanceExecutor = new ThreadPoolExecutor(700, 700, 10, TimeUnit.SECONDS,
+        processBalanceExecutor = new ThreadPoolExecutor(300, 700, 10, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>());
     }
 
