@@ -34,7 +34,7 @@ public class AddressChangeTempServiceImpl extends ServiceImpl<AddressChangeTempM
     @Override
     public void replaceIntoBatch(List<AddressChangeTemp> list) {
 
-        int maxSize = 30000;
+        int maxSize = 300000;
 
         if (CollectionUtils.isEmpty(list)) {
             return;
@@ -42,9 +42,9 @@ public class AddressChangeTempServiceImpl extends ServiceImpl<AddressChangeTempM
 
         if (list.size() > maxSize) {
             List<List<AddressChangeTemp>> partitionList = ListUtils.partition(list, maxSize);
-            for (List<AddressChangeTemp> partition : partitionList) {
+            partitionList.stream().parallel().forEach(partition -> {
                 baseMapper.replaceIntoBatch(partition);
-            }
+            });
         } else {
             baseMapper.replaceIntoBatch(list);
         }
