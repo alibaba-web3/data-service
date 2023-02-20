@@ -18,6 +18,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.web3.dal.data.entity.AddressChangeTemp;
 import com.web3.dal.data.entity.EthereumBlocks;
 import com.web3.dal.data.entity.EthereumTraces;
@@ -74,8 +75,9 @@ public class BalanceServiceImpl implements BalanceService {
     public ExecutorService processBalanceExecutor;
 
     public BalanceServiceImpl() {
+
         processBalanceExecutor = new ThreadPoolExecutor(500, 500, 10, TimeUnit.SECONDS,
-            new LinkedBlockingQueue<>());
+            new LinkedBlockingQueue<>(), new ThreadFactoryBuilder().setNameFormat("balance-address-%d").build());
     }
 
     @Override
@@ -113,30 +115,61 @@ public class BalanceServiceImpl implements BalanceService {
 
             log.info("number of address to update: {} {}", addressSet.size(), s);
 
-            List<AddressChangeTemp> entityList = processBalanceExecutor.submit(
-                () ->
-                    addressSet.stream().parallel().map(address -> {
-                            try {
-                                BigInteger weiBalance = ethereumService.getEthWeiBalance(address, BigInteger.valueOf(lastBlock.getBlockNumber()));
-                                BigDecimal etherBalance = Convert.fromWei(String.valueOf(weiBalance), Convert.Unit.ETHER);
+            //List<AddressChangeTemp> entityList = processBalanceExecutor.submit(
+            //    () ->
+            //        addressSet.stream().parallel().map(address -> {
+            //                try {
+            //                    BigInteger weiBalance = ethereumService.getEthWeiBalance(address, BigInteger.valueOf(lastBlock.getBlockNumber()));
+            //                    BigDecimal etherBalance = Convert.fromWei(String.valueOf(weiBalance), Convert.Unit.ETHER);
+            //                    log.info("getEthWeiBalance");
+            //                    AddressChangeTemp addressChangeTemp = new AddressChangeTemp();
+            //                    addressChangeTemp.setTime(firstBlock.getTimestamp());
+            //                    addressChangeTemp.setAmountRaw(new BigDecimal(weiBalance));
+            //                    addressChangeTemp.setAmount(etherBalance);
+            //                    addressChangeTemp.setAddress(address);
+            //
+            //                    return addressChangeTemp;
+            //                } catch (Exception exception) {
+            //                    log.error(String.format("add eth balance record error: %s", address), exception);
+            //                    return null;
+            //                }
+            //            })
+            //            .filter(Objects::nonNull)
+            //            .toList()
+            //).get();
 
-                                AddressChangeTemp addressChangeTemp = new AddressChangeTemp();
-                                addressChangeTemp.setTime(firstBlock.getTimestamp());
-                                addressChangeTemp.setAmountRaw(new BigDecimal(weiBalance));
-                                addressChangeTemp.setAmount(etherBalance);
-                                addressChangeTemp.setAddress(address);
+            List<Future<AddressChangeTemp>> entityFutureList = new ArrayList<>();
 
-                                return addressChangeTemp;
-                            } catch (Exception exception) {
-                                log.error(String.format("add eth balance record error: %s", address), exception);
-                                return null;
-                            }
-                        })
-                        .filter(Objects::nonNull)
-                        .toList()
-            ).get();
+            for (String address : addressSet) {
+                Future<AddressChangeTemp> future = processBalanceExecutor.submit(
+                    () -> {
+                        try {
+                            BigInteger weiBalance = ethereumService.getEthWeiBalance(address, BigInteger.valueOf(lastBlock.getBlockNumber()));
+                            BigDecimal etherBalance = Convert.fromWei(String.valueOf(weiBalance), Convert.Unit.ETHER);
+                            AddressChangeTemp addressChangeTemp = new AddressChangeTemp();
+                            addressChangeTemp.setTime(firstBlock.getTimestamp());
+                            addressChangeTemp.setAmountRaw(new BigDecimal(weiBalance));
+                            addressChangeTemp.setAmount(etherBalance);
+                            addressChangeTemp.setAddress(address);
 
-            addressChangeTempMapperService.replaceIntoBatch(entityList);
+                            return addressChangeTemp;
+                        } catch (Exception exception) {
+                            log.error(String.format("add eth balance record error: %s", address), exception);
+                            return null;
+                        }
+                    }
+                );
+                entityFutureList.add(future);
+            }
+
+            addressChangeTempMapperService.replaceIntoBatch(entityFutureList.stream().map(future -> {
+                try {
+                    return future.get();
+                } catch (Exception exception) {
+                    log.error("addressChangeTempMapperService get future error", exception);
+                    return null;
+                }
+            }).filter(Objects::nonNull).toList());
         }
 
     }
