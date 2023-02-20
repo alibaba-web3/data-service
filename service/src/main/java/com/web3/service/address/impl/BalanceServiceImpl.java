@@ -105,7 +105,7 @@ public class BalanceServiceImpl implements BalanceService {
             }
 
             Future<BalanceChangeAddressInfo> future = processAddressExecutor.submit(() -> getBalanceChangeAddress(s, e));
-            balanceChangeAddressInfoMap.put(localDateTime, future);
+            balanceChangeAddressInfoMap.put(s, future);
         }
 
         for (int i = 0; i < localDateTimeList.size(); i++) {
