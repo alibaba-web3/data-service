@@ -1,8 +1,10 @@
-package com.web3.service.Address.impl;
+package com.web3.service.address.impl;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -15,19 +17,24 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
 
 import com.web3.dal.data.entity.AddressChangeTemp;
 import com.web3.dal.data.entity.EthereumBlocks;
+import com.web3.dal.data.entity.EthereumTraces;
 import com.web3.dal.data.entity.EthereumTransactions;
 import com.web3.dal.data.service.AddressChangeTempMapperService;
 import com.web3.dal.data.service.EthereumBlocksMapperService;
+import com.web3.dal.data.service.EthereumTracesMapperService;
 import com.web3.dal.data.service.EthereumTransactionsMapperService;
+import com.web3.framework.consts.GuavaCacheKeys;
+import com.web3.framework.resouce.binance.BinanceService;
 import com.web3.framework.resouce.ethereum.EthereumService;
 import com.web3.framework.utils.DateUtils;
+import com.web3.framework.utils.GuavaCacheUtils;
 import com.web3.service.address.AddressService;
 import com.web3.service.address.BalanceService;
 import com.web3.service.address.dto.BalanceChangeAddressInfo;
+import com.web3.service.address.param.TransformBalanceReq;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -50,6 +57,9 @@ public class BalanceServiceImpl implements BalanceService {
     private EthereumService ethereumService;
 
     @Resource
+    private BinanceService binanceService;
+
+    @Resource
     private AddressChangeTempMapperService addressChangeTempMapperService;
 
     @Resource
@@ -58,10 +68,13 @@ public class BalanceServiceImpl implements BalanceService {
     @Resource
     private EthereumTransactionsMapperService ethereumTransactionsMapperService;
 
+    @Resource
+    private EthereumTracesMapperService ethereumTracesMapperService;
+
     public ExecutorService processBalanceExecutor;
 
     public BalanceServiceImpl() {
-        processBalanceExecutor = new ThreadPoolExecutor(100, 300, 0, TimeUnit.SECONDS,
+        processBalanceExecutor = new ThreadPoolExecutor(500, 500, 10, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>());
     }
 
@@ -140,6 +153,54 @@ public class BalanceServiceImpl implements BalanceService {
         }
     }
 
+    @Override
+    public BigDecimal transformBalance(TransformBalanceReq req) {
+        if (Objects.isNull(req) || StringUtils.isBlank(req.getDealPair())) {
+            return new BigDecimal(0);
+        }
+        String tickerPrice = binanceService.getTickerPrice(req.getDealPair());
+        log.info("BalanceService#transformBalance#getTickerPrice dealPair: {}, tickerPrice: {}", req.getDealPair(), tickerPrice);
+        if (StringUtils.isBlank(tickerPrice)) {
+            return new BigDecimal(0);
+        }
+        BigDecimal price = new BigDecimal(tickerPrice);
+        return req.getCount() == null ? new BigDecimal(0) : price.multiply(req.getCount());
+    }
+
+    @Override
+    public Map<String, BigDecimal> transformBalance(List<TransformBalanceReq> req) {
+        if (CollectionUtils.isEmpty(req)) {
+            return null;
+        }
+        Map<String, BigDecimal> map = new HashMap<>(req.size());
+        try {
+            CountDownLatch countDownLatch = new CountDownLatch(req.size());
+            req.forEach(item -> processBalanceExecutor.submit(() -> {
+                map.put(item.getFromAsset(), transformBalance(item));
+                countDownLatch.countDown();
+            }));
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            log.error("BalanceService#batchTransformBalance error: {}", e.getMessage());
+            throw new RuntimeException(e);
+        }
+        return map;
+    }
+
+    @Override
+    public BigDecimal balanceValueTrend(String address, String assetsType, BigDecimal balanceValue) {
+        if (StringUtils.isAnyBlank(address, assetsType)) {
+            return new BigDecimal(0);
+        }
+        String key = GuavaCacheKeys.BALANCE_VALUE_KEY_PREFIX.concat(address).concat(assetsType);
+        BigDecimal oldBalanceValue = (BigDecimal)GuavaCacheUtils.get(key);
+        GuavaCacheUtils.put(key, balanceValue);
+        if (Objects.nonNull(oldBalanceValue)) {
+            return balanceValue.subtract(oldBalanceValue);
+        }
+        return new BigDecimal(0);
+    }
+
     BalanceChangeAddressInfo getBalanceChangeAddress(LocalDateTime start, LocalDateTime end) throws ExecutionException, InterruptedException, TimeoutException {
 
         BalanceChangeAddressInfo result = new BalanceChangeAddressInfo();
@@ -148,9 +209,11 @@ public class BalanceServiceImpl implements BalanceService {
         Set<String> addressSet = new HashSet<>();
         Future<List<EthereumBlocks>> blocksListFuture = processBalanceExecutor.submit(() -> ethereumBlocksMapperService.list(start, end));
         Future<List<EthereumTransactions>> transactionsListFuture = processBalanceExecutor.submit(() -> ethereumTransactionsMapperService.list(start, end));
+        //Future<List<EthereumTraces>> traceListFuture = processBalanceExecutor.submit(() -> ethereumTracesMapperService.list(start, end));
 
-        List<EthereumBlocks> blocksList = blocksListFuture.get(180, TimeUnit.SECONDS);
-        List<EthereumTransactions> transactionsList = transactionsListFuture.get(180, TimeUnit.SECONDS);
+        List<EthereumBlocks> blocksList = blocksListFuture.get(1800, TimeUnit.SECONDS);
+        List<EthereumTransactions> transactionsList = transactionsListFuture.get(1800, TimeUnit.SECONDS);
+        //List<EthereumTraces> traceList = traceListFuture.get(1800, TimeUnit.SECONDS);
 
         if (CollectionUtils.isEmpty(blocksList) || CollectionUtils.isEmpty(transactionsList)) {
             log.info("blocks or transactions set is empty {} {} {} {}", start, end, blocksList.size(), transactionsList.size());
@@ -170,6 +233,14 @@ public class BalanceServiceImpl implements BalanceService {
                 addressSet.add(transaction.getTo());
             }
         });
+        //traceList.forEach(trace->{
+        //    if (StringUtils.isNotEmpty(trace.getFrom())) {
+        //        addressSet.add(trace.getFrom());
+        //    }
+        //    if (StringUtils.isNotEmpty(trace.getTo())) {
+        //        addressSet.add(trace.getTo());
+        //    }
+        //});
 
         // 升序排序
         blocksList.sort(Comparator.comparing(EthereumBlocks::getTimestamp));

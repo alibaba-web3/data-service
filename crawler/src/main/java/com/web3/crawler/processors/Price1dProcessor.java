@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @Author: smy
@@ -58,7 +57,16 @@ public class Price1dProcessor implements IProcessor {
     }
 
     public void _do(Task task) {
-        List<KLineDTO> list = binanceService.getKLines("ETHUSDT", "1d", null, DateUtils.convert2Timestamp(task.getScheduleTime()), 5);
+
+        List<String> symbols = binanceService.getAllUsdtSymbol();
+        for (String symbol : symbols) {
+            fillNewKline(symbol, task);
+        }
+
+    }
+
+    public void fillNewKline(String symbol, Task task) {
+        List<KLineDTO> list = binanceService.getKlines(symbol, "1d", null, DateUtils.convert2Timestamp(task.getScheduleTime()), 5);
         if (CollectionUtils.isEmpty(list)) {
             return;
         }
@@ -66,20 +74,33 @@ public class Price1dProcessor implements IProcessor {
         list.forEach(dto -> {
             Price1d price1d = new Price1d();
             BeanUtils.copyProperties(dto, price1d);
-            price1d.setSymbol("ETHUSDT");
+            price1d.setSymbol(symbol);
             price1d.setSource("Binance");
             price1d.setDate(price1d.getOpenTime().format(dtf));
             price1dList.add(price1d);
         });
-        price1DMapperService.saveOrUpdateBatch(addId(price1dList));
+        price1DMapperService.saveOrUpdateBatch(addId(symbol, price1dList));
     }
 
-    private List<Price1d> addId(List<Price1d> price1dList) {
+    public void fillAllKline(String symbol) {
+        List<KLineDTO> list = binanceService.getAllKlines(symbol, "1d");
+
+        price1DMapperService.replaceIntoBatch(list.stream().map(kLineDTO -> {
+            Price1d price1d = new Price1d();
+            BeanUtils.copyProperties(kLineDTO, price1d);
+            price1d.setSymbol(symbol);
+            price1d.setSource("Binance");
+            price1d.setDate(price1d.getOpenTime().format(dtf));
+            return price1d;
+        }).toList());
+    }
+
+    private List<Price1d> addId(String symbol, List<Price1d> price1dList) {
         QueryWrapper<Price1d> wrapper = new QueryWrapper<>();
         Map<String, Object> map = new HashMap<>(2);
-        map.put("symbol", "ETHUSDT");
+        map.put("symbol", symbol);
         map.put("source", "Binance");
-        wrapper.allEq(map).in("date", price1dList.stream().map(Price1d::getDate).collect(Collectors.toList()));
+        wrapper.allEq(map).in("date", price1dList.stream().map(Price1d::getDate).toList());
         List<Price1d> exsitsList = price1DMapperService.list(wrapper);
         if (CollectionUtils.isEmpty(exsitsList)) {
             price1DMapperService.saveOrUpdateBatch(price1dList);
@@ -91,6 +112,6 @@ public class Price1dProcessor implements IProcessor {
                 price1d.setId(exsitsList.get(index).getId());
             }
             return price1d;
-        }).collect(Collectors.toList());
+        }).toList();
     }
 }

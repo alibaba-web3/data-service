@@ -2,6 +2,7 @@ package com.web3.framework.resouce.binance.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +27,7 @@ public class BinanceServiceImpl implements BinanceService {
     private BinanceApi binanceApi;
 
     @Override
-    public List<KLineDTO> getKLines(String symbol, String interval, Long startTime, Long endTime, Integer limit) {
+    public List<KLineDTO> getKlines(String symbol, String interval, Long startTime, Long endTime, Integer limit) {
         ArrayList<ArrayList<BigDecimal>> klines = binanceApi.getKLines(symbol, interval, startTime, endTime, limit);
 
         if (CollectionUtils.isEmpty(klines)) {
@@ -35,6 +36,22 @@ public class BinanceServiceImpl implements BinanceService {
             return klines.stream().map(this::transform).collect(Collectors.toList());
         }
 
+    }
+
+    @Override
+    public List<KLineDTO> getAllKlines(String symbol, String interval) {
+
+        int maxLimit = 1000;
+
+        List<KLineDTO> klineList = getKlines(symbol, interval, null, null, maxLimit);
+        List<KLineDTO> result = klineList;
+
+        while (klineList.size() == maxLimit) {
+            klineList = getKlines(symbol, interval, null, klineList.get(0).getOpenTimestamp(), maxLimit);
+            result.addAll(klineList);
+        }
+        result.sort(Comparator.comparingLong(KLineDTO::getOpenTimestamp));
+        return result;
     }
 
     KLineDTO transform(ArrayList<BigDecimal> kline) {

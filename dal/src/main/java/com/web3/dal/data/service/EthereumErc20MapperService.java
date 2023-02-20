@@ -23,4 +23,12 @@ public interface EthereumErc20MapperService extends IService<EthereumErc20> {
      */
     List<EthereumErc20> searchBySymbol(String symbol);
 
+    /**
+     * 根据合约地址查询
+     *
+     * @param contractAddressList
+     * @return
+     */
+    List<EthereumErc20> listByContractAddress(List<String> contractAddressList);
+
 }

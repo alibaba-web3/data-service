@@ -2,6 +2,7 @@ package com.web3.service.address.impl;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -13,16 +14,21 @@ import java.util.concurrent.TimeUnit;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.web3.dal.data.entity.EthereumBalanceLatest;
 import com.web3.dal.data.entity.EthereumErc20;
+import com.web3.dal.data.entity.EthereumErc20BalanceDay;
 import com.web3.dal.data.service.EthereumBalanceLatestMapperService;
+import com.web3.dal.data.service.EthereumErc20BalanceDayMapperService;
 import com.web3.dal.data.service.EthereumErc20MapperService;
 import com.web3.framework.resouce.binance.BinanceService;
 import com.web3.framework.resouce.ethereum.EthereumService;
+import com.web3.framework.utils.StreamUtils;
 import com.web3.service.address.AddressService;
+import com.web3.service.address.dto.AddressAssetsInfoDTO;
 import com.web3.service.address.dto.AddressProfileDTO;
 import com.web3.service.address.dto.AddressSearchDTO;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.web3j.crypto.WalletUtils;
@@ -50,6 +56,9 @@ public class AddressServiceImpl implements AddressService {
 
     @Resource
     private EthereumErc20MapperService ethereumErc20MapperService;
+
+    @Resource
+    private EthereumErc20BalanceDayMapperService ethereumErc20BalanceDayMapperService;
 
     public ExecutorService processUpdateExecutor;
 
@@ -155,5 +164,41 @@ public class AddressServiceImpl implements AddressService {
         }
 
         return Collections.singletonList(dto);
+    }
+
+    @Override
+    public List<AddressAssetsInfoDTO> getAllAssetsInfo(String address) {
+        if (StringUtils.isBlank(address)) {
+            return new ArrayList<>();
+        }
+        List<AddressAssetsInfoDTO> result = new ArrayList<>();
+        // 某个地址的所有token & num
+        List<EthereumErc20BalanceDay> erc20BalanceDays = ethereumErc20BalanceDayMapperService.queryByAddress(address);
+        if (!CollectionUtils.isEmpty(erc20BalanceDays)) {
+            List<EthereumErc20BalanceDay> ethereumErc20BalanceDays = erc20BalanceDays
+                    .stream()
+                    .filter(StreamUtils.distinctByKey(EthereumErc20BalanceDay::getContractAddress))
+                    .toList();
+
+            List<EthereumErc20> ethereumErc20s = ethereumErc20MapperService
+                    .listByContractAddress(ethereumErc20BalanceDays.stream().map(EthereumErc20BalanceDay::getContractAddress).toList());
+
+            if (!CollectionUtils.isEmpty(ethereumErc20s)) {
+                List<EthereumErc20> erc20List = ethereumErc20s.stream().filter(StreamUtils.distinctByKey(EthereumErc20::getContractAddress)).toList();
+                for (EthereumErc20BalanceDay erc20BalanceDay : ethereumErc20BalanceDays) {
+                    for (EthereumErc20 erc20 : erc20List) {
+                        if (erc20BalanceDay.getContractAddress().equals(erc20.getContractAddress())) {
+                            AddressAssetsInfoDTO dto = new AddressAssetsInfoDTO();
+                            dto.setCount(BigDecimal.valueOf(erc20BalanceDay.getAmountRaw()));
+                            dto.setSymbol(erc20.getSymbol());
+                            result.add(dto);
+                            continue;
+                        }
+                    }
+                }
+            }
+        }
+
+        return result;
     }
 }
