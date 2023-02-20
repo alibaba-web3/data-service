@@ -74,27 +74,28 @@ public class BalanceServiceImpl implements BalanceService {
 
     public ExecutorService processBalanceExecutor;
 
+    public ExecutorService processAddressExecutor;
+
     public BalanceServiceImpl() {
 
         processBalanceExecutor = new ThreadPoolExecutor(700, 700, 10, TimeUnit.SECONDS,
-            new LinkedBlockingQueue<>(), new ThreadFactoryBuilder().setNameFormat("balance-address-%d").build());
+            new LinkedBlockingQueue<>(), new ThreadFactoryBuilder().setNameFormat("get-balance-%d").build());
+
+        processAddressExecutor = new ThreadPoolExecutor(5, 5, 10, TimeUnit.SECONDS,
+            new LinkedBlockingQueue<>(), new ThreadFactoryBuilder().setNameFormat("get-address-%d").build());
     }
 
     @Override
-    public void addBalanceRecord(LocalDateTime start, LocalDateTime end) throws InterruptedException, ExecutionException, TimeoutException {
+    public void addBalanceRecord(LocalDateTime start, LocalDateTime end) throws InterruptedException, ExecutionException {
         List<LocalDateTime> localDateTimeList = DateUtils.getBetweenDate(start, end);
 
+        Map<LocalDateTime, Future<BalanceChangeAddressInfo>> balanceChangeAddressInfoMap = new HashMap<>(localDateTimeList.size());
+
         for (int i = 0; i < localDateTimeList.size(); i++) {
-
             LocalDateTime localDateTime = localDateTimeList.get(i);
-
-            long record1 = System.currentTimeMillis();
-            log.info("start add balance record: {} {} {}", localDateTime, i, localDateTimeList.size());
-
             // 日维度开始、结束时间
             LocalDateTime s;
             LocalDateTime e;
-
             if (i == 0) {
                 s = localDateTime;
                 e = LocalDateTime.of(localDateTime.getYear(), localDateTime.getMonth(), localDateTime.getDayOfMonth() + 1, 0, 0);
@@ -103,8 +104,28 @@ public class BalanceServiceImpl implements BalanceService {
                 e = s.plusDays(1);
             }
 
+            Future<BalanceChangeAddressInfo> future = processBalanceExecutor.submit(() -> getBalanceChangeAddress(s, e));
+            balanceChangeAddressInfoMap.put(localDateTime, future);
+        }
+
+        for (int i = 0; i < localDateTimeList.size(); i++) {
+
+            LocalDateTime localDateTime = localDateTimeList.get(i);
+
+            long record1 = System.currentTimeMillis();
+            log.info("start add balance record: {} {} {}", localDateTime, i, localDateTimeList.size());
+
+            LocalDateTime s;
+
+            if (i == 0) {
+                s = localDateTime;
+            } else {
+                s = LocalDateTime.of(localDateTime.getYear(), localDateTime.getMonth(), localDateTime.getDayOfMonth(), 0, 0);
+            }
+
             // 当天余额变化的地址
-            BalanceChangeAddressInfo balanceChangeAddressInfo = getBalanceChangeAddress(s, e);
+            BalanceChangeAddressInfo balanceChangeAddressInfo = balanceChangeAddressInfoMap.get(s).get();
+
             Set<String> addressSet = balanceChangeAddressInfo.getAddressSet();
             EthereumBlocks firstBlock = balanceChangeAddressInfo.getFirstBlock();
             EthereumBlocks lastBlock = balanceChangeAddressInfo.getLastBlock();
