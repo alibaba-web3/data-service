@@ -76,7 +76,7 @@ public class BalanceServiceImpl implements BalanceService {
 
     public BalanceServiceImpl() {
 
-        processBalanceExecutor = new ThreadPoolExecutor(500, 500, 10, TimeUnit.SECONDS,
+        processBalanceExecutor = new ThreadPoolExecutor(700, 700, 10, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>(), new ThreadFactoryBuilder().setNameFormat("balance-address-%d").build());
     }
 
@@ -88,12 +88,12 @@ public class BalanceServiceImpl implements BalanceService {
 
             LocalDateTime localDateTime = localDateTimeList.get(i);
 
+            long record1 = System.currentTimeMillis();
             log.info("start add balance record: {} {} {}", localDateTime, i, localDateTimeList.size());
 
             // 日维度开始、结束时间
             LocalDateTime s;
             LocalDateTime e;
-            LocalDateTime now = LocalDateTime.now();
 
             if (i == 0) {
                 s = localDateTime;
@@ -113,30 +113,8 @@ public class BalanceServiceImpl implements BalanceService {
                 continue;
             }
 
-            log.info("number of address to update: {} {}", addressSet.size(), s);
-
-            //List<AddressChangeTemp> entityList = processBalanceExecutor.submit(
-            //    () ->
-            //        addressSet.stream().parallel().map(address -> {
-            //                try {
-            //                    BigInteger weiBalance = ethereumService.getEthWeiBalance(address, BigInteger.valueOf(lastBlock.getBlockNumber()));
-            //                    BigDecimal etherBalance = Convert.fromWei(String.valueOf(weiBalance), Convert.Unit.ETHER);
-            //                    log.info("getEthWeiBalance");
-            //                    AddressChangeTemp addressChangeTemp = new AddressChangeTemp();
-            //                    addressChangeTemp.setTime(firstBlock.getTimestamp());
-            //                    addressChangeTemp.setAmountRaw(new BigDecimal(weiBalance));
-            //                    addressChangeTemp.setAmount(etherBalance);
-            //                    addressChangeTemp.setAddress(address);
-            //
-            //                    return addressChangeTemp;
-            //                } catch (Exception exception) {
-            //                    log.error(String.format("add eth balance record error: %s", address), exception);
-            //                    return null;
-            //                }
-            //            })
-            //            .filter(Objects::nonNull)
-            //            .toList()
-            //).get();
+            long record2 = System.currentTimeMillis();
+            log.info("number of address to update: {} {} {}", addressSet.size(), s, (record2 - record1) / 1000);
 
             List<Future<AddressChangeTemp>> entityFutureList = new ArrayList<>();
 
@@ -162,14 +140,22 @@ public class BalanceServiceImpl implements BalanceService {
                 entityFutureList.add(future);
             }
 
-            addressChangeTempMapperService.replaceIntoBatch(entityFutureList.stream().map(future -> {
+            List<AddressChangeTemp> entityList = entityFutureList.stream().map(future -> {
                 try {
                     return future.get();
                 } catch (Exception exception) {
                     log.error("addressChangeTempMapperService get future error", exception);
                     return null;
                 }
-            }).filter(Objects::nonNull).toList());
+            }).filter(Objects::nonNull).toList();
+
+            long record3 = System.currentTimeMillis();
+            log.info("get balance future: {}", (record3 - record2) / 1000);
+
+            addressChangeTempMapperService.replaceIntoBatch(entityList);
+
+            long record4 = System.currentTimeMillis();
+            log.info("add address end: {}", (record4 - record3) / 1000);
         }
 
     }
