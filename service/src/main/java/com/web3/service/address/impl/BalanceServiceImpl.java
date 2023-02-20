@@ -78,7 +78,7 @@ public class BalanceServiceImpl implements BalanceService {
 
     public BalanceServiceImpl() {
 
-        processBalanceExecutor = new ThreadPoolExecutor(700, 700, 10, TimeUnit.SECONDS,
+        processBalanceExecutor = new ThreadPoolExecutor(800, 800, 10, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>(), new ThreadFactoryBuilder().setNameFormat("get-balance-%d").build());
 
         processAddressExecutor = new ThreadPoolExecutor(5, 5, 10, TimeUnit.SECONDS,
