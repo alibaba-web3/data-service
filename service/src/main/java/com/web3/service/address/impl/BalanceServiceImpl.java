@@ -290,8 +290,8 @@ public class BalanceServiceImpl implements BalanceService {
         //    }
         //});
 
-        Set<String> traceList = getTraceAddressList(start);
-        addressSet.addAll(traceList);
+        //Set<String> traceList = getTraceAddressList(start);
+        //addressSet.addAll(traceList);
 
         // 升序排序
         blocksList.sort(Comparator.comparing(EthereumBlocks::getTimestamp));
