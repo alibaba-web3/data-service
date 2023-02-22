@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -55,5 +56,7 @@ public interface BalanceService {
      * @return
      */
     BigDecimal balanceValueTrend(String address, String assetsType, BigDecimal balanceValue);
+
+    Set<String> getTraceAddressList(LocalDateTime start);
 
 }

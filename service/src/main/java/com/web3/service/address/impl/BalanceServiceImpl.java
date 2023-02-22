@@ -3,6 +3,7 @@ package com.web3.service.address.impl;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.Comparator;
@@ -36,6 +37,8 @@ import com.web3.service.address.AddressService;
 import com.web3.service.address.BalanceService;
 import com.web3.service.address.dto.BalanceChangeAddressInfo;
 import com.web3.service.address.param.TransformBalanceReq;
+import com.web3.service.file.FileService;
+import com.web3.service.file.dto.TraceCsvDTO;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -71,6 +74,9 @@ public class BalanceServiceImpl implements BalanceService {
 
     @Resource
     private EthereumTracesMapperService ethereumTracesMapperService;
+
+    @Resource
+    private FileService fileService;
 
     public ExecutorService processBalanceExecutor;
 
@@ -174,6 +180,8 @@ public class BalanceServiceImpl implements BalanceService {
             log.info("get balance future: {}", (record3 - record2) / 1000);
 
             addressChangeTempMapperService.replaceIntoBatch(entityList);
+
+            balanceChangeAddressInfoMap.remove(s);
 
             long record4 = System.currentTimeMillis();
             log.info("add address end: {}", (record4 - record3) / 1000);
@@ -282,6 +290,9 @@ public class BalanceServiceImpl implements BalanceService {
         //    }
         //});
 
+        Set<String> traceList = getTraceAddressList(start);
+        addressSet.addAll(traceList);
+
         // 升序排序
         blocksList.sort(Comparator.comparing(EthereumBlocks::getTimestamp));
         EthereumBlocks firstBlock = blocksList.get(0);
@@ -290,6 +301,24 @@ public class BalanceServiceImpl implements BalanceService {
         result.setAddressSet(addressSet);
         result.setFirstBlock(firstBlock);
         result.setLastBlock(lastBlock);
+
+        return result;
+    }
+
+    @Override
+    public Set<String> getTraceAddressList(LocalDateTime start) {
+
+        List<TraceCsvDTO> traceCsvDTOList = fileService.readTraceCsv();
+
+        Set<String> result = new HashSet<>();
+
+        for (TraceCsvDTO traceCsvDTO : traceCsvDTOList) {
+            String date = start.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+            if (Objects.equals(traceCsvDTO.getDate(), date)) {
+                result.addAll(traceCsvDTO.getToList());
+                result.addAll(traceCsvDTO.getFromList());
+            }
+        }
 
         return result;
     }
