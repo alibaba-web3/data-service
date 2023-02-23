@@ -83,7 +83,7 @@ public class TestController {
     @Resource
     private EthereumV2Service ethereumV2Service;
 
-    @Resource
+    @Resource(type = CsvReadImpl.class)
     private FileReadService<?> fileReadService;
 
     @GetMapping("/executePrice1dJob")
@@ -163,7 +163,6 @@ public class TestController {
     @GetMapping("/csvTest")
     public void csvTest(@RequestParam(value = "filePath") String filePath) {
         try {
-            fileReadService = new CsvReadImpl();
             List read = fileReadService.read(filePath);
             fileReadService.batchWrite(read);
         } catch (Exception e) {
