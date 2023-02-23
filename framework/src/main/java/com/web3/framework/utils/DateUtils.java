@@ -3,6 +3,7 @@ package com.web3.framework.utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.FastTimeZone;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -93,6 +94,17 @@ public class DateUtils {
     static public String format(Date date, String format) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
         return simpleDateFormat.format(date);
+    }
+
+    /**
+     * String -> LocalDateTime
+     * @param time
+     * @param format
+     * @return
+     */
+    static public LocalDateTime parse(String time, String format) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
+        return LocalDateTime.parse(time, dateTimeFormatter);
     }
 
 }
