@@ -2,4 +2,78 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.web3.dal.data.mapper.EthereumTracesMapper">
 
+    <insert id="batchInsertOrUpdate" parameterType="java.util.List">
+        <foreach collection="list" item="ele" index="index" separator=";" open="" close="">
+            INSERT INTO ethereum_traces
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="ele.traceId != null">trace_id,</if>
+                <if test="ele.traceAddress != null">trace_address,</if>
+                <if test="ele.traceChildrenCount != null">trace_children_count,</if>
+                <if test="ele.traceSuccess != null">trace_success,</if>
+                <if test="ele.transactionHash != null">transaction_hash,</if>
+                <if test="ele.transactionIndex != null">transaction_index,</if>
+                <if test="ele.transactionSuccess != null">transaction_success,</if>
+                <if test="ele.blockNumber != null">block_number,</if>
+                <if test="ele.blockHash != null">block_hash,</if>
+                <if test="ele.blockTimestamp != null">block_timestamp,</if>
+                <if test="ele.type != null">`type`,</if>
+                <if test="ele.from != null">`from`,</if>
+                <if test="ele.to != null">`to`,</if>
+                <if test="ele.value != null">`value`,</if>
+                <if test="ele.gasLimit != null">gas_limit,</if>
+                <if test="ele.gasUsed != null">gas_used,</if>
+                <if test="ele.input != null">`input`,</if>
+                <if test="ele.output != null">`output`,</if>
+                <if test="ele.methodId != null">method_id,</if>
+                <if test="ele.error != null">error</if>
+            </trim>
+            values
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="ele.traceId != null">#{ele.traceId},</if>
+                <if test="ele.traceAddress != null">#{ele.traceAddress},</if>
+                <if test="ele.traceChildrenCount != null">#{ele.traceChildrenCount},</if>
+                <if test="ele.traceSuccess != null">#{ele.traceSuccess},</if>
+                <if test="ele.transactionHash != null">#{ele.transactionHash},</if>
+                <if test="ele.transactionIndex != null">#{ele.transactionIndex},</if>
+                <if test="ele.transactionSuccess != null">#{ele.transactionSuccess},</if>
+                <if test="ele.blockNumber != null">#{ele.blockNumber},</if>
+                <if test="ele.blockHash != null">#{ele.blockHash},</if>
+                <if test="ele.blockTimestamp != null">#{ele.blockTimestamp},</if>
+                <if test="ele.type != null">#{ele.type},</if>
+                <if test="ele.from != null">#{ele.from},</if>
+                <if test="ele.to != null">#{ele.to},</if>
+                <if test="ele.value != null">#{ele.value},</if>
+                <if test="ele.gasLimit != null">#{ele.gasLimit},</if>
+                <if test="ele.gasUsed != null">#{ele.gasUsed},</if>
+                <if test="ele.input != null">#{ele.input},</if>
+                <if test="ele.output != null">#{ele.output},</if>
+                <if test="ele.methodId != null">#{ele.methodId},</if>
+                <if test="ele.error != null">#{ele.error}</if>
+            </trim>
+            ON DUPLICATE KEY UPDATE
+            <trim suffixOverrides=",">
+                <if test="ele.traceId != null">trace_id = #{ele.traceId},</if>
+                <if test="ele.traceAddress != null">trace_address = #{ele.traceAddress},</if>
+                <if test="ele.traceChildrenCount != null">trace_children_count = #{ele.traceChildrenCount},</if>
+                <if test="ele.traceSuccess != null">trace_success = #{ele.traceSuccess},</if>
+                <if test="ele.transactionHash != null">transaction_hash = #{ele.transactionHash},</if>
+                <if test="ele.transactionIndex != null">transaction_index = #{ele.transactionIndex},</if>
+                <if test="ele.transactionSuccess != null">transaction_success = #{ele.transactionSuccess},</if>
+                <if test="ele.blockNumber != null">block_number = #{ele.blockNumber},</if>
+                <if test="ele.blockHash != null">block_hash = #{ele.blockHash},</if>
+                <if test="ele.blockTimestamp != null">block_timestamp = #{ele.blockTimestamp},</if>
+                <if test="ele.type != null">`type` = #{ele.type},</if>
+                <if test="ele.from != null">`from` = #{ele.from},</if>
+                <if test="ele.to != null">`to` = #{ele.to},</if>
+                <if test="ele.value != null">`value` = #{ele.value},</if>
+                <if test="ele.gasLimit != null">gas_limit = #{ele.gasLimit},</if>
+                <if test="ele.gasUsed != null">gas_used = #{ele.gasUsed},</if>
+                <if test="ele.input != null">`input` = #{ele.input},</if>
+                <if test="ele.output != null">`output` = #{ele.output},</if>
+                <if test="ele.methodId != null">method_id = #{ele.methodId},</if>
+                <if test="ele.error != null">error = #{ele.error}</if>
+            </trim>
+        </foreach>
+    </insert>
+
 </mapper>
