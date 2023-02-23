@@ -30,6 +30,7 @@ import com.web3.service.file.impl.CsvReadImpl;
 import com.web3.service.pos.EthereumV2Service;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -160,10 +161,10 @@ public class TestController {
     }
 
     @GetMapping("/csvTest")
-    public void csvTest() {
+    public void csvTest(@RequestParam(value = "filePath") String filePath) {
         try {
             fileReadService = new CsvReadImpl();
-            List read = fileReadService.read("/Users/fuxian/Documents/web3-file/eth-data/eth-trace.csv");
+            List read = fileReadService.read(filePath);
             fileReadService.batchWrite(read);
         } catch (Exception e) {
             throw new RuntimeException(e);
