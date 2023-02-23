@@ -142,8 +142,8 @@ public class CsvReadImpl implements FileReadService<EthereumTrace> {
                         record.setGasUsed("null".equals(item.getGasUsed()) ? null : Integer.parseInt(item.getGasUsed()));
                         record.setGasLimit("null".equals(item.getGas()) ? null : Integer.parseInt(item.getGas()));
                         record.setTraceChildrenCount(JSON.parseArray(JSON.toJSONString(item.getTraceAddress()), String.class).size());
-                        record.setTraceSuccess(2 != Integer.parseInt(item.getSuccess()) ? Integer.parseInt(item.getSuccess()) : null);
-                        record.setTransactionSuccess(2 != Integer.parseInt(item.getTxSuccess()) ? Integer.parseInt(item.getTxSuccess()) : null);
+                        record.setTraceSuccess(Boolean.parseBoolean(item.getSuccess()));
+                        record.setTransactionSuccess(Boolean.parseBoolean(item.getTxSuccess()));
                         record.setTransactionIndex("null".equals(item.getTxIndex()) ? null : Integer.parseInt(item.getTxIndex()));
                         record.setTransactionHash(item.getTxHash());
                         list.add(record);

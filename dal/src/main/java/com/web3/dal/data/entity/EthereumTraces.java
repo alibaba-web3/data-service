@@ -29,13 +29,13 @@ public class EthereumTraces {
 
     private Integer traceChildrenCount;
 
-    private Integer traceSuccess;
+    private Boolean traceSuccess;
 
     private String transactionHash;
 
     private Integer transactionIndex;
 
-    private Integer transactionSuccess;
+    private Boolean transactionSuccess;
 
     private Integer blockNumber;
 
