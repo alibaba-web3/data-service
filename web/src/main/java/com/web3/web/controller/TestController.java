@@ -2,6 +2,7 @@ package com.web3.web.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -145,6 +146,11 @@ public class TestController {
     @GetMapping("/ethereumV2Job")
     public void ethereumV2Job() throws InterruptedException, NoSuchMethodException {
         ethereumV2Job.execute();
+    }
+
+    @GetMapping("/trace")
+    public Set<String> getTraceAddressList(@RequestParam String start) {
+        return balanceService.getTraceAddressList(LocalDateTime.parse(start));
     }
 
 }

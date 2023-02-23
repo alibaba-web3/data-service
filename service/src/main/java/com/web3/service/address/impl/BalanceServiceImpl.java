@@ -3,6 +3,7 @@ package com.web3.service.address.impl;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.Comparator;
@@ -18,6 +19,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.web3.dal.data.entity.AddressChangeTemp;
 import com.web3.dal.data.entity.EthereumBlocks;
 import com.web3.dal.data.entity.EthereumTraces;
@@ -35,6 +37,8 @@ import com.web3.service.address.AddressService;
 import com.web3.service.address.BalanceService;
 import com.web3.service.address.dto.BalanceChangeAddressInfo;
 import com.web3.service.address.param.TransformBalanceReq;
+import com.web3.service.file.FileService;
+import com.web3.service.file.dto.TraceCsvDTO;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -71,28 +75,33 @@ public class BalanceServiceImpl implements BalanceService {
     @Resource
     private EthereumTracesMapperService ethereumTracesMapperService;
 
+    @Resource
+    private FileService fileService;
+
     public ExecutorService processBalanceExecutor;
 
+    public ExecutorService processAddressExecutor;
+
     public BalanceServiceImpl() {
-        processBalanceExecutor = new ThreadPoolExecutor(500, 500, 10, TimeUnit.SECONDS,
-            new LinkedBlockingQueue<>());
+
+        processBalanceExecutor = new ThreadPoolExecutor(800, 800, 10, TimeUnit.SECONDS,
+            new LinkedBlockingQueue<>(), new ThreadFactoryBuilder().setNameFormat("get-balance-%d").build());
+
+        processAddressExecutor = new ThreadPoolExecutor(5, 5, 10, TimeUnit.SECONDS,
+            new LinkedBlockingQueue<>(), new ThreadFactoryBuilder().setNameFormat("get-address-%d").build());
     }
 
     @Override
-    public void addBalanceRecord(LocalDateTime start, LocalDateTime end) throws InterruptedException, ExecutionException, TimeoutException {
+    public void addBalanceRecord(LocalDateTime start, LocalDateTime end) throws InterruptedException, ExecutionException {
         List<LocalDateTime> localDateTimeList = DateUtils.getBetweenDate(start, end);
 
+        Map<LocalDateTime, Future<BalanceChangeAddressInfo>> balanceChangeAddressInfoMap = new HashMap<>(localDateTimeList.size());
+
         for (int i = 0; i < localDateTimeList.size(); i++) {
-
             LocalDateTime localDateTime = localDateTimeList.get(i);
-
-            log.info("start add balance record: {} {} {}", localDateTime, i, localDateTimeList.size());
-
             // 日维度开始、结束时间
             LocalDateTime s;
             LocalDateTime e;
-            LocalDateTime now = LocalDateTime.now();
-
             if (i == 0) {
                 s = localDateTime;
                 e = LocalDateTime.of(localDateTime.getYear(), localDateTime.getMonth(), localDateTime.getDayOfMonth() + 1, 0, 0);
@@ -101,8 +110,28 @@ public class BalanceServiceImpl implements BalanceService {
                 e = s.plusDays(1);
             }
 
+            Future<BalanceChangeAddressInfo> future = processAddressExecutor.submit(() -> getBalanceChangeAddress(s, e));
+            balanceChangeAddressInfoMap.put(s, future);
+        }
+
+        for (int i = 0; i < localDateTimeList.size(); i++) {
+
+            LocalDateTime localDateTime = localDateTimeList.get(i);
+
+            long record1 = System.currentTimeMillis();
+            log.info("start add balance record: {} {} {}", localDateTime, i, localDateTimeList.size());
+
+            LocalDateTime s;
+
+            if (i == 0) {
+                s = localDateTime;
+            } else {
+                s = LocalDateTime.of(localDateTime.getYear(), localDateTime.getMonth(), localDateTime.getDayOfMonth(), 0, 0);
+            }
+
             // 当天余额变化的地址
-            BalanceChangeAddressInfo balanceChangeAddressInfo = getBalanceChangeAddress(s, e);
+            BalanceChangeAddressInfo balanceChangeAddressInfo = balanceChangeAddressInfoMap.get(s).get();
+
             Set<String> addressSet = balanceChangeAddressInfo.getAddressSet();
             EthereumBlocks firstBlock = balanceChangeAddressInfo.getFirstBlock();
             EthereumBlocks lastBlock = balanceChangeAddressInfo.getLastBlock();
@@ -111,32 +140,51 @@ public class BalanceServiceImpl implements BalanceService {
                 continue;
             }
 
-            log.info("number of address to update: {} {}", addressSet.size(), s);
+            long record2 = System.currentTimeMillis();
+            log.info("number of address to update: {} {} {}", addressSet.size(), s, (record2 - record1) / 1000);
 
-            List<AddressChangeTemp> entityList = processBalanceExecutor.submit(
-                () ->
-                    addressSet.stream().parallel().map(address -> {
-                            try {
-                                BigInteger weiBalance = ethereumService.getEthWeiBalance(address, BigInteger.valueOf(lastBlock.getBlockNumber()));
-                                BigDecimal etherBalance = Convert.fromWei(String.valueOf(weiBalance), Convert.Unit.ETHER);
+            List<Future<AddressChangeTemp>> entityFutureList = new ArrayList<>();
 
-                                AddressChangeTemp addressChangeTemp = new AddressChangeTemp();
-                                addressChangeTemp.setTime(firstBlock.getTimestamp());
-                                addressChangeTemp.setAmountRaw(new BigDecimal(weiBalance));
-                                addressChangeTemp.setAmount(etherBalance);
-                                addressChangeTemp.setAddress(address);
+            for (String address : addressSet) {
+                Future<AddressChangeTemp> future = processBalanceExecutor.submit(
+                    () -> {
+                        try {
+                            BigInteger weiBalance = ethereumService.getEthWeiBalance(address, BigInteger.valueOf(lastBlock.getBlockNumber()));
+                            BigDecimal etherBalance = Convert.fromWei(String.valueOf(weiBalance), Convert.Unit.ETHER);
+                            AddressChangeTemp addressChangeTemp = new AddressChangeTemp();
+                            addressChangeTemp.setTime(firstBlock.getTimestamp());
+                            addressChangeTemp.setAmountRaw(new BigDecimal(weiBalance));
+                            addressChangeTemp.setAmount(etherBalance);
+                            addressChangeTemp.setAddress(address);
 
-                                return addressChangeTemp;
-                            } catch (Exception exception) {
-                                log.error(String.format("add eth balance record error: %s", address), exception);
-                                return null;
-                            }
-                        })
-                        .filter(Objects::nonNull)
-                        .toList()
-            ).get();
+                            return addressChangeTemp;
+                        } catch (Exception exception) {
+                            log.error(String.format("add eth balance record error: %s", address), exception);
+                            return null;
+                        }
+                    }
+                );
+                entityFutureList.add(future);
+            }
+
+            List<AddressChangeTemp> entityList = entityFutureList.stream().map(future -> {
+                try {
+                    return future.get();
+                } catch (Exception exception) {
+                    log.error("addressChangeTempMapperService get future error", exception);
+                    return null;
+                }
+            }).filter(Objects::nonNull).toList();
+
+            long record3 = System.currentTimeMillis();
+            log.info("get balance future: {}", (record3 - record2) / 1000);
 
             addressChangeTempMapperService.replaceIntoBatch(entityList);
+
+            balanceChangeAddressInfoMap.remove(s);
+
+            long record4 = System.currentTimeMillis();
+            log.info("add address end: {}", (record4 - record3) / 1000);
         }
 
     }
@@ -242,6 +290,9 @@ public class BalanceServiceImpl implements BalanceService {
         //    }
         //});
 
+        //Set<String> traceList = getTraceAddressList(start);
+        //addressSet.addAll(traceList);
+
         // 升序排序
         blocksList.sort(Comparator.comparing(EthereumBlocks::getTimestamp));
         EthereumBlocks firstBlock = blocksList.get(0);
@@ -250,6 +301,24 @@ public class BalanceServiceImpl implements BalanceService {
         result.setAddressSet(addressSet);
         result.setFirstBlock(firstBlock);
         result.setLastBlock(lastBlock);
+
+        return result;
+    }
+
+    @Override
+    public Set<String> getTraceAddressList(LocalDateTime start) {
+
+        List<TraceCsvDTO> traceCsvDTOList = fileService.readTraceCsv();
+
+        Set<String> result = new HashSet<>();
+
+        for (TraceCsvDTO traceCsvDTO : traceCsvDTOList) {
+            String date = start.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+            if (Objects.equals(traceCsvDTO.getDate(), date)) {
+                result.addAll(traceCsvDTO.getToList());
+                result.addAll(traceCsvDTO.getFromList());
+            }
+        }
 
         return result;
     }
