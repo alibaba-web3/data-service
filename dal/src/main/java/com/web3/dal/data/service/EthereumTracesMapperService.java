@@ -25,4 +25,11 @@ public interface EthereumTracesMapperService extends IService<EthereumTraces> {
      */
     List<EthereumTraces> list(LocalDateTime start, LocalDateTime end);
 
+    /**
+     * 批量插入和更新数据
+     *
+     * @param list
+     */
+    void batchInsertOrUpdateData(List<EthereumTraces> list);
+
 }

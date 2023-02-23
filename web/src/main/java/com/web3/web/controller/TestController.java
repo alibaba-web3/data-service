@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.nacos.api.config.annotation.NacosValue;
 
 import com.web3.crawler.constants.TaskType;
@@ -24,9 +25,12 @@ import com.web3.framework.resouce.defillama.dto.StableCoinHistory;
 import com.web3.service.address.AddressService;
 import com.web3.service.address.BalanceService;
 import com.web3.service.defi.DefiService;
+import com.web3.service.file.FileReadService;
+import com.web3.service.file.impl.CsvReadImpl;
 import com.web3.service.pos.EthereumV2Service;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -78,6 +82,9 @@ public class TestController {
 
     @Resource
     private EthereumV2Service ethereumV2Service;
+
+    @Resource(type = CsvReadImpl.class)
+    private FileReadService<?> fileReadService;
 
     @GetMapping("/executePrice1dJob")
     public void executePrice1dJob() {
@@ -151,6 +158,16 @@ public class TestController {
     @GetMapping("/trace")
     public Set<String> getTraceAddressList(@RequestParam String start) {
         return balanceService.getTraceAddressList(LocalDateTime.parse(start));
+    }
+
+    @GetMapping("/csvTest")
+    public void csvTest(@RequestParam(value = "filePath") String filePath) {
+        try {
+            List read = fileReadService.read(filePath);
+            fileReadService.batchWrite(read);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
