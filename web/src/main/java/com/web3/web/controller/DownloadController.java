@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
  * @Date: 2023/2/23
  */
 @RestController
-@RequestMapping("/download")
+@RequestMapping("/api/download")
 @Slf4j
-public class Download {
+public class DownloadController {
 
     @Resource
     private Price1dMapperService price1dMapperService;
