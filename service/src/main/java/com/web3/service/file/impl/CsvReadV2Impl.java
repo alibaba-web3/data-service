@@ -5,6 +5,7 @@ import com.csvreader.CsvReader;
 import com.google.common.collect.Lists;
 import com.web3.dal.data.entity.EthereumTraces;
 import com.web3.dal.data.service.EthereumTracesMapperService;
+import com.web3.framework.utils.DateUtils;
 import com.web3.service.file.FileReadService;
 import com.web3.service.file.dto.EthereumTrace;
 import jakarta.annotation.Resource;
@@ -25,7 +26,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class CsvReadImpl implements FileReadService<EthereumTrace> {
+public class CsvReadV2Impl implements FileReadService<EthereumTrace> {
 
     @Resource
     private EthereumTracesMapperService ethTracesMapperService;
@@ -50,46 +51,51 @@ public class CsvReadImpl implements FileReadService<EthereumTrace> {
                 String[] split = r.getRawRecord().split(";");
                 String[] split1 = split[0].split("\\|");
 
-                trace.setAddress(split1[0].substring(29));
-                trace.setCallType(split1[1]);
-                trace.setError(split1[2]);
-                trace.setFrom(split1[3]);
-                trace.setGas(split1[4]);
-                trace.setGasUsed(split1[5]);
-                trace.setInput(split1[6]);
-                trace.setOutput(split1[7]);
-                trace.setRefundAddress(split1[8]);
-                trace.setSubTraces(split1[9]);
-                trace.setSuccess(split1[10]);
-                trace.setTo(split1[11]);
-                trace.setTraceAddress(split1[12]);
-                trace.setTxHash(split1[13]);
-                trace.setTxSuccess(split1[14]);
-                trace.setType(split1[15]);
-                trace.setValue(split1[16].replaceAll("\"", ""));
+                trace.setAddress(split1[0].substring(10));
+                trace.setBlockNumber(split1[1].replaceAll("\"", ""));
+                trace.setBlockTime(split1[2]);
+                trace.setCallType(split1[3]);
+                trace.setError(split1[4]);
+                trace.setFrom(split1[5]);
+                trace.setGas(split1[6]);
+                trace.setGasUsed(split1[7]);
+                trace.setInput(split1[8]);
+                trace.setOutput(split1[9]);
+                trace.setRefundAddress(split1[10]);
+                trace.setSubTraces(split1[11]);
+                trace.setSuccess(split1[12]);
+                trace.setTo(split1[13]);
+                trace.setTraceAddress(split1[14]);
+                trace.setTxHash(split1[15]);
+                trace.setTxIndex(split1[16]);
+                trace.setTxSuccess(split1[17]);
+                trace.setType(split1[18]);
+                trace.setValue(split1[19].replaceAll("\"", ""));
                 traces.add(trace);
 
                 for (int i = 1; i < split.length; i++) {
                     trace = new EthereumTrace();
-                    String[] split2 = split[i].split("\\|");
-
-                    trace.setAddress(split2[0].replaceAll("\"", ""));
-                    trace.setCallType(split2[1]);
-                    trace.setError(split2[2]);
-                    trace.setFrom(split2[3]);
-                    trace.setGas(split2[4]);
-                    trace.setGasUsed(split2[5]);
-                    trace.setInput(split2[6]);
-                    trace.setOutput(split2[7]);
-                    trace.setRefundAddress(split2[8]);
-                    trace.setSubTraces(split2[9]);
-                    trace.setSuccess(split2[10]);
-                    trace.setTo(split2[11]);
-                    trace.setTraceAddress(split2[12]);
-                    trace.setTxHash(split2[13]);
-                    trace.setTxSuccess(split2[14]);
-                    trace.setType(split2[15]);
-                    trace.setValue(split2[16].replaceAll("\"", ""));
+                    String[] strings1 = split[i].split("\\|");
+                    trace.setAddress(strings1[0].replaceAll("\"", ""));
+                    trace.setBlockNumber(strings1[1].replaceAll("\"", ""));
+                    trace.setBlockTime(strings1[2]);
+                    trace.setCallType(strings1[3]);
+                    trace.setError(strings1[4]);
+                    trace.setFrom(strings1[5]);
+                    trace.setGas(strings1[6]);
+                    trace.setGasUsed(strings1[7]);
+                    trace.setInput(strings1[8]);
+                    trace.setOutput(strings1[9]);
+                    trace.setRefundAddress(strings1[10]);
+                    trace.setSubTraces(strings1[11]);
+                    trace.setSuccess(strings1[12]);
+                    trace.setTo(strings1[13]);
+                    trace.setTraceAddress(strings1[14]);
+                    trace.setTxHash(strings1[15]);
+                    trace.setTxIndex(strings1[16]);
+                    trace.setTxSuccess(strings1[17]);
+                    trace.setType(strings1[18]);
+                    trace.setValue(strings1[19].replaceAll("\"", ""));
                     traces.add(trace);
                 }
             }
@@ -116,6 +122,7 @@ public class CsvReadImpl implements FileReadService<EthereumTrace> {
     private void batchWriteContents(List<EthereumTrace> ethereumTraces) {
         List<EthereumTraces> list = new ArrayList<>(ethereumTraces.size());
         try {
+            int i = 0;
             for (EthereumTrace item : ethereumTraces) {
                 try {
                     EthereumTraces record = new EthereumTraces();
@@ -128,22 +135,25 @@ public class CsvReadImpl implements FileReadService<EthereumTrace> {
                     record.setType(item.getType());
                     // 修改类型
                     record.setValue("null".equals(item.getValue()) ? null : new BigDecimal(item.getValue()));
+                    record.setBlockNumber("null".equals(item.getBlockNumber()) ? null : Integer.parseInt(item.getBlockNumber()));
+                    record.setBlockTimestamp(DateUtils.parse(item.getBlockTime(), DateUtils.YYYY_MM_DD_HH_MM_SS));
                     record.setGasUsed("null".equals(item.getGasUsed()) ? null : Integer.parseInt(item.getGasUsed()));
                     record.setGasLimit("null".equals(item.getGas()) ? null : Integer.parseInt(item.getGas()));
                     record.setTraceChildrenCount(JSON.parseArray(JSON.toJSONString(item.getTraceAddress()), String.class).size());
                     record.setTraceSuccess(Boolean.parseBoolean(item.getSuccess()));
                     record.setTransactionSuccess(Boolean.parseBoolean(item.getTxSuccess()));
+                    record.setTransactionIndex("null".equals(item.getTxIndex()) ? null : Integer.parseInt(item.getTxIndex()));
                     record.setTransactionHash(item.getTxHash());
                     list.add(record);
+                    i++;
                 } catch (Exception e) {
                     log.info("item: {}", item);
                     throw new RuntimeException(e);
                 }
             }
-             ethTracesMapperService.batchInsertOrUpdateData(list);
+            ethTracesMapperService.batchInsertOrUpdateData(list);
         } catch (Exception e) {
-            log.error("SQL error: {} || record: {}", e.getMessage(), JSON.toJSONString(list));
+            throw new RuntimeException(e);
         }
     }
-
 }
