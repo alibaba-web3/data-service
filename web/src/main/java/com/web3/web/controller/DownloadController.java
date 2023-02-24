@@ -6,7 +6,10 @@ import java.util.List;
 
 import com.opencsv.CSVWriter;
 import com.web3.dal.data.entity.Price1d;
+import com.web3.dal.data.entity.Tvl1d;
 import com.web3.dal.data.service.Price1dMapperService;
+import com.web3.dal.data.service.Tvl1dMapperService;
+import com.web3.service.defi.DefiService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +29,9 @@ public class DownloadController {
     @Resource
     private Price1dMapperService price1dMapperService;
 
+    @Resource
+    private Tvl1dMapperService tvl1dMapperService;
+
     @GetMapping("/spot/1d")
     public void exportSpotPrice(HttpServletResponse response) {
 
@@ -42,11 +48,28 @@ public class DownloadController {
                     price1d.getBuyingTurnover().toString()})
                 .toList();
 
-            exportCsv(response,csv,header);
+            exportCsv(response, csv, header);
         } catch (Exception e) {
             log.error("download spot price 1d error", e);
         }
+    }
 
+    @GetMapping("/tvl")
+    public void exportTvl(HttpServletResponse response) {
+
+        List<Tvl1d> tvl1dList = tvl1dMapperService.list();
+
+        try {
+            String[] header = new String[] {"date", "name", "symbol", "tvl"};
+
+            List<String[]> csv = tvl1dList.stream()
+                .map(price1d -> new String[] {price1d.getDate().toString(), price1d.getName(), price1d.getSymbol(), price1d.getTvl().toString()})
+                .toList();
+
+            exportCsv(response, csv, header);
+        } catch (Exception e) {
+            log.error("download tvl 1d error", e);
+        }
     }
 
     public void exportCsv(HttpServletResponse response, List<String[]> csv, String[] header) throws IOException {
