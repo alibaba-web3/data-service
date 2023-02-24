@@ -32,6 +32,7 @@ import com.web3.framework.consts.GuavaCacheKeys;
 import com.web3.framework.resouce.binance.BinanceService;
 import com.web3.framework.resouce.ethereum.EthereumService;
 import com.web3.framework.utils.DateUtils;
+import com.web3.framework.utils.EnvUtils;
 import com.web3.framework.utils.GuavaCacheUtils;
 import com.web3.service.address.AddressService;
 import com.web3.service.address.BalanceService;
@@ -79,6 +80,9 @@ public class BalanceServiceImpl implements BalanceService {
     @Resource
     private FileService fileService;
 
+    @Resource
+    private EnvUtils envUtils;
+
     public ExecutorService processBalanceExecutor;
 
     public ExecutorService processAddressExecutor;
@@ -94,7 +98,10 @@ public class BalanceServiceImpl implements BalanceService {
 
     @PostConstruct
     public void init() {
-        fillHistoryRecord();
+        if (!envUtils.isLocal()) {
+            fillHistoryRecord();
+        }
+
     }
 
     @Override
