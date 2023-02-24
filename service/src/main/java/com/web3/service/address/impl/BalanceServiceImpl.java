@@ -39,6 +39,7 @@ import com.web3.service.address.dto.BalanceChangeAddressInfo;
 import com.web3.service.address.param.TransformBalanceReq;
 import com.web3.service.file.FileService;
 import com.web3.service.file.dto.TraceCsvDTO;
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -89,6 +90,11 @@ public class BalanceServiceImpl implements BalanceService {
 
         processAddressExecutor = new ThreadPoolExecutor(5, 5, 10, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>(), new ThreadFactoryBuilder().setNameFormat("get-address-%d").build());
+    }
+
+    @PostConstruct
+    public void init() {
+        fillHistoryRecord();
     }
 
     @Override
@@ -194,11 +200,12 @@ public class BalanceServiceImpl implements BalanceService {
     public void fillHistoryRecord() {
         AddressChangeTemp latest = addressChangeTempMapperService.getLatest();
         LocalDateTime now = LocalDateTime.now();
-
-        List<LocalDateTime> localDateTimeList = DateUtils.getBetweenDate(latest.getTime(), now);
-
-        for (int i = 0; i < localDateTimeList.size(); i++) {
-
+        try {
+            if (latest.getTime().isBefore(now)) {
+                addBalanceRecord(latest.getTime(), now);
+            }
+        } catch (Exception e) {
+            log.error("addBalanceRecord error", e);
         }
     }
 
