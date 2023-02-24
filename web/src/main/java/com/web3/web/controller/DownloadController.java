@@ -9,7 +9,6 @@ import com.web3.dal.data.entity.Price1d;
 import com.web3.dal.data.entity.Tvl1d;
 import com.web3.dal.data.service.Price1dMapperService;
 import com.web3.dal.data.service.Tvl1dMapperService;
-import com.web3.service.defi.DefiService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +47,7 @@ public class DownloadController {
                     price1d.getBuyingTurnover().toString()})
                 .toList();
 
-            exportCsv(response, csv, header);
+            exportCsv("spot_1d", header, csv, response);
         } catch (Exception e) {
             log.error("download spot price 1d error", e);
         }
@@ -66,17 +65,16 @@ public class DownloadController {
                 .map(price1d -> new String[] {price1d.getDate().toString(), price1d.getName(), price1d.getSymbol(), price1d.getTvl().toString()})
                 .toList();
 
-            exportCsv(response, csv, header);
+            exportCsv("tvl", header, csv, response);
         } catch (Exception e) {
             log.error("download tvl 1d error", e);
         }
     }
 
-    public void exportCsv(HttpServletResponse response, List<String[]> csv, String[] header) throws IOException {
+    public void exportCsv(String fileName, String[] header, List<String[]> csv, HttpServletResponse response) throws IOException {
         response.setContentType("text/csv");
         response.setCharacterEncoding("utf-8");
 
-        String fileName = "spot_1d";
         response.setHeader("Content-disposition", "attachment; filename=" + fileName + ".csv");
 
         PrintWriter printWriter = response.getWriter();
