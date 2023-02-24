@@ -1,5 +1,6 @@
 package com.web3.web.controller;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -31,17 +32,8 @@ public class DownloadController {
         List<Price1d> price1dList = price1dMapperService.list();
 
         try {
-            response.setContentType("text/csv");
-            response.setCharacterEncoding("utf-8");
-
-            String fileName = "spot_1d";
-            response.setHeader("Content-disposition", "attachment; filename=" + fileName + ".csv");
-
-            PrintWriter printWriter = response.getWriter();
-            CSVWriter writer = new CSVWriter(printWriter, ',');
-
             String[] header = new String[] {"date", "openTime", "closeTime", "symbol", "open", "height", "low", "close", "volume", "turnover", "tradingVolume", "buyingVolume", "buyingTurnover"};
-            writer.writeNext(header);
+
             List<String[]> csv = price1dList.stream()
                 .map(price1d -> new String[] {price1d.getDate(), price1d.getOpenTime().toString(), price1d.getCloseTime().toString(),
                     price1d.getSymbol(), price1d.getOpen().toString(), price1d.getHeight().toString(), price1d.getLow().toString(),
@@ -49,14 +41,29 @@ public class DownloadController {
                     price1d.getBuyingVolume().toString(),
                     price1d.getBuyingTurnover().toString()})
                 .toList();
-            writer.writeAll(csv);
 
-            writer.flush();
-            writer.close();
+            exportCsv(response,csv,header);
         } catch (Exception e) {
             log.error("download spot price 1d error", e);
         }
 
+    }
+
+    public void exportCsv(HttpServletResponse response, List<String[]> csv, String[] header) throws IOException {
+        response.setContentType("text/csv");
+        response.setCharacterEncoding("utf-8");
+
+        String fileName = "spot_1d";
+        response.setHeader("Content-disposition", "attachment; filename=" + fileName + ".csv");
+
+        PrintWriter printWriter = response.getWriter();
+        CSVWriter writer = new CSVWriter(printWriter, ',');
+
+        writer.writeNext(header);
+        writer.writeAll(csv);
+
+        writer.flush();
+        writer.close();
     }
 
 }
