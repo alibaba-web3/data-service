@@ -44,6 +44,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.web3j.utils.Convert;
@@ -117,7 +118,8 @@ public class BalanceServiceImpl implements BalanceService {
             LocalDateTime e;
             if (i == 0) {
                 s = localDateTime;
-                e = LocalDateTime.of(localDateTime.getYear(), localDateTime.getMonth(), localDateTime.getDayOfMonth() + 1, 0, 0);
+                LocalDateTime plusDay = localDateTime.plusDays(1);
+                e = LocalDateTime.of(plusDay.getYear(), plusDay.getMonth(), plusDay.getDayOfMonth(), 0, 0);
             } else {
                 s = LocalDateTime.of(localDateTime.getYear(), localDateTime.getMonth(), localDateTime.getDayOfMonth(), 0, 0);
                 e = s.plusDays(1);
