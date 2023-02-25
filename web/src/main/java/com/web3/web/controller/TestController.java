@@ -27,6 +27,8 @@ import com.web3.service.address.BalanceService;
 import com.web3.service.defi.DefiService;
 import com.web3.service.file.FileReadService;
 import com.web3.service.file.impl.CsvReadImpl;
+import com.web3.service.file.impl.CsvReadV1Impl;
+import com.web3.service.file.impl.CsvReadV2Impl;
 import com.web3.service.pos.EthereumV2Service;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -160,11 +162,14 @@ public class TestController {
         return balanceService.getTraceAddressList(LocalDateTime.parse(start));
     }
 
-    @GetMapping("/csvTest")
+    @GetMapping("/traceSync")
     public void csvTest(@RequestParam(value = "filePath") String filePath) {
         try {
+            log.info("trace sync start...");
+            long start = System.currentTimeMillis();
             List read = fileReadService.read(filePath);
             fileReadService.batchWrite(read);
+            log.info("trace sync end, cost: {}", System.currentTimeMillis() - start);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

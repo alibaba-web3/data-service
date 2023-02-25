@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -49,7 +50,7 @@ public class EthereumTraces {
 
     private String to;
 
-    private BigInteger value;
+    private BigDecimal value;
 
     private Integer gasLimit;
 
