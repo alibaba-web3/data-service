@@ -1,5 +1,22 @@
 web3 data process service
 
+系统架构:
+
+![](https://i.328888.xyz/2023/02/27/eOx3c.png)
+
+目录结构：
+start: SpringBoot 启动目录
+
+web: Controller 目录，对外接口
+
+service: 业务逻辑
+
+framework: 外部服务调用
+
+dal: 数据库连接层，包含 mapper 和 SQL
+
+crawler: 服务调度，定时执行特定任务
+
 deployment:
 
 ```bash
