@@ -5,6 +5,7 @@ import java.time.Duration;
 import com.web3.framework.resouce.binance.BinanceApi;
 import com.web3.framework.resouce.defillama.DefillamaApi;
 import com.web3.framework.resouce.defillama.StablecoinApi;
+import com.web3.framework.resouce.glassnode.GlassNodeApi;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,8 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.support.WebClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
+import org.springframework.web.util.UriBuilder;
+import org.springframework.web.util.UriBuilderFactory;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.transport.ProxyProvider;
 
@@ -32,6 +35,9 @@ public class ApiConfiguration {
 
     @Value("${defillama.stablecoins.url}")
     private String stablecoinApiUrl;
+
+    @Value("${glassnode.api.url}")
+    private String glassNodeApiUrl;
 
     @Value("${proxy.host}")
     private String proxyHost;
@@ -89,6 +95,18 @@ public class ApiConfiguration {
             .build();
 
         return factory.createClient(StablecoinApi.class);
+    }
+
+    @Bean
+    GlassNodeApi glassNodeApi() {
+        WebClient webClient = WebClient.builder().baseUrl(glassNodeApiUrl).build();
+
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory
+                .builder(WebClientAdapter.forClient(webClient))
+                .blockTimeout(Duration.ofSeconds(30))
+                .build();
+
+        return factory.createClient(GlassNodeApi.class);
     }
 
     ExchangeStrategies getDefillamaStrategies() {

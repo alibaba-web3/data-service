@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
+import com.web3.service.address.dto.AddressAssetsInfoDTO;
 import com.web3.service.address.dto.AddressProfileDTO;
 import com.web3.service.address.dto.AddressSearchDTO;
 
@@ -48,5 +49,12 @@ public interface AddressService {
      * @return 搜索结果
      */
     List<AddressSearchDTO> search(String searchKey);
+
+    /**
+     * 根据 address 获取所有资产信息
+     * @param address
+     * @return
+     */
+    List<AddressAssetsInfoDTO> getAllAssetsInfo(String address);
 
 }

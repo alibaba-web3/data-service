@@ -1,11 +1,15 @@
 package com.web3.dal.data.service.impl;
 
+import java.util.List;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.web3.dal.data.entity.AddressChangeTemp;
 import com.web3.dal.data.mapper.AddressChangeTempMapper;
 import com.web3.dal.data.service.AddressChangeTempMapperService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.collections4.ListUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 /**
  * <p>
@@ -25,5 +29,25 @@ public class AddressChangeTempServiceImpl extends ServiceImpl<AddressChangeTempM
         wrapper.last("limit 1");
 
         return getOne(wrapper);
+    }
+
+    @Override
+    public void replaceIntoBatch(List<AddressChangeTemp> list) {
+
+        int maxSize = 500000;
+
+        if (CollectionUtils.isEmpty(list)) {
+            return;
+        }
+
+        if (list.size() > maxSize) {
+            List<List<AddressChangeTemp>> partitionList = ListUtils.partition(list, maxSize);
+            partitionList.stream().parallel().forEach(partition -> {
+                baseMapper.replaceIntoBatch(partition);
+            });
+        } else {
+            baseMapper.replaceIntoBatch(list);
+        }
+
     }
 }
