@@ -3,6 +3,8 @@ package com.web3.dal.data.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -14,7 +16,7 @@ import lombok.Setter;
  * </p>
  *
  * @author system
- * @since 2023-02-13
+ * @since 2023-02-17
  */
 @Getter
 @Setter
@@ -48,7 +50,7 @@ public class EthereumTraces {
 
     private String to;
 
-    private BigInteger value;
+    private BigDecimal value;
 
     private Integer gasLimit;
 

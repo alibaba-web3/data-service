@@ -32,6 +32,7 @@ import com.web3.framework.consts.GuavaCacheKeys;
 import com.web3.framework.resouce.binance.BinanceService;
 import com.web3.framework.resouce.ethereum.EthereumService;
 import com.web3.framework.utils.DateUtils;
+import com.web3.framework.utils.EnvUtils;
 import com.web3.framework.utils.GuavaCacheUtils;
 import com.web3.service.address.AddressService;
 import com.web3.service.address.BalanceService;
@@ -39,9 +40,11 @@ import com.web3.service.address.dto.BalanceChangeAddressInfo;
 import com.web3.service.address.param.TransformBalanceReq;
 import com.web3.service.file.FileService;
 import com.web3.service.file.dto.TraceCsvDTO;
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.web3j.utils.Convert;
@@ -78,17 +81,28 @@ public class BalanceServiceImpl implements BalanceService {
     @Resource
     private FileService fileService;
 
+    @Resource
+    private EnvUtils envUtils;
+
     public ExecutorService processBalanceExecutor;
 
     public ExecutorService processAddressExecutor;
 
     public BalanceServiceImpl() {
 
-        processBalanceExecutor = new ThreadPoolExecutor(800, 800, 10, TimeUnit.SECONDS,
+        processBalanceExecutor = new ThreadPoolExecutor(800, 800, 0, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>(), new ThreadFactoryBuilder().setNameFormat("get-balance-%d").build());
 
         processAddressExecutor = new ThreadPoolExecutor(5, 5, 10, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>(), new ThreadFactoryBuilder().setNameFormat("get-address-%d").build());
+    }
+
+    @PostConstruct
+    public void init() {
+        if (!envUtils.isLocal()) {
+            fillHistoryRecord();
+        }
+
     }
 
     @Override
@@ -104,7 +118,8 @@ public class BalanceServiceImpl implements BalanceService {
             LocalDateTime e;
             if (i == 0) {
                 s = localDateTime;
-                e = LocalDateTime.of(localDateTime.getYear(), localDateTime.getMonth(), localDateTime.getDayOfMonth() + 1, 0, 0);
+                LocalDateTime plusDay = localDateTime.plusDays(1);
+                e = LocalDateTime.of(plusDay.getYear(), plusDay.getMonth(), plusDay.getDayOfMonth(), 0, 0);
             } else {
                 s = LocalDateTime.of(localDateTime.getYear(), localDateTime.getMonth(), localDateTime.getDayOfMonth(), 0, 0);
                 e = s.plusDays(1);
@@ -182,6 +197,7 @@ public class BalanceServiceImpl implements BalanceService {
             addressChangeTempMapperService.replaceIntoBatch(entityList);
 
             balanceChangeAddressInfoMap.remove(s);
+            entityFutureList.clear();
 
             long record4 = System.currentTimeMillis();
             log.info("add address end: {}", (record4 - record3) / 1000);
@@ -193,11 +209,12 @@ public class BalanceServiceImpl implements BalanceService {
     public void fillHistoryRecord() {
         AddressChangeTemp latest = addressChangeTempMapperService.getLatest();
         LocalDateTime now = LocalDateTime.now();
-
-        List<LocalDateTime> localDateTimeList = DateUtils.getBetweenDate(latest.getTime(), now);
-
-        for (int i = 0; i < localDateTimeList.size(); i++) {
-
+        try {
+            if (latest.getTime().isBefore(now)) {
+                addBalanceRecord(latest.getTime(), now);
+            }
+        } catch (Exception e) {
+            log.error("addBalanceRecord error", e);
         }
     }
 
