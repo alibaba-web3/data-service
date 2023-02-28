@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import com.web3.framework.resouce.ethereum.EthereumService;
+import io.reactivex.disposables.Disposable;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +16,7 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.Request;
+import org.web3j.protocol.core.methods.response.EthBlock.Block;
 import org.web3j.protocol.core.methods.response.EthGasPrice;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.EthGetCode;
@@ -33,6 +36,16 @@ public class EthereumServiceImpl implements EthereumService {
 
     public EthereumServiceImpl(@Value("${ethereum.node.rpc}") String nodeRpcUrl) {
         this.web3j = Web3j.build(new HttpService(nodeRpcUrl));
+    }
+
+    @PostConstruct
+    public void init() {
+        Disposable disposable = web3j.blockFlowable(true).subscribe(res -> {
+            Block block = res.getBlock();
+            log.info("eth new block: {}", block.getNumber());
+        });
+
+        log.info("eth block subscribe: {}", disposable.isDisposed());
     }
 
     @Override
@@ -72,7 +85,6 @@ public class EthereumServiceImpl implements EthereumService {
             return null;
         }
     }
-
 
     @Override
     public BigInteger getEthWeiBalance(String address, BigInteger blockNumber) throws IOException {
