@@ -37,7 +37,7 @@ public class DefiServiceImpl implements DefiService {
             historyTvlRes = defillamaApi.getHistoryTvl(protocol);
         } catch (Exception e) {
             log.error("get {} tvl error and retry", protocol);
-            Thread.sleep(5 * 1000);
+            Thread.sleep(3 * 1000);
             historyTvlRes = defillamaApi.getHistoryTvl(protocol);
         }
 
@@ -77,7 +77,7 @@ public class DefiServiceImpl implements DefiService {
 
         if (!CollectionUtils.isEmpty(tvl1dList)) {
             log.info("sync {} tvl data, {}", protocol, tvl1dList.size());
-            tvl1dMapperService.saveBatch(tvl1dList);
+            tvl1dMapperService.replaceIntoBatch(tvl1dList);
         }
 
     }

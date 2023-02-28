@@ -2,4 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.web3.dal.data.mapper.Tvl1dMapper">
 
+    <insert id="replaceIntoBatch">
+        replace into tvl_1d
+        (date, name,tvl, symbol)
+        VALUES
+        <foreach collection="list" item="it" separator=",">
+            (#{it.date},#{it.name},#{it.tvl},#{it.symbol})
+        </foreach>
+    </insert>
+
 </mapper>
