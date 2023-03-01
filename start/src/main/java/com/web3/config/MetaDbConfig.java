@@ -6,12 +6,15 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.init.DataSourceInitializer;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import javax.sql.DataSource;
 
@@ -32,17 +35,32 @@ public class MetaDbConfig {
     @Value(value = "${meta.password}")
     private String password;
 
+    @Value(value = "${meta.driver-class-name}")
+    private String driverClassName;
+
     @Primary
     @Bean(name = "metaDataSource")
-    @ConfigurationProperties(prefix = "meta")
     public DataSource defaultDataSource() {
         DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
-        dataSourceBuilder.driverClassName("com.mysql.cj.jdbc.Driver");
+        dataSourceBuilder.driverClassName(driverClassName);
         dataSourceBuilder.url(jdbcUrl);
         dataSourceBuilder.username(username);
         dataSourceBuilder.password(password);
         return dataSourceBuilder.build();
     }
+
+    @Bean(name = "metaDataSourceInitializer")
+    @ConditionalOnProperty(name = "datasource.initialize", havingValue="true")
+    public DataSourceInitializer dataSourceInitializer1(DataSource datasource) {
+        ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
+        resourceDatabasePopulator.addScript(new ClassPathResource("script/meta_schema.sql"));
+        //resourceDatabasePopulator.addScript(new ClassPathResource("data-h22.sql"));
+        DataSourceInitializer dataSourceInitializer = new DataSourceInitializer();
+        dataSourceInitializer.setDataSource(datasource);
+        dataSourceInitializer.setDatabasePopulator(resourceDatabasePopulator);
+        return dataSourceInitializer;
+    }
+
 
     @Bean(name = "sqlSessionFactoryMeta")
     @Primary
