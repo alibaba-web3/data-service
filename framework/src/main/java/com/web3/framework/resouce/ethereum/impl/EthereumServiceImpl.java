@@ -38,18 +38,6 @@ public class EthereumServiceImpl implements EthereumService {
         this.web3j = Web3j.build(new HttpService(nodeRpcUrl));
     }
 
-    @PostConstruct
-    public void init() {
-        Disposable disposable = web3j.blockFlowable(true).subscribe(res -> {
-            Block block = res.getBlock();
-            log.info("eth new block: {}", block.getNumber());
-        }, (error) -> {
-            log.error("subscribe eth block error", error);
-        });
-
-        log.info("eth block subscribe: {}", disposable.isDisposed());
-    }
-
     @Override
     public Web3j getWeb3j() {
         return web3j;
