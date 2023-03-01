@@ -266,14 +266,14 @@ public class BalanceServiceImpl implements BalanceService {
         Set<String> addressSet = new HashSet<>();
         Future<List<EthereumBlocks>> blocksListFuture = processBalanceExecutor.submit(() -> ethereumBlocksMapperService.list(start, end));
         Future<List<EthereumTransactions>> transactionsListFuture = processBalanceExecutor.submit(() -> ethereumTransactionsMapperService.list(start, end));
-        //Future<List<EthereumTraces>> traceListFuture = processBalanceExecutor.submit(() -> ethereumTracesMapperService.list(start, end));
+        Future<List<EthereumTraces>> traceListFuture = processBalanceExecutor.submit(() -> ethereumTracesMapperService.list(start, end));
 
         List<EthereumBlocks> blocksList = blocksListFuture.get(1800, TimeUnit.SECONDS);
         List<EthereumTransactions> transactionsList = transactionsListFuture.get(1800, TimeUnit.SECONDS);
-        //List<EthereumTraces> traceList = traceListFuture.get(1800, TimeUnit.SECONDS);
+        List<EthereumTraces> traceList = traceListFuture.get(1800, TimeUnit.SECONDS);
 
-        if (CollectionUtils.isEmpty(blocksList) || CollectionUtils.isEmpty(transactionsList)) {
-            log.info("blocks or transactions set is empty {} {} {} {}", start, end, blocksList.size(), transactionsList.size());
+        if (CollectionUtils.isEmpty(blocksList) || CollectionUtils.isEmpty(transactionsList) || CollectionUtils.isEmpty(traceList)) {
+            log.info("blocks or transactions set is empty {} {} {} {} {}", start, end, blocksList.size(), transactionsList.size(), traceList.size());
             return result;
         }
 
@@ -290,14 +290,14 @@ public class BalanceServiceImpl implements BalanceService {
                 addressSet.add(transaction.getTo());
             }
         });
-        //traceList.forEach(trace->{
-        //    if (StringUtils.isNotEmpty(trace.getFrom())) {
-        //        addressSet.add(trace.getFrom());
-        //    }
-        //    if (StringUtils.isNotEmpty(trace.getTo())) {
-        //        addressSet.add(trace.getTo());
-        //    }
-        //});
+        traceList.forEach(trace -> {
+            if (StringUtils.isNotEmpty(trace.getFrom())) {
+                addressSet.add(trace.getFrom());
+            }
+            if (StringUtils.isNotEmpty(trace.getTo())) {
+                addressSet.add(trace.getTo());
+            }
+        });
 
         //Set<String> traceList = getTraceAddressList(start);
         //addressSet.addAll(traceList);
