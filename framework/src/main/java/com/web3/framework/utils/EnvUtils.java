@@ -14,7 +14,7 @@ public class EnvUtils {
     private String env;
 
     public Boolean isLocal() {
-        return "local".equals(env);
+        return "local".equals(env) || "inner".equals(env);
     }
 
     public Boolean isStage() {

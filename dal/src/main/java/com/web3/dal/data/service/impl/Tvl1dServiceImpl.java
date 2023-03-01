@@ -1,13 +1,12 @@
 package com.web3.dal.data.service.impl;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.List;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.web3.dal.data.entity.Tvl1d;
 import com.web3.dal.data.mapper.Tvl1dMapper;
 import com.web3.dal.data.service.Tvl1dMapperService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -29,5 +28,10 @@ public class Tvl1dServiceImpl extends ServiceImpl<Tvl1dMapper, Tvl1d> implements
             .last("limit 1");
 
         return getOne(wrapper);
+    }
+
+    @Override
+    public void replaceIntoBatch(List<Tvl1d> list) {
+        baseMapper.replaceIntoBatch(list);
     }
 }

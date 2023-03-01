@@ -3,13 +3,16 @@ package com.web3.framework.resouce;
 import java.time.Duration;
 
 import com.web3.framework.resouce.binance.BinanceApi;
+import com.web3.framework.resouce.defillama.DatasetsApi;
 import com.web3.framework.resouce.defillama.DefillamaApi;
 import com.web3.framework.resouce.defillama.StablecoinApi;
 import com.web3.framework.resouce.glassnode.GlassNodeApi;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.reactive.ClientHttpConnector;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -25,6 +28,7 @@ import reactor.netty.transport.ProxyProvider;
  * @Date: 2023/1/5
  */
 @Configuration
+@Slf4j
 public class ApiConfiguration {
 
     @Value("${binance.api.url}")
@@ -35,6 +39,9 @@ public class ApiConfiguration {
 
     @Value("${defillama.stablecoins.url}")
     private String stablecoinApiUrl;
+
+    @Value("${defillama.dataset.url}")
+    private String datasetApiUrl;
 
     @Value("${glassnode.api.url}")
     private String glassNodeApiUrl;
@@ -71,15 +78,45 @@ public class ApiConfiguration {
     @Bean
     DefillamaApi defillamaApi() {
         final ExchangeStrategies strategies = getDefillamaStrategies();
+        //// 重定向处理
+        //HttpClient httpClient = HttpClient.create().followRedirect(true, (clientRequest) -> {
+        //    clientRequest.resourceUrl();
+        //    log.info(clientRequest.uri());
+        //});
 
-        WebClient client = WebClient.builder().baseUrl(defillamaApiUrl).exchangeStrategies(strategies).build();
+        //ClientHttpConnector clientHttpConnector = new ReactorClientHttpConnector(httpClient);
+
+        WebClient client = WebClient
+            .builder()
+            .baseUrl(defillamaApiUrl)
+            .exchangeStrategies(strategies)
+            //.clientConnector(clientHttpConnector)
+            .build();
 
         HttpServiceProxyFactory factory = HttpServiceProxyFactory
             .builder(WebClientAdapter.forClient(client))
-            .blockTimeout(Duration.ofSeconds(30))
+            .blockTimeout(Duration.ofSeconds(60))
             .build();
 
         return factory.createClient(DefillamaApi.class);
+    }
+
+    @Bean
+    DatasetsApi datasetsApi() {
+        final ExchangeStrategies strategies = getDefillamaStrategies();
+
+        WebClient client = WebClient
+            .builder()
+            .baseUrl(datasetApiUrl)
+            .exchangeStrategies(strategies)
+            .build();
+
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory
+            .builder(WebClientAdapter.forClient(client))
+            .blockTimeout(Duration.ofSeconds(60))
+            .build();
+
+        return factory.createClient(DatasetsApi.class);
     }
 
     @Bean
@@ -102,15 +139,15 @@ public class ApiConfiguration {
         WebClient webClient = WebClient.builder().baseUrl(glassNodeApiUrl).build();
 
         HttpServiceProxyFactory factory = HttpServiceProxyFactory
-                .builder(WebClientAdapter.forClient(webClient))
-                .blockTimeout(Duration.ofSeconds(30))
-                .build();
+            .builder(WebClientAdapter.forClient(webClient))
+            .blockTimeout(Duration.ofSeconds(30))
+            .build();
 
         return factory.createClient(GlassNodeApi.class);
     }
 
     ExchangeStrategies getDefillamaStrategies() {
-        final int size = 16 * 1024 * 1024;
+        final int size = 32 * 1024 * 1024;
         return ExchangeStrategies.builder()
             .codecs(codecs -> codecs.defaultCodecs().maxInMemorySize(size))
             .build();

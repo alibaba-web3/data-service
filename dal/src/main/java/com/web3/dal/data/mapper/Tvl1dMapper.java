@@ -1,5 +1,8 @@
 package com.web3.dal.data.mapper;
 
+import java.util.List;
+
+import com.web3.dal.data.entity.Price1d;
 import com.web3.dal.data.entity.Tvl1d;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -12,5 +15,12 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @since 2023-02-06
  */
 public interface Tvl1dMapper extends BaseMapper<Tvl1d> {
+
+    /**
+     * replace into 批量插入
+     *
+     * @param list
+     */
+    void replaceIntoBatch(List<Tvl1d> list);
 
 }
