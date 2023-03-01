@@ -147,7 +147,7 @@ public class ApiConfiguration {
     }
 
     ExchangeStrategies getDefillamaStrategies() {
-        final int size = 16 * 1024 * 1024;
+        final int size = 32 * 1024 * 1024;
         return ExchangeStrategies.builder()
             .codecs(codecs -> codecs.defaultCodecs().maxInMemorySize(size))
             .build();
