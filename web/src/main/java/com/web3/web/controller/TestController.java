@@ -75,7 +75,6 @@ public class TestController {
     @Resource
     private Price1dMapperService price1dMapperService;
 
-    @Value(value = "${field}")
     @Resource
     private EthereumV2Job ethereumV2Job;
 
@@ -119,6 +118,8 @@ public class TestController {
     public HistoryTvlRes getHistoryTvl(@RequestParam String symbol) {
         if (Objects.equals(symbol, "curve")) {
             return datasetsApi.getCurveTvlHistory();
+        } else if (Objects.equals(symbol, "uniswap")) {
+            return datasetsApi.getUniswapTvlHistory();
         } else {
             return defillamaApi.getHistoryTvl(symbol);
         }
