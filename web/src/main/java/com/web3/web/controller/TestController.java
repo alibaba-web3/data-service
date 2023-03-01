@@ -2,11 +2,11 @@ package com.web3.web.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.nacos.api.config.annotation.NacosValue;
 
 import com.web3.crawler.constants.TaskType;
@@ -15,7 +15,7 @@ import com.web3.crawler.jobs.EthereumV2Job;
 import com.web3.crawler.processors.Price1dProcessor;
 import com.web3.dal.data.service.Price1dMapperService;
 import com.web3.framework.resouce.binance.BinanceService;
-import com.web3.framework.resouce.binance.dto.KLineDTO;
+import com.web3.framework.resouce.defillama.DatasetsApi;
 import com.web3.framework.resouce.defillama.DefillamaApi;
 import com.web3.framework.resouce.defillama.StablecoinApi;
 import com.web3.framework.resouce.defillama.dto.AllStableCoinRes;
@@ -27,12 +27,9 @@ import com.web3.service.address.BalanceService;
 import com.web3.service.defi.DefiService;
 import com.web3.service.file.FileReadService;
 import com.web3.service.file.impl.CsvReadImpl;
-import com.web3.service.file.impl.CsvReadV1Impl;
-import com.web3.service.file.impl.CsvReadV2Impl;
 import com.web3.service.pos.EthereumV2Service;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -71,6 +68,9 @@ public class TestController {
 
     @Resource
     private DefiService defiService;
+
+    @Resource
+    private DatasetsApi datasetsApi;
 
     @Resource
     private Price1dMapperService price1dMapperService;
@@ -117,7 +117,12 @@ public class TestController {
 
     @GetMapping("/historyTvl")
     public HistoryTvlRes getHistoryTvl(@RequestParam String symbol) {
-        return defillamaApi.getHistoryTvl(symbol);
+        if (Objects.equals(symbol, "curve")) {
+            return datasetsApi.getCurveTvlHistory();
+        } else {
+            return defillamaApi.getHistoryTvl(symbol);
+        }
+
     }
 
     @GetMapping("/protocols")

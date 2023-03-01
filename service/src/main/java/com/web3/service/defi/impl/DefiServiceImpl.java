@@ -3,9 +3,11 @@ package com.web3.service.defi.impl;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import com.web3.dal.data.entity.Tvl1d;
 import com.web3.dal.data.service.Tvl1dMapperService;
+import com.web3.framework.resouce.defillama.DatasetsApi;
 import com.web3.framework.resouce.defillama.DefillamaApi;
 import com.web3.framework.resouce.defillama.dto.HistoryTvlRes;
 import com.web3.framework.resouce.defillama.dto.ProtocolRes;
@@ -13,6 +15,7 @@ import com.web3.framework.utils.DateUtils;
 import com.web3.service.defi.DefiService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -30,15 +33,21 @@ public class DefiServiceImpl implements DefiService {
     @Resource
     private DefillamaApi defillamaApi;
 
+    @Resource
+    private DatasetsApi datasetsApi;
+
+    @Value("${sync.tvl.list}")
+    private List<String> tvlSyncSymbolList;
+
     @Override
     public void syncTvl(String protocol) throws InterruptedException {
         HistoryTvlRes historyTvlRes;
         try {
-            historyTvlRes = defillamaApi.getHistoryTvl(protocol);
+            historyTvlRes = getHistoryTvl(protocol);
         } catch (Exception e) {
             log.error("get {} tvl error and retry", protocol);
             Thread.sleep(3 * 1000);
-            historyTvlRes = defillamaApi.getHistoryTvl(protocol);
+            historyTvlRes = getHistoryTvl(protocol);
         }
 
         if (historyTvlRes == null || CollectionUtils.isEmpty(historyTvlRes.getTvl())) {
@@ -84,11 +93,9 @@ public class DefiServiceImpl implements DefiService {
 
     @Override
     public void syncAllProtocolTvl() {
-        List<ProtocolRes> protocolList = getTopProtocol(30);
-
-        protocolList.stream().parallel().forEach(protocol -> {
+        tvlSyncSymbolList.forEach(protocol -> {
             try {
-                syncTvl(protocol.getSlug());
+                syncTvl(protocol);
             } catch (Exception e) {
                 log.error("{} tvl sync error", protocol, e);
             }
@@ -105,5 +112,14 @@ public class DefiServiceImpl implements DefiService {
         });
 
         return protocolList.subList(0, topNumber);
+    }
+
+    HistoryTvlRes getHistoryTvl(String symbol) {
+
+        return switch (symbol) {
+            case "curve" -> datasetsApi.getCurveTvlHistory();
+            case "uniswap" -> datasetsApi.getUniswapTvlHistory();
+            default -> defillamaApi.getHistoryTvl(symbol);
+        };
     }
 }
