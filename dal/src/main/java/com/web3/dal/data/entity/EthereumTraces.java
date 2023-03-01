@@ -1,6 +1,7 @@
 package com.web3.dal.data.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -46,8 +47,10 @@ public class EthereumTraces {
 
     private String type;
 
+    @TableField(value = "`from`")
     private String from;
 
+    @TableField(value = "`to`")
     private String to;
 
     private BigDecimal value;
@@ -63,4 +66,9 @@ public class EthereumTraces {
     private String methodId;
 
     private String error;
+
+    /**
+     * 修改时间
+     */
+    private LocalDateTime gmtModified;
 }
