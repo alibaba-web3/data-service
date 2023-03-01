@@ -44,7 +44,8 @@ public class Balance1dProcessor implements IProcessor {
     }
 
     public void _do(Task task) throws Exception {
-        balanceService.addBalanceRecord(task.getScheduleTime().plusDays(-1), task.getScheduleTime());
+        balanceService.fillHistoryRecord();
+        //balanceService.addBalanceRecord(task.getScheduleTime().plusDays(-1), task.getScheduleTime());
     }
 
 }

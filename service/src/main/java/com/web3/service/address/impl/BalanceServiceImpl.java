@@ -97,14 +97,6 @@ public class BalanceServiceImpl implements BalanceService {
             new LinkedBlockingQueue<>(), new ThreadFactoryBuilder().setNameFormat("get-address-%d").build());
     }
 
-    @PostConstruct
-    public void init() {
-        if (!envUtils.isLocal()) {
-            fillHistoryRecord();
-        }
-
-    }
-
     @Override
     public void addBalanceRecord(LocalDateTime start, LocalDateTime end) throws InterruptedException, ExecutionException {
         List<LocalDateTime> localDateTimeList = DateUtils.getBetweenDate(start, end);
