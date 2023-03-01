@@ -13,7 +13,7 @@ import java.util.List;
  * </p>
  *
  * @author system
- * @since 2023-02-17
+ * @since 2023-02-10
  */
 @Mapper
 public interface EthereumTracesMapper extends BaseMapper<EthereumTraces> {

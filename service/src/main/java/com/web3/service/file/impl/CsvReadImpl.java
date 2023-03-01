@@ -116,10 +116,11 @@ public class CsvReadImpl implements FileReadService<EthereumTrace> {
     private void batchWriteContents(List<EthereumTrace> ethereumTraces) {
         List<EthereumTraces> list = new ArrayList<>(ethereumTraces.size());
         try {
+            int i = 0;
             for (EthereumTrace item : ethereumTraces) {
                 try {
                     EthereumTraces record = new EthereumTraces();
-                    record.setTraceAddress(item.getTraceAddress());
+                    record.setTraceAddress("".equals(item.getTraceAddress()) ? null : item.getTraceAddress());
                     record.setFrom(item.getFrom());
                     record.setError(item.getError());
                     record.setInput(item.getInput());
@@ -136,13 +137,13 @@ public class CsvReadImpl implements FileReadService<EthereumTrace> {
                     record.setTransactionHash(item.getTxHash());
                     list.add(record);
                 } catch (Exception e) {
-                    log.info("item: {}", item);
                     throw new RuntimeException(e);
                 }
             }
              ethTracesMapperService.batchInsertOrUpdateData(list);
         } catch (Exception e) {
-            log.error("SQL error: {} || record: {}", e.getMessage(), JSON.toJSONString(list));
+            log.info("error : {}", e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
