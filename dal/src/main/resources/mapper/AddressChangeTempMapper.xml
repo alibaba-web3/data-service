@@ -7,7 +7,7 @@
         (address, time, amount, amount_raw)
         VALUES
         <foreach collection="list" item="it" separator=",">
-            (#{it.address},#{it.time},#{it.amount},#{it.it.amountRaw})
+            (#{it.address},#{it.time},#{it.amount},#{it.amountRaw})
         </foreach>
     </insert>
 </mapper>
