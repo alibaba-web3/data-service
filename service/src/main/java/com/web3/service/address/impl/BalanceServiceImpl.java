@@ -207,6 +207,7 @@ public class BalanceServiceImpl implements BalanceService {
             }
         } catch (Exception e) {
             log.error("addBalanceRecord error", e);
+            throw new RuntimeException("addBalanceRecord error", e);
         }
     }
 
