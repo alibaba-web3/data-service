@@ -103,9 +103,9 @@ public class TestController {
         }
     }
 
-    @GetMapping("/executeFillBalance")
-    public void executeFillBalance() {
-        addressService.updateLatestBalanceBatch();
+    @GetMapping("/fillHistoryRecord")
+    public void fillHistoryRecord() {
+        balanceService.fillHistoryRecord();
     }
 
     @GetMapping("/executeAddBalanceRecord")
