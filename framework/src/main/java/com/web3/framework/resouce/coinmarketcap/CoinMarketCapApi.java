@@ -1,7 +1,10 @@
 package com.web3.framework.resouce.coinmarketcap;
 
 import java.util.List;
+import java.util.Map;
 
+import com.web3.framework.resouce.coinmarketcap.dto.CmcInfo;
+import com.web3.framework.resouce.coinmarketcap.dto.CmcRes;
 import com.web3.framework.resouce.defillama.dto.ProtocolRes;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.GetExchange;
@@ -27,7 +30,7 @@ public interface CoinMarketCapApi {
      * @return 基础信息
      */
     @GetExchange("/v2/cryptocurrency/info")
-    Object getCryptoCurrencyInfo(@RequestParam(required = false) String id, @RequestParam(required = false) String slug, @RequestParam(required = false) String symbol,
+    CmcRes<Map<String, CmcInfo>> getCryptoCurrencyInfo(@RequestParam(required = false) String id, @RequestParam(required = false) String slug, @RequestParam(required = false) String symbol,
         @RequestParam(required = false) String address, @RequestParam(required = false) Boolean skip_invalid, @RequestParam(required = false) String aux);
 
 }
