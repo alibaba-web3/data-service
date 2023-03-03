@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.web3.dal.data.entity.Tvl1d;
 import com.web3.dal.data.service.Tvl1dMapperService;
+import com.web3.framework.resouce.coinmarketcap.CoinMarketCapService;
+import com.web3.framework.resouce.coinmarketcap.dto.CmcInfo;
 import com.web3.framework.resouce.defillama.DatasetsApi;
 import com.web3.framework.resouce.defillama.DefillamaApi;
 import com.web3.framework.resouce.defillama.dto.HistoryTvlRes;
@@ -17,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * @Author: mianyun.yt
@@ -34,6 +37,9 @@ public class DefiServiceImpl implements DefiService {
 
     @Resource
     private DatasetsApi datasetsApi;
+
+    @Resource
+    private CoinMarketCapService coinMarketCapService;
 
     @Value("${sync.tvl.list}")
     private List<String> tvlSyncSymbolList;
@@ -116,10 +122,18 @@ public class DefiServiceImpl implements DefiService {
     @Override
     public HistoryTvlRes getHistoryTvl(String protocol) {
 
-        return switch (protocol) {
+        HistoryTvlRes res = switch (protocol) {
             case "curve" -> datasetsApi.getCurveTvlHistory();
             case "uniswap" -> datasetsApi.getUniswapTvlHistory();
             default -> defillamaApi.getHistoryTvl(protocol);
         };
+
+        // defillama 部分数据缺少 symbol
+        if (!StringUtils.hasText(res.getSymbol())) {
+            CmcInfo cmcInfo = coinMarketCapService.getInfoById(res.getCmcId());
+            res.setSymbol(cmcInfo.getSymbol());
+        }
+
+        return res;
     }
 }
