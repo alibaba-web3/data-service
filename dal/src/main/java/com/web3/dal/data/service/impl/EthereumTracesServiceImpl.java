@@ -30,7 +30,7 @@ public class EthereumTracesServiceImpl extends ServiceImpl<EthereumTracesMapper,
         QueryWrapper<EthereumTraces> wrapper = new QueryWrapper<>();
         wrapper.ge("block_timestamp", start);
         wrapper.le("block_timestamp", end);
-        wrapper.select("`from`", "`to`");
+        wrapper.select("distinct `from`", "`to`");
 
         return list(wrapper);
     }
