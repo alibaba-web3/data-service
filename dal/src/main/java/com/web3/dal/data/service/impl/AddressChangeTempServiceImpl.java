@@ -34,7 +34,7 @@ public class AddressChangeTempServiceImpl extends ServiceImpl<AddressChangeTempM
     @Override
     public void replaceIntoBatch(List<AddressChangeTemp> list) {
 
-        int maxSize = 500000;
+        int maxSize = 5000000;
 
         if (CollectionUtils.isEmpty(list)) {
             return;
