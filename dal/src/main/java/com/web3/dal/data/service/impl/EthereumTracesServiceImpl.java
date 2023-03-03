@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author system
@@ -30,6 +30,7 @@ public class EthereumTracesServiceImpl extends ServiceImpl<EthereumTracesMapper,
         QueryWrapper<EthereumTraces> wrapper = new QueryWrapper<>();
         wrapper.ge("block_timestamp", start);
         wrapper.le("block_timestamp", end);
+        wrapper.select("from", "to")
 
         return list(wrapper);
     }
