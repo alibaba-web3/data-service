@@ -15,6 +15,7 @@ import com.web3.crawler.jobs.EthereumV2Job;
 import com.web3.crawler.processors.Price1dProcessor;
 import com.web3.dal.data.service.Price1dMapperService;
 import com.web3.framework.resouce.binance.BinanceService;
+import com.web3.framework.resouce.coinmarketcap.CoinMarketCapApi;
 import com.web3.framework.resouce.defillama.DatasetsApi;
 import com.web3.framework.resouce.defillama.DefillamaApi;
 import com.web3.framework.resouce.defillama.StablecoinApi;
@@ -65,6 +66,9 @@ public class TestController {
 
     @Resource
     private StablecoinApi stablecoinApi;
+
+    @Resource
+    private CoinMarketCapApi coinMarketCapApi;
 
     @Resource
     private DefiService defiService;
@@ -179,6 +183,11 @@ public class TestController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @GetMapping("/cmc/info")
+    public Object getCryptoCurrencyInfo(@RequestParam String id) {
+        return coinMarketCapApi.getCryptoCurrencyInfo(id, null, null, null, null, null);
     }
 
 }

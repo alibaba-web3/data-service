@@ -3,7 +3,6 @@ package com.web3.service.defi.impl;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 import com.web3.dal.data.entity.Tvl1d;
 import com.web3.dal.data.service.Tvl1dMapperService;
@@ -114,12 +113,13 @@ public class DefiServiceImpl implements DefiService {
         return protocolList.subList(0, topNumber);
     }
 
-    HistoryTvlRes getHistoryTvl(String symbol) {
+    @Override
+    public HistoryTvlRes getHistoryTvl(String protocol) {
 
-        return switch (symbol) {
+        return switch (protocol) {
             case "curve" -> datasetsApi.getCurveTvlHistory();
             case "uniswap" -> datasetsApi.getUniswapTvlHistory();
-            default -> defillamaApi.getHistoryTvl(symbol);
+            default -> defillamaApi.getHistoryTvl(protocol);
         };
     }
 }

@@ -3,6 +3,7 @@ package com.web3.framework.resouce;
 import java.time.Duration;
 
 import com.web3.framework.resouce.binance.BinanceApi;
+import com.web3.framework.resouce.coinmarketcap.CoinMarketCapApi;
 import com.web3.framework.resouce.defillama.DatasetsApi;
 import com.web3.framework.resouce.defillama.DefillamaApi;
 import com.web3.framework.resouce.defillama.StablecoinApi;
@@ -46,6 +47,12 @@ public class ApiConfiguration {
     @Value("${glassnode.api.url}")
     private String glassNodeApiUrl;
 
+    @Value("${coinmarketcap.api.url}")
+    private String cmcApiUrl;
+
+    @Value("${coinmarketcap.api.key}")
+    private String cmcApiKey;
+
     @Value("${proxy.host}")
     private String proxyHost;
 
@@ -58,13 +65,7 @@ public class ApiConfiguration {
 
         if (proxyPort != null && StringUtils.isNotEmpty(proxyHost)) {
             // 本地访问 binance 需要代理
-            HttpClient httpClient =
-                HttpClient.create()
-                    .proxy(proxy -> proxy.type(ProxyProvider.Proxy.HTTP)
-                        .host(proxyHost)
-                        .port(proxyPort));
-
-            ReactorClientHttpConnector conn = new ReactorClientHttpConnector(httpClient);
+            ReactorClientHttpConnector conn = getProxyClient();
 
             client = WebClient.builder().baseUrl(binanceApiUrl).clientConnector(conn).build();
         } else {
@@ -73,6 +74,15 @@ public class ApiConfiguration {
 
         HttpServiceProxyFactory factory = HttpServiceProxyFactory.builder(WebClientAdapter.forClient(client)).build();
         return factory.createClient(BinanceApi.class);
+    }
+
+    ReactorClientHttpConnector getProxyClient() {
+
+        HttpClient httpClient = HttpClient.create()
+            .proxy(proxy -> proxy.type(ProxyProvider.Proxy.HTTP)
+                .host(proxyHost)
+                .port(proxyPort));
+        return new ReactorClientHttpConnector(httpClient);
     }
 
     @Bean
@@ -144,6 +154,27 @@ public class ApiConfiguration {
             .build();
 
         return factory.createClient(GlassNodeApi.class);
+    }
+
+    @Bean
+    CoinMarketCapApi coinMarketCapApi() {
+        WebClient client;
+
+        if (proxyPort != null && StringUtils.isNotEmpty(proxyHost)) {
+            // 本地访问 binance 需要代理
+            ReactorClientHttpConnector conn = getProxyClient();
+
+            client = WebClient.builder().baseUrl(cmcApiUrl).clientConnector(conn).defaultHeader("X-CMC_PRO_API_KEY", cmcApiKey).build();
+        } else {
+            client = WebClient.builder().baseUrl(cmcApiUrl).defaultHeader("X-CMC_PRO_API_KEY", cmcApiKey).build();
+        }
+
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory
+            .builder(WebClientAdapter.forClient(client))
+            .blockTimeout(Duration.ofSeconds(5))
+            .build();
+
+        return factory.createClient(CoinMarketCapApi.class);
     }
 
     ExchangeStrategies getDefillamaStrategies() {
