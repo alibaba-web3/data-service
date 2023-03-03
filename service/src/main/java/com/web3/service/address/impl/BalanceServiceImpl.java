@@ -274,7 +274,7 @@ public class BalanceServiceImpl implements BalanceService {
         List<EthereumTraces> traceList = traceListFuture.get(1800, TimeUnit.SECONDS);
 
         if (CollectionUtils.isEmpty(blocksList) || CollectionUtils.isEmpty(transactionsList) || CollectionUtils.isEmpty(traceList)) {
-            log.info("blocks or transactions set is empty {} {} {} {} {}", start, end, blocksList.size(), transactionsList.size(), traceList.size());
+            log.info("blocks or transactions or trace is empty,start:{},end:{} {} {} {}", start, end, blocksList.size(), transactionsList.size(), traceList.size());
             return result;
         }
 
