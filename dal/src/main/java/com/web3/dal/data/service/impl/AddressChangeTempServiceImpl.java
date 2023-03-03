@@ -42,9 +42,7 @@ public class AddressChangeTempServiceImpl extends ServiceImpl<AddressChangeTempM
 
         if (list.size() > maxSize) {
             List<List<AddressChangeTemp>> partitionList = ListUtils.partition(list, maxSize);
-            partitionList.stream().parallel().forEach(partition -> {
-                baseMapper.replaceIntoBatch(partition);
-            });
+            partitionList.forEach(partition -> baseMapper.replaceIntoBatch(partition));
         } else {
             baseMapper.replaceIntoBatch(list);
         }
