@@ -28,6 +28,7 @@ public class EthereumTransactionsServiceImpl extends ServiceImpl<EthereumTransac
         wrapper.ge("block_timestamp", start);
         wrapper.le("block_timestamp", end);
         //wrapper.eq("success", true);
+        wrapper.select("distinct `from`", "`to`");
 
         return list(wrapper);
     }
