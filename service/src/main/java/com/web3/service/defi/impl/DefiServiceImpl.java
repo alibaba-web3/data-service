@@ -3,6 +3,7 @@ package com.web3.service.defi.impl;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import com.web3.dal.data.entity.Tvl1d;
 import com.web3.dal.data.service.Tvl1dMapperService;
@@ -131,7 +132,13 @@ public class DefiServiceImpl implements DefiService {
         // defillama 部分数据缺少 symbol
         if (!StringUtils.hasText(res.getSymbol())) {
             CmcInfo cmcInfo = coinMarketCapService.getInfoById(res.getCmcId());
-            res.setSymbol(cmcInfo.getSymbol());
+            // TODO defillama 关联的 cmcID 是错误的
+            if (Objects.equals(res.getId(), "PancakeSwap")) {
+                res.setSymbol("CAKE");
+            } else {
+                res.setSymbol(cmcInfo.getSymbol());
+            }
+
         }
 
         return res;
