@@ -18,7 +18,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@TableName("ethereum_transactions")
+@TableName("ethereum_transactions_tmp")
 public class EthereumTransactions implements Serializable {
 
     private static final long serialVersionUID = 1L;
