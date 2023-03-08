@@ -5,8 +5,10 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import com.opencsv.CSVWriter;
+import com.web3.dal.data.entity.EthereumErc20UserDay;
 import com.web3.dal.data.entity.Price1d;
 import com.web3.dal.data.entity.Tvl1d;
+import com.web3.dal.data.service.EthereumErc20UserDayMapperService;
 import com.web3.dal.data.service.Price1dMapperService;
 import com.web3.dal.data.service.Tvl1dMapperService;
 import jakarta.annotation.Resource;
@@ -31,6 +33,9 @@ public class DownloadController {
     @Resource
     private Tvl1dMapperService tvl1dMapperService;
 
+    @Resource
+    private EthereumErc20UserDayMapperService ethereumErc20UserDayMapperService;
+
     @GetMapping("/spot/1d")
     public void exportSpotPrice(HttpServletResponse response) {
 
@@ -53,7 +58,7 @@ public class DownloadController {
         }
     }
 
-    @GetMapping("/tvl")
+    @GetMapping("/tvl/1d")
     public void exportTvl(HttpServletResponse response) {
 
         List<Tvl1d> tvl1dList = tvl1dMapperService.list();
@@ -65,9 +70,27 @@ public class DownloadController {
                 .map(price1d -> new String[] {price1d.getDate().toString(), price1d.getName(), price1d.getSymbol(), price1d.getTvl().toString()})
                 .toList();
 
-            exportCsv("tvl", header, csv, response);
+            exportCsv("tvl_1d", header, csv, response);
         } catch (Exception e) {
             log.error("download tvl 1d error", e);
+        }
+    }
+
+    @GetMapping("/erc20/user/1d")
+    public void exportUser(HttpServletResponse response) {
+
+        List<EthereumErc20UserDay> list = ethereumErc20UserDayMapperService.list();
+
+        try {
+            String[] header = new String[] {"date", "symbol", "contract_address", "call_count"};
+
+            List<String[]> csv = list.stream()
+                .map(price1d -> new String[] {price1d.getDate().toString(), price1d.getSymbol(), price1d.getContractAddress(), price1d.getCallCount().toString()})
+                .toList();
+
+            exportCsv("erc20_user_1d", header, csv, response);
+        } catch (Exception e) {
+            log.error("download erc20_user_1d error", e);
         }
     }
 
