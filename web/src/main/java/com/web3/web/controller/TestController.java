@@ -190,4 +190,11 @@ public class TestController {
         return coinMarketCapApi.getCryptoCurrencyInfo(id, null, null, null, null, null);
     }
 
+    @GetMapping("/defi/protocolProfit")
+    public void syncProtocolProfit(@RequestParam(value = "dataType") String dataType) {
+        defiService.syncProtocolProfit(dataType);
+//        defiService.syncProtocolProfit("dailyFees");
+//        defiService.syncProtocolProfit("dailyRevenue");
+    }
+
 }

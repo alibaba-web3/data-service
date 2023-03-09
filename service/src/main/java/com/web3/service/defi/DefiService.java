@@ -28,4 +28,11 @@ public interface DefiService {
      */
     HistoryTvlRes getHistoryTvl(String protocol);
 
+    /**
+     * 同步协议利润数据
+     *
+     * @param dataType 同步的数据类型
+     */
+    void syncProtocolProfit(String dataType);
+
 }
