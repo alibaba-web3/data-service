@@ -65,7 +65,7 @@ public class Price1d implements Serializable {
     /**
      * 最高价
      */
-    private BigDecimal height;
+    private BigDecimal high;
 
     /**
      * 最低价

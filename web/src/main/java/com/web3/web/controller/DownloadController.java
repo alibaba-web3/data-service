@@ -46,7 +46,7 @@ public class DownloadController {
 
             List<String[]> csv = price1dList.stream()
                 .map(price1d -> new String[] {price1d.getDate(), price1d.getOpenTime().toString(), price1d.getCloseTime().toString(),
-                    price1d.getSymbol(), price1d.getOpen().toString(), price1d.getHeight().toString(), price1d.getLow().toString(),
+                    price1d.getSymbol(), price1d.getOpen().toString(), price1d.getHigh().toString(), price1d.getLow().toString(),
                     price1d.getClose().toString(), price1d.getVolume().toString(), price1d.getTurnover().toString(), price1d.getTradingVolume().toString(),
                     price1d.getBuyingVolume().toString(),
                     price1d.getBuyingTurnover().toString()})
