@@ -9,6 +9,7 @@ import java.util.concurrent.TimeoutException;
 
 import com.alibaba.nacos.api.config.annotation.NacosValue;
 
+import com.aliyun.odps.Table;
 import com.web3.crawler.constants.TaskType;
 import com.web3.crawler.dto.Task;
 import com.web3.crawler.jobs.EthereumV2Job;
@@ -23,6 +24,7 @@ import com.web3.framework.resouce.defillama.dto.AllStableCoinRes;
 import com.web3.framework.resouce.defillama.dto.HistoryTvlRes;
 import com.web3.framework.resouce.defillama.dto.ProtocolRes;
 import com.web3.framework.resouce.defillama.dto.StableCoinHistory;
+import com.web3.framework.resouce.odps.OdpsService;
 import com.web3.service.address.AddressService;
 import com.web3.service.address.BalanceService;
 import com.web3.service.defi.DefiService;
@@ -81,6 +83,9 @@ public class TestController {
 
     @Resource
     private EthereumV2Job ethereumV2Job;
+
+    @Resource
+    private OdpsService odpsService;
 
     @NacosValue(value = "${useLocalCache}", autoRefreshed = true)
     private Integer useLocalCache;
@@ -188,6 +193,12 @@ public class TestController {
     @GetMapping("/cmc/info")
     public Object getCryptoCurrencyInfo(@RequestParam String id) {
         return coinMarketCapApi.getCryptoCurrencyInfo(id, null, null, null, null, null);
+    }
+
+    @GetMapping("/odps/tables")
+    public List<String> getOdpsTables() {
+        List<Table> result = odpsService.listTable();
+        return result.stream().map(Table::getName).toList();
     }
 
 }
