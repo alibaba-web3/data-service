@@ -98,6 +98,7 @@ public class DateUtils {
 
     /**
      * String -> LocalDateTime
+     *
      * @param time
      * @param format
      * @return
@@ -105,6 +106,18 @@ public class DateUtils {
     static public LocalDateTime parse(String time, String format) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
         return LocalDateTime.parse(time, dateTimeFormatter);
+    }
+
+    /**
+     * LocalDateTime -> String
+     *
+     * @param time
+     * @param format
+     * @return
+     */
+    static public String format(LocalDateTime time, String format) {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
+        return df.format(time);
     }
 
 }
