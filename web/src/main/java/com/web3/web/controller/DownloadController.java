@@ -3,7 +3,10 @@ package com.web3.web.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Objects;
 
+import com.aliyun.odps.data.Record;
+import com.aliyun.odps.tunnel.TunnelException;
 import com.opencsv.CSVWriter;
 import com.web3.dal.data.entity.EthereumErc20UserDay;
 import com.web3.dal.data.entity.Price1d;
@@ -11,9 +14,11 @@ import com.web3.dal.data.entity.Tvl1d;
 import com.web3.dal.data.service.EthereumErc20UserDayMapperService;
 import com.web3.dal.data.service.Price1dMapperService;
 import com.web3.dal.data.service.Tvl1dMapperService;
+import com.web3.framework.resouce.odps.OdpsService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,6 +40,9 @@ public class DownloadController {
 
     @Resource
     private EthereumErc20UserDayMapperService ethereumErc20UserDayMapperService;
+
+    @Resource
+    private OdpsService odpsService;
 
     @GetMapping("/spot/1d")
     public void exportSpotPrice(HttpServletResponse response) {
@@ -77,15 +85,21 @@ public class DownloadController {
     }
 
     @GetMapping("/erc20/user/1d")
-    public void exportUser(HttpServletResponse response) {
+    public void exportUser(HttpServletResponse response) throws TunnelException, IOException {
 
-        List<EthereumErc20UserDay> list = ethereumErc20UserDayMapperService.list();
+        List<Record> records = odpsService.getTable("ethereum_erc20_call");
 
         try {
-            String[] header = new String[] {"date", "symbol", "contract_address", "call_count"};
+            String[] header = new String[] {"time", "symbol", "contract_address", "transfer_count", "approval_count"};
 
-            List<String[]> csv = list.stream()
-                .map(price1d -> new String[] {price1d.getDate().toString(), price1d.getSymbol(), price1d.getContractAddress(), price1d.getCallCount().toString()})
+            List<String[]> csv = records.stream()
+                .map(record -> new String[] {
+                    Objects.toString(record.get("time"), ""),
+                    Objects.toString(record.get("symbol"), ""),
+                    Objects.toString(record.get("contract_address"), ""),
+                    Objects.toString(record.get("transfer_count"), ""),
+                    Objects.toString(record.get("approval_count"), ""),
+                })
                 .toList();
 
             exportCsv("erc20_user_1d", header, csv, response);

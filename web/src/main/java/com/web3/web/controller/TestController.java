@@ -1,5 +1,6 @@
 package com.web3.web.controller;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -10,6 +11,8 @@ import java.util.concurrent.TimeoutException;
 import com.alibaba.nacos.api.config.annotation.NacosValue;
 
 import com.aliyun.odps.Table;
+import com.aliyun.odps.data.Record;
+import com.aliyun.odps.tunnel.TunnelException;
 import com.web3.crawler.constants.TaskType;
 import com.web3.crawler.dto.Task;
 import com.web3.crawler.jobs.EthereumV2Job;
@@ -33,7 +36,6 @@ import com.web3.service.file.impl.CsvReadImpl;
 import com.web3.service.pos.EthereumV2Service;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -199,6 +201,11 @@ public class TestController {
     public List<String> getOdpsTables() {
         List<Table> result = odpsService.listTable();
         return result.stream().map(Table::getName).toList();
+    }
+
+    @GetMapping("/odps/table/data")
+    public List<Record> getOdpsTable(@RequestParam String tableName) throws TunnelException, IOException {
+        return odpsService.getTable(tableName);
     }
 
 }

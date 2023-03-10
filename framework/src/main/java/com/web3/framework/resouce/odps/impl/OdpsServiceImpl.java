@@ -1,17 +1,21 @@
 package com.web3.framework.resouce.odps.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.aliyun.odps.Odps;
 import com.aliyun.odps.Table;
-import com.aliyun.odps.Tables;
 import com.aliyun.odps.account.Account;
 import com.aliyun.odps.account.AliyunAccount;
+import com.aliyun.odps.data.Record;
+import com.aliyun.odps.data.RecordReader;
 import com.aliyun.odps.tunnel.TableTunnel;
+import com.aliyun.odps.tunnel.TableTunnel.DownloadSession;
+import com.aliyun.odps.tunnel.TunnelException;
 import com.web3.framework.resouce.odps.OdpsService;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +24,7 @@ import org.springframework.stereotype.Service;
  * @Date: 2023/3/9
  */
 @Service
+@Slf4j
 public class OdpsServiceImpl implements OdpsService {
 
     private Odps odps;
@@ -57,38 +62,27 @@ public class OdpsServiceImpl implements OdpsService {
     }
 
     @Override
-    public Object getTable(String table) {
-        return null;
-    }
+    public List<Record> getTable(String tableName) throws TunnelException, IOException {
+        TableTunnel tunnel = new TableTunnel(odps);
+        tunnel.setEndpoint(odpsTunnelEndpoint);
 
-    //void download(){
-    //    TableTunnel tunnel = new TableTunnel(odps);
-    //    tunnel.setEndpoint(tunnelURL);
-    //
-    //
-    //
-    //    try {
-    //        DownloadSession downloadSession = tunnel.createDownloadSession(project, table1);
-    //        long count = downloadSession.getRecordCount();
-    //        RecordReader recordReader = downloadSession.openRecordReader(0, count);
-    //        Record record;
-    //
-    //        UploadSession uploadSession = tunnel.createUploadSession(project, table2);
-    //        RecordWriter recordWriter = uploadSession.openRecordWriter(0);
-    //
-    //        while ((record = recordReader.read()) != null) {
-    //            recordWriter.write(record);
-    //        }
-    //
-    //        recordReader.close();
-    //
-    //        recordWriter.close();
-    //        uploadSession.commit(new Long[]{0L});
-    //    } catch (TunnelException e) {
-    //        e.printStackTrace();
-    //    } catch (IOException e1) {
-    //        e1.printStackTrace();
-    //    }
-    //}
+        try {
+            DownloadSession downloadSession = tunnel.createDownloadSession(odpsDefaultProject, tableName);
+            long count = downloadSession.getRecordCount();
+            RecordReader recordReader = downloadSession.openRecordReader(0, count);
+            List<Record> records = new ArrayList<>();
+            Record record;
+
+            while ((record = recordReader.read()) != null) {
+                records.add(record);
+            }
+
+            recordReader.close();
+            return records;
+        } catch (TunnelException | IOException e) {
+            log.error("get odps table data error: ", e);
+            throw e;
+        }
+    }
 
 }
