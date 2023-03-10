@@ -65,8 +65,8 @@ public class DownloadController {
         }
     }
 
-    @GetMapping("/profit/history")
-    public void exportProfitData(HttpServletResponse response) {
+    @GetMapping("/profit/1d")
+    public void exportProfit1d(HttpServletResponse response) {
 
         List<ProtocolProfit> list = protocolProfitMapperService.list();
 
