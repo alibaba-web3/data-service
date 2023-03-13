@@ -27,6 +27,7 @@ import com.web3.framework.resouce.defillama.dto.AllStableCoinRes;
 import com.web3.framework.resouce.defillama.dto.HistoryTvlRes;
 import com.web3.framework.resouce.defillama.dto.ProtocolRes;
 import com.web3.framework.resouce.defillama.dto.StableCoinHistory;
+import com.web3.framework.resouce.dingtalk.DingtalkService;
 import com.web3.framework.resouce.odps.OdpsService;
 import com.web3.service.address.AddressService;
 import com.web3.service.address.BalanceService;
@@ -88,6 +89,9 @@ public class TestController {
 
     @Resource
     private OdpsService odpsService;
+
+    @Resource
+    private DingtalkService dingtalkService;
 
     @NacosValue(value = "${useLocalCache}", autoRefreshed = true)
     private Integer useLocalCache;
@@ -213,6 +217,11 @@ public class TestController {
     @GetMapping("/odps/table/data")
     public List<Record> getOdpsTable(@RequestParam String tableName) throws TunnelException, IOException {
         return odpsService.getTable(tableName);
+    }
+
+    @GetMapping("/dingtalk/message")
+    public void sendDingtalkMessage(@RequestParam String message) {
+        dingtalkService.send(message);
     }
 
 }
