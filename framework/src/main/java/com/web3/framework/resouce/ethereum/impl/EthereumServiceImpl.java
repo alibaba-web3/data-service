@@ -3,6 +3,7 @@ package com.web3.framework.resouce.ethereum.impl;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.ConnectException;
 
 import com.web3.framework.resouce.ethereum.EthereumService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.EthGetCode;
 import org.web3j.protocol.core.methods.response.Web3ClientVersion;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.protocol.websocket.WebSocketService;
 import org.web3j.utils.Convert;
 
 /**
@@ -31,8 +33,20 @@ public class EthereumServiceImpl implements EthereumService {
 
     private final Web3j httpClient;
 
-    public EthereumServiceImpl(@Value("${ethereum.node.rpc}") String nodeRpcUrl) {
-        this.httpClient = Web3j.build(new HttpService(nodeRpcUrl));
+    //private final Web3j wsClient;
+
+    public EthereumServiceImpl(@Value("${ethereum.node.rpc}") String httpUrl, @Value("${ethereum.node.ws}") String wsUrl) {
+
+        httpClient = Web3j.build(new HttpService(httpUrl));
+
+        //WebSocketService webSocketService = new WebSocketService(wsUrl, true);
+        //try {
+        //    webSocketService.connect();
+        //} catch (ConnectException e) {
+        //    log.error("web3j websocket connect error:", e);
+        //}
+        //
+        //wsClient = Web3j.build(webSocketService);
     }
 
     @Override
