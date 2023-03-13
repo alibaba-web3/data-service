@@ -16,7 +16,7 @@ public class CorsConfig implements WebMvcConfigurer {
         registry // 所有接口都支持跨域
                 .addMapping("/**")
                 // 允许访问的地址
-                .allowedOriginPatterns("https://alibaba-web3.vercel.app/")
+                .allowedOriginPatterns("*")
                 .allowCredentials(true)
                 // 允许访问的 Rest 方法 "GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS" ...
                 .allowedMethods("*")
