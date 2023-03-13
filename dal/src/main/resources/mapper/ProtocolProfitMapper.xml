@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.web3.dal.data.mapper.ProtocolProfitMapper">
+    <insert id="batchInsertOrUpdate" parameterType="java.util.List">
+        <foreach collection="list" item="ele" index="index" separator=";" open="" close="">
+            INSERT INTO protocol_profit
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="ele.protocol != null">protocol,</if>
+                <if test="ele.category != null">category,</if>
+                <if test="ele.symbol != null">symbol,</if>
+                <if test="ele.protocolRevenue != null">protocol_revenue,</if>
+                <if test="ele.totalFees != null">total_fees,</if>
+                <if test="ele.date != null">date,</if>
+            </trim>
+            values
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="ele.protocol != null">#{ele.protocol},</if>
+                <if test="ele.category != null">#{ele.category},</if>
+                <if test="ele.symbol != null">#{ele.symbol},</if>
+                <if test="ele.protocolRevenue != null">#{ele.protocolRevenue},</if>
+                <if test="ele.totalFees != null">#{ele.totalFees},</if>
+                <if test="ele.date != null">#{ele.date},</if>
+            </trim>
+            ON DUPLICATE KEY UPDATE
+            <trim suffixOverrides=",">
+                <if test="ele.protocol != null">protocol = #{ele.protocol},</if>
+                <if test="ele.category != null">category = #{ele.category},</if>
+                <if test="ele.protocolRevenue != null">protocol_revenue = #{ele.protocolRevenue},</if>
+                <if test="ele.totalFees != null">total_fees = #{ele.totalFees},</if>
+            </trim>
+        </foreach>
+    </insert>
+</mapper>

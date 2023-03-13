@@ -2,6 +2,7 @@ package com.web3.web.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -10,10 +11,13 @@ import com.aliyun.odps.tunnel.TunnelException;
 import com.opencsv.CSVWriter;
 import com.web3.dal.data.entity.EthereumErc20UserDay;
 import com.web3.dal.data.entity.Price1d;
+import com.web3.dal.data.entity.ProtocolProfit;
 import com.web3.dal.data.entity.Tvl1d;
 import com.web3.dal.data.service.EthereumErc20UserDayMapperService;
 import com.web3.dal.data.service.Price1dMapperService;
+import com.web3.dal.data.service.ProtocolProfitMapperService;
 import com.web3.dal.data.service.Tvl1dMapperService;
+import com.web3.framework.utils.DateUtils;
 import com.web3.framework.resouce.odps.OdpsService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
@@ -42,6 +46,9 @@ public class DownloadController {
     private EthereumErc20UserDayMapperService ethereumErc20UserDayMapperService;
 
     @Resource
+    private ProtocolProfitMapperService protocolProfitMapperService;
+
+    @Resource
     private OdpsService odpsService;
 
     @GetMapping("/spot/1d")
@@ -63,6 +70,26 @@ public class DownloadController {
             exportCsv("spot_1d", header, csv, response);
         } catch (Exception e) {
             log.error("download spot price 1d error", e);
+        }
+    }
+
+    @GetMapping("/profit/1d")
+    public void exportProfit1d(HttpServletResponse response) {
+
+        List<ProtocolProfit> list = protocolProfitMapperService.list();
+
+        try {
+            String[] header = new String[] {"protocol", "category", "symbol", "protocol_revenue", "total_fees", "date", "gmt_modified"};
+
+            List<String[]> csv = list.stream()
+                    .map(item -> new String[] {String.valueOf(item.getProtocol()), String.valueOf(item.getCategory()), String.valueOf(item.getSymbol()),
+                    String.valueOf(item.getProtocolRevenue()), String.valueOf(item.getTotalFees()), DateUtils.format(item.getDate(), DateUtils.YYYY_MM_DD_HH_MM_SS),
+                            DateUtils.format(item.getGmtModified(), DateUtils.YYYY_MM_DD_HH_MM_SS)})
+                    .toList();
+
+            exportCsv("profit_history", header, csv, response);
+        } catch (Exception e) {
+            log.error("download profit history error", e);
         }
     }
 

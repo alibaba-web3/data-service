@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.web3.framework.resouce.defillama.dto.HistoryTvlRes;
 import com.web3.framework.resouce.defillama.dto.ProtocolRes;
+import com.web3.framework.resouce.defillama.dto.ProtocolsFeesRes;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
 
@@ -31,5 +33,15 @@ public interface DefillamaApi {
      */
     @GetExchange("/protocol/{symbol}")
     HistoryTvlRes getHistoryTvl(@PathVariable("symbol") String symbol);
+
+    /**
+     * 获取协议利润信息
+     *
+     * @param protocol 协议
+     * @param dataType 数据类型
+     * @return
+     */
+    @GetExchange("/summary/fees/{protocol}")
+    ProtocolsFeesRes getProtocolsFees(@PathVariable("protocol") String protocol, @RequestParam(value = "dataType") String dataType);
 
 }

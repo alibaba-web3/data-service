@@ -2,21 +2,27 @@ package com.web3.service.defi.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.web3.dal.data.entity.ProtocolProfit;
 import com.web3.dal.data.entity.Tvl1d;
+import com.web3.dal.data.service.ProtocolProfitMapperService;
 import com.web3.dal.data.service.Tvl1dMapperService;
+import com.web3.framework.enums.ProtocolSymbolEnum;
 import com.web3.framework.resouce.coinmarketcap.CoinMarketCapService;
 import com.web3.framework.resouce.coinmarketcap.dto.CmcInfo;
 import com.web3.framework.resouce.defillama.DatasetsApi;
 import com.web3.framework.resouce.defillama.DefillamaApi;
 import com.web3.framework.resouce.defillama.dto.HistoryTvlRes;
 import com.web3.framework.resouce.defillama.dto.ProtocolRes;
+import com.web3.framework.resouce.defillama.dto.ProtocolsFeesRes;
 import com.web3.framework.utils.DateUtils;
 import com.web3.service.defi.DefiService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -41,6 +47,9 @@ public class DefiServiceImpl implements DefiService {
 
     @Resource
     private CoinMarketCapService coinMarketCapService;
+
+    @Resource
+    private ProtocolProfitMapperService protocolProfitMapperService;
 
     @Value("${sync.tvl.list}")
     private List<String> tvlSyncSymbolList;
@@ -106,6 +115,33 @@ public class DefiServiceImpl implements DefiService {
                 log.error("{} tvl sync error", protocol, e);
             }
         });
+    }
+
+    @Override
+    public void syncProtocolProfit(String dataType) {
+        log.info("syncProtocolProfit start... dataType: {}", dataType);
+        long start = System.currentTimeMillis();
+        try {
+            List<String> protocols = ProtocolSymbolEnum.getProtocols();
+            List<ProtocolProfit> saveList = new ArrayList<>();
+            for (String protocol : protocols) {
+                ProtocolsFeesRes protocolsFees = defillamaApi.getProtocolsFees(protocol, dataType);
+                if (protocolsFees != null) {
+                    List<ProtocolsFeesRes.ProtocolProfitData> protocolProfitData = protocolsFees.getProtocolProfitData(dataType);
+                    if (!CollectionUtils.isEmpty(protocolProfitData)) {
+                        protocolProfitData.forEach(item -> {
+                            ProtocolProfit protocolProfit = new ProtocolProfit();
+                            BeanUtils.copyProperties(item, protocolProfit);
+                            saveList.add(protocolProfit);
+                        });
+                    }
+                }
+            }
+            protocolProfitMapperService.batchInsertOrUpdateData(saveList);
+        } catch (Exception e) {
+            log.error("syncProtocolProfit dataType: {}, error: {}", dataType, e.getMessage());
+        }
+        log.info("syncProtocolProfit end... cost: {}", System.currentTimeMillis() - start);
     }
 
     public List<ProtocolRes> getTopProtocol(Integer topNumber) {
