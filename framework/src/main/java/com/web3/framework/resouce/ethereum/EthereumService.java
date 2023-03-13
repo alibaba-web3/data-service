@@ -12,7 +12,12 @@ import org.web3j.protocol.Web3j;
  */
 public interface EthereumService {
 
-    Web3j getWeb3j();
+    /**
+     * 获取 http 调用客户端
+     *
+     * @return http client
+     */
+    Web3j getHttpClient();
 
     /**
      * gas 费查询

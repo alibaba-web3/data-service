@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import com.web3.framework.resouce.ethereum.EthereumService;
-import io.reactivex.disposables.Disposable;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +14,6 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.Request;
-import org.web3j.protocol.core.methods.response.EthBlock.Block;
 import org.web3j.protocol.core.methods.response.EthGasPrice;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.EthGetCode;
@@ -32,21 +29,21 @@ import org.web3j.utils.Convert;
 @Slf4j
 public class EthereumServiceImpl implements EthereumService {
 
-    private final Web3j web3j;
+    private final Web3j httpClient;
 
     public EthereumServiceImpl(@Value("${ethereum.node.rpc}") String nodeRpcUrl) {
-        this.web3j = Web3j.build(new HttpService(nodeRpcUrl));
+        this.httpClient = Web3j.build(new HttpService(nodeRpcUrl));
     }
 
     @Override
-    public Web3j getWeb3j() {
-        return web3j;
+    public Web3j getHttpClient() {
+        return httpClient;
     }
 
     @Override
     public BigInteger getGasPrice() {
         try {
-            EthGasPrice ethGasPrice = web3j.ethGasPrice().send();
+            EthGasPrice ethGasPrice = httpClient.ethGasPrice().send();
             return ethGasPrice.getGasPrice();
         } catch (IOException e) {
             log.error("get gas price error");
@@ -56,7 +53,7 @@ public class EthereumServiceImpl implements EthereumService {
 
     @Override
     public String getAddressByEns(String ens) {
-        EnsResolver ensResolver = new EnsResolver(web3j);
+        EnsResolver ensResolver = new EnsResolver(httpClient);
 
         try {
             return ensResolver.resolve(ens);
@@ -67,7 +64,7 @@ public class EthereumServiceImpl implements EthereumService {
 
     @Override
     public String getEnsDomain(String address) {
-        EnsResolver ensResolver = new EnsResolver(web3j);
+        EnsResolver ensResolver = new EnsResolver(httpClient);
 
         try {
             return ensResolver.reverseResolve(address);
@@ -78,7 +75,7 @@ public class EthereumServiceImpl implements EthereumService {
 
     @Override
     public BigInteger getEthWeiBalance(String address, BigInteger blockNumber) throws IOException {
-        EthGetBalance ethGetBalance = web3j.ethGetBalance(address, DefaultBlockParameter.valueOf(blockNumber)).send();
+        EthGetBalance ethGetBalance = httpClient.ethGetBalance(address, DefaultBlockParameter.valueOf(blockNumber)).send();
 
         return ethGetBalance.getBalance();
     }
@@ -99,7 +96,7 @@ public class EthereumServiceImpl implements EthereumService {
 
     @Override
     public String getWeb3ClientVersion() throws IOException {
-        Web3ClientVersion web3ClientVersion = web3j.web3ClientVersion().send();
+        Web3ClientVersion web3ClientVersion = httpClient.web3ClientVersion().send();
 
         return web3ClientVersion.getWeb3ClientVersion();
     }
@@ -107,7 +104,7 @@ public class EthereumServiceImpl implements EthereumService {
     @Override
     public BigInteger getEthWeiBalance(String address) throws IOException {
         // TODO 增加重试机制
-        EthGetBalance ethGetBalance = web3j.ethGetBalance(address, DefaultBlockParameterName.LATEST).send();
+        EthGetBalance ethGetBalance = httpClient.ethGetBalance(address, DefaultBlockParameterName.LATEST).send();
 
         return ethGetBalance.getBalance();
     }
@@ -118,7 +115,7 @@ public class EthereumServiceImpl implements EthereumService {
             return null;
         }
         try {
-            Request<?, EthGetCode> ethGetCodeRequest = web3j.ethGetCode(address, DefaultBlockParameterName.LATEST);
+            Request<?, EthGetCode> ethGetCodeRequest = httpClient.ethGetCode(address, DefaultBlockParameterName.LATEST);
             String code = ethGetCodeRequest.send().getCode();
             // "0x" 开头的结果也有可能是未部署上线的合约账户
             return "0x".equals(code) ? 1 : 2;
