@@ -60,11 +60,11 @@ public class DownloadController {
             String[] header = new String[] {"date", "openTime", "closeTime", "symbol", "open", "height", "low", "close", "volume", "turnover", "tradingVolume", "buyingVolume", "buyingTurnover"};
 
             List<String[]> csv = price1dList.stream()
-                .map(price1d -> new String[] {price1d.getDate(), price1d.getOpenTime().toString(), price1d.getCloseTime().toString(),
-                    price1d.getSymbol(), price1d.getOpen().toString(), price1d.getHigh().toString(), price1d.getLow().toString(),
-                    price1d.getClose().toString(), price1d.getVolume().toString(), price1d.getTurnover().toString(), price1d.getTradingVolume().toString(),
-                    price1d.getBuyingVolume().toString(),
-                    price1d.getBuyingTurnover().toString()})
+                .map(price1d -> new String[] {price1d.getDate(), String.valueOf(price1d.getOpenTime()), String.valueOf(price1d.getCloseTime()),
+                    price1d.getSymbol(), String.valueOf(price1d.getOpen()), String.valueOf(price1d.getHigh()), String.valueOf(price1d.getLow()),
+                    String.valueOf(price1d.getClose()), String.valueOf(price1d.getVolume()), String.valueOf(price1d.getTurnover()), String.valueOf(price1d.getTradingVolume()),
+                    String.valueOf(price1d.getBuyingVolume()),
+                    String.valueOf(price1d.getBuyingTurnover())})
                 .toList();
 
             exportCsv("spot_1d", header, csv, response);
