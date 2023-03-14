@@ -29,4 +29,8 @@ public class EnvUtils {
         return env;
     }
 
+    public static Boolean isLocal(String env) {
+        return "local".equals(env) || "inner".equals(env);
+    }
+
 }

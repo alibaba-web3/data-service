@@ -5,10 +5,17 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.ConnectException;
 
+import com.web3.framework.resouce.dingtalk.DingtalkService;
 import com.web3.framework.resouce.ethereum.EthereumService;
+import com.web3.framework.utils.EnvUtils;
+import io.reactivex.disposables.Disposable;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.web3j.ens.EnsResolver;
 import org.web3j.protocol.Web3j;
@@ -22,6 +29,7 @@ import org.web3j.protocol.core.methods.response.Web3ClientVersion;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.protocol.websocket.WebSocketService;
 import org.web3j.utils.Convert;
+import org.web3j.utils.Convert.Unit;
 
 /**
  * @Author: smy
@@ -29,24 +37,54 @@ import org.web3j.utils.Convert;
  */
 @Service
 @Slf4j
+@Lazy
 public class EthereumServiceImpl implements EthereumService {
 
     private final Web3j httpClient;
 
-    //private final Web3j wsClient;
+    private final Web3j wsClient;
 
-    public EthereumServiceImpl(@Value("${ethereum.node.rpc}") String httpUrl, @Value("${ethereum.node.ws}") String wsUrl) {
+    @Resource
+    private ApplicationEventPublisher applicationEventPublisher;
+
+    @Resource
+    private DingtalkService dingtalkService;
+
+    public EthereumServiceImpl(@Value("${ethereum.node.rpc}") String httpUrl, @Value("${ethereum.node.ws}") String wsUrl, @Value("${spring.profiles.active}") String env) {
 
         httpClient = Web3j.build(new HttpService(httpUrl));
 
-        //WebSocketService webSocketService = new WebSocketService(wsUrl, true);
-        //try {
-        //    webSocketService.connect();
-        //} catch (ConnectException e) {
-        //    log.error("web3j websocket connect error:", e);
-        //}
-        //
-        //wsClient = Web3j.build(webSocketService);
+        if (EnvUtils.isLocal(env)) {
+            wsClient = httpClient;
+        } else {
+            WebSocketService webSocketService = new WebSocketService(wsUrl, true);
+            try {
+                webSocketService.connect();
+            } catch (ConnectException e) {
+                log.error("web3j websocket connect error:", e);
+            }
+
+            wsClient = Web3j.build(webSocketService);
+        }
+
+    }
+
+    @PostConstruct
+    public void init() {
+        Disposable subscribe = wsClient.transactionFlowable().subscribe((transaction) -> {
+            BigDecimal amount = Convert.fromWei(String.valueOf(transaction.getValue()), Unit.ETHER);
+            //log.info("eth new transaction: {},{}", transaction.getTransactionIndex(), Convert.fromWei(String.valueOf(transaction.getValue()), Unit.ETHER));
+
+            if (amount.longValue() > 100) {
+                dingtalkService.send("big amount transfer");
+            }
+
+        }, Throwable::printStackTrace);
+
+        if (!subscribe.isDisposed()) {
+            log.info("eth transaction subscribe start");
+        }
+
     }
 
     @Override
