@@ -3,6 +3,7 @@ package com.web3.framework.resouce.ethereum.impl;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.net.ConnectException;
 
 import com.web3.framework.resouce.dingtalk.DingtalkService;
@@ -77,7 +78,7 @@ public class EthereumServiceImpl implements EthereumService {
             int largeAmount = 10000;
 
             if (amount.longValue() >= largeAmount) {
-                dingtalkService.send(String.format("eth large amount transfer: %s, %s", amount, getEtherScanTransactionUrl(transaction.getHash())));
+                dingtalkService.send(String.format("eth large amount transfer, amount: %s, %s", amount.setScale(0, RoundingMode.HALF_UP), getEtherScanTransactionUrl(transaction.getHash())));
             }
 
         }, Throwable::printStackTrace);
