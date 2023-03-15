@@ -3,7 +3,9 @@ package com.web3.dal.meta.service;
 import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.pagehelper.PageInfo;
 import com.web3.dal.meta.entity.AddressTag;
+import com.web3.dal.meta.entity.Tag;
 
 /**
  * @Author: smy
@@ -12,5 +14,7 @@ import com.web3.dal.meta.entity.AddressTag;
 public interface AddressTagMapperService extends IService<AddressTag> {
 
     List<AddressTag> listByAddress(String address);
+
+    PageInfo<AddressTag>  listPage(AddressTag query, Integer pageNum, Integer pageSize);
 
 }

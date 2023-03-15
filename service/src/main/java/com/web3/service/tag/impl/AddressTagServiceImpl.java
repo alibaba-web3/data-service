@@ -2,6 +2,7 @@ package com.web3.service.tag.impl;
 
 import java.util.List;
 
+import com.github.pagehelper.PageInfo;
 import com.web3.dal.meta.entity.AddressTag;
 import com.web3.dal.meta.entity.Tag;
 import com.web3.dal.meta.service.AddressTagMapperService;
@@ -9,6 +10,7 @@ import com.web3.dal.meta.service.TagMapperService;
 import com.web3.framework.exception.ParamException;
 import com.web3.service.tag.AddressTagService;
 import com.web3.service.tag.dto.AddressTagDTO;
+import com.web3.service.tag.dto.TagDTO;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -65,5 +67,25 @@ public class AddressTagServiceImpl implements AddressTagService {
             return dto;
         }).toList();
 
+    }
+
+    @Override
+    public PageInfo<AddressTagDTO> listPageAddressByTag(String tagId, Integer pageNum, Integer pageSize) {
+        AddressTag query = new AddressTag();
+        query.setTagId(tagId);
+        PageInfo<AddressTag> pageInfo = addressTagMapperService.listPage(query, pageNum, pageSize);
+
+        PageInfo<AddressTagDTO> pageRes = new PageInfo<>();
+        if (!CollectionUtils.isEmpty(pageInfo.getList())) {
+            List<AddressTagDTO> list = pageInfo.getList().stream().map(addressTag -> {
+                AddressTagDTO dto = new AddressTagDTO();
+                BeanUtils.copyProperties(addressTag, dto);
+                return dto;
+            }).toList();
+            pageRes.setList(list);
+            pageRes.setPages(pageInfo.getPages());
+            pageRes.setTotal(pageInfo.getTotal());
+        }
+        return pageRes;
     }
 }
