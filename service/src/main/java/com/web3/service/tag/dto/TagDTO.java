@@ -12,6 +12,12 @@ import lombok.Data;
 public class TagDTO {
 
     /**
+     * 主键
+     */
+    @Schema(title = "主键")
+    private Long id;
+
+    /**
      * 标签名称
      */
     @Schema(title = "标签名称")
