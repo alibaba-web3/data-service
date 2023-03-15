@@ -73,10 +73,11 @@ public class EthereumServiceImpl implements EthereumService {
     public void init() {
         Disposable subscribe = wsClient.transactionFlowable().subscribe((transaction) -> {
             BigDecimal amount = Convert.fromWei(String.valueOf(transaction.getValue()), Unit.ETHER);
-            //log.info("eth new transaction: {},{}", transaction.getTransactionIndex(), Convert.fromWei(String.valueOf(transaction.getValue()), Unit.ETHER));
 
-            if (amount.longValue() > 100) {
-                dingtalkService.send("big amount transfer");
+            int largeAmount = 10000;
+
+            if (amount.longValue() >= largeAmount) {
+                dingtalkService.send(String.format("eth large amount transfer: %s, %s", amount, getEtherScanTransactionUrl(transaction.getHash())));
             }
 
         }, Throwable::printStackTrace);
@@ -175,5 +176,9 @@ public class EthereumServiceImpl implements EthereumService {
             log.error("get accountType error: {}", e.getMessage());
             return null;
         }
+    }
+
+    String getEtherScanTransactionUrl(String hash) {
+        return "https://etherscan.io/tx/" + hash;
     }
 }
