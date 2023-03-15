@@ -12,6 +12,12 @@ import lombok.Data;
 public class AddressTagDTO {
 
     /**
+     * 主键
+     */
+    @Schema(title = "主键")
+    private Long id;
+
+    /**
      * 打上标签的地址
      */
     @Schema(title = "地址")

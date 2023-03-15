@@ -88,4 +88,9 @@ public class AddressTagServiceImpl implements AddressTagService {
         }
         return pageRes;
     }
+
+    @Override
+    public Boolean delete(Long addressTagId) {
+        return addressTagMapperService.removeById(addressTagId);
+    }
 }

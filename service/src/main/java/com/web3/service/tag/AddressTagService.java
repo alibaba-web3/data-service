@@ -46,4 +46,12 @@ public interface AddressTagService {
      */
     PageInfo<AddressTagDTO> listPageAddressByTag(String tagId, Integer pageNum, Integer pageSize);
 
+    /**
+     * 删除地址-标签记录
+     *
+     * @param addressTagId
+     * @return
+     */
+    Boolean delete(Long addressTagId);
+
 }

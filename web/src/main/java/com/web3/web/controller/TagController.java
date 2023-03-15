@@ -162,4 +162,17 @@ public class TagController {
         return ResultUtils.createSuccessPageRes(addressTagService.listPageAddressByTag(tagId, pageNum, pageSize));
     }
 
+    /**
+     * 删除地址标签记录
+     */
+    @DeleteMapping("/address")
+    @Operation(summary = "删除地址标签记录", description = "删除地址-标签记录")
+    @ApiResponse(responseCode = "200", description = "删除地址-标签记录结果")
+    Result<Boolean> deleteAddressTag(@RequestParam(value = "addressTagId") Long addressTagId) {
+        if (addressTagId == null) {
+            return ResultUtils.createSuccessRes(Boolean.TRUE);
+        }
+        return ResultUtils.createSuccessRes(addressTagService.delete(addressTagId));
+    }
+
 }
