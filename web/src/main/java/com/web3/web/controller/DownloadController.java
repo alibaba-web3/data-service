@@ -87,9 +87,9 @@ public class DownloadController {
                             DateUtils.format(item.getGmtModified(), DateUtils.YYYY_MM_DD_HH_MM_SS)})
                     .toList();
 
-            exportCsv("profit_history", header, csv, response);
+            exportCsv("profit_1d", header, csv, response);
         } catch (Exception e) {
-            log.error("download profit history error", e);
+            log.error("download profit 1d error", e);
         }
     }
 
