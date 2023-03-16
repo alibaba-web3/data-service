@@ -114,7 +114,7 @@ public class DownloadController {
     @GetMapping("/erc20/user/1d")
     public void exportUser(HttpServletResponse response) throws TunnelException, IOException {
 
-        List<Record> records = odpsService.getTable("ethereum_erc20_call");
+        List<Record> records = odpsService.getTable("ethereum_erc20_call_download");
 
         try {
             String[] header = new String[] {"time", "symbol", "contract_address", "transfer_count", "approval_count"};
@@ -122,8 +122,8 @@ public class DownloadController {
             List<String[]> csv = records.stream()
                 .map(record -> new String[] {
                     Objects.toString(record.get("time"), ""),
-                    Objects.toString(record.get("symbol"), ""),
-                    Objects.toString(record.get("contract_address"), ""),
+                    Objects.toString(record.getString("symbol"), ""),
+                    Objects.toString(record.getString("contract_address"), ""),
                     Objects.toString(record.get("transfer_count"), ""),
                     Objects.toString(record.get("approval_count"), ""),
                 })
