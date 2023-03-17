@@ -31,7 +31,7 @@ public enum ProtocolSymbolEnum {
     /**
      * 币安智能链
      */
-    BSC("BSC", "BSC"),
+    BSC("BSC", "BNB"),
 
     /**
      * Lido
