@@ -38,6 +38,8 @@ public class TagCategoryServiceImpl implements TagCategoryService {
         tagCategory.setName(name);
         tagCategory.setCreator(operator);
         tagCategory.setModifier(operator);
+        // 默认保留
+        tagCategory.setDeleted("0");
 
         return tagCategoryMapperService.save(tagCategory);
     }

@@ -1,7 +1,9 @@
 package com.web3.service.tag;
 
+import com.github.pagehelper.PageInfo;
 import com.web3.dal.meta.entity.AddressTag;
 import com.web3.service.tag.dto.AddressTagDTO;
+import com.web3.service.tag.dto.TagDTO;
 
 import java.util.List;
 
@@ -33,5 +35,23 @@ public interface AddressTagService {
      * @return 标签列表
      */
     List<AddressTagDTO> listByAddress(String address);
+
+    /**
+     * 分页查询 Tag-Address
+     *
+     * @param tagId    标签 id
+     * @param pageNum  页码
+     * @param pageSize 页容量
+     * @return
+     */
+    PageInfo<AddressTagDTO> listPageAddressByTag(String tagId, Integer pageNum, Integer pageSize);
+
+    /**
+     * 删除地址-标签记录
+     *
+     * @param addressTagId
+     * @return
+     */
+    Boolean delete(Long addressTagId);
 
 }

@@ -79,12 +79,11 @@ public class DownloadController {
         List<ProtocolProfit> list = protocolProfitMapperService.list();
 
         try {
-            String[] header = new String[] {"protocol", "category", "symbol", "protocol_revenue", "total_fees", "date", "gmt_modified"};
+            String[] header = new String[] {"protocol", "category", "symbol", "protocol_revenue", "total_fees", "date"};
 
             List<String[]> csv = list.stream()
                     .map(item -> new String[] {String.valueOf(item.getProtocol()), String.valueOf(item.getCategory()), String.valueOf(item.getSymbol()),
-                    String.valueOf(item.getProtocolRevenue()), String.valueOf(item.getTotalFees()), DateUtils.format(item.getDate(), DateUtils.YYYY_MM_DD_HH_MM_SS),
-                            DateUtils.format(item.getGmtModified(), DateUtils.YYYY_MM_DD_HH_MM_SS)})
+                    String.valueOf(item.getProtocolRevenue()), String.valueOf(item.getTotalFees()), DateUtils.format(item.getDate(), DateUtils.YYYY_MM_DD_HH_MM_SS)})
                     .toList();
 
             exportCsv("profit_1d", header, csv, response);

@@ -1,7 +1,13 @@
 package com.web3.service.tag.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.web3.dal.meta.entity.Tag;
 import com.web3.dal.meta.service.TagMapperService;
 import com.web3.service.tag.TagService;
@@ -47,5 +53,25 @@ public class TagServiceImpl implements TagService {
             BeanUtils.copyProperties(tag, dto);
             return dto;
         }).toList();
+    }
+
+    @Override
+    public PageInfo<TagDTO> listPageTag(String categoryId, Integer pageNum, Integer pageSize) {
+        Tag query = new Tag();
+        query.setCategoryId(categoryId);
+        PageInfo<Tag> pageInfo = tagMapperService.listPage(query, pageNum, pageSize);
+
+        PageInfo<TagDTO> pageRes = new PageInfo<>();
+        if (!CollectionUtils.isEmpty(pageInfo.getList())) {
+            List<TagDTO> list = pageInfo.getList().stream().map(tag -> {
+                TagDTO dto = new TagDTO();
+                BeanUtils.copyProperties(tag, dto);
+                return dto;
+            }).toList();
+            pageRes.setList(list);
+            pageRes.setPages(pageInfo.getPages());
+            pageRes.setTotal(pageInfo.getTotal());
+        }
+        return pageRes;
     }
 }

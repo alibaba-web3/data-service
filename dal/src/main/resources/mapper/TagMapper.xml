@@ -2,4 +2,34 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.web3.dal.meta.mapper.TagMapper">
 
+    <resultMap id="TagResultMap" type="com.web3.dal.meta.entity.Tag">
+        <id column="id" property="id"/>
+        <result column="creator" property="creator"/>
+        <result column="modifier" property="modifier"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="deleted" property="deleted"/>
+        <result column="name" property="name"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="official" property="official"/>
+        <result column="note" property="note"/>
+    </resultMap>
+    
+    <select id="selectByParam" resultMap="TagResultMap">
+        SELECT * FROM tag
+        <where>
+            1=1
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+            <if test="categoryId != null and categoryId != ''">
+                 AND category_id = #{categoryId}
+            </if>
+            <if test="official != null and official != ''">
+                AND official = #{official}
+            </if>
+                AND deleted = 0
+        </where>
+    </select>
+
 </mapper>
