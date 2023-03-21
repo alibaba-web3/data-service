@@ -189,7 +189,9 @@ public class BalanceServiceImpl implements BalanceService {
             addressChangeTempMapperService.replaceIntoBatch(entityList);
 
             balanceChangeAddressInfoMap.remove(s);
-            entityFutureList.clear();
+            // 消除对象引用，释放内存
+            entityFutureList = null;
+            entityList = null;
 
             long record4 = System.currentTimeMillis();
             log.info("add address end: {}", (record4 - record3) / 1000);
