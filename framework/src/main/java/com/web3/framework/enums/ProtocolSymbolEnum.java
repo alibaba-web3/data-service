@@ -29,9 +29,9 @@ public enum ProtocolSymbolEnum {
     TRON("Tron", "TRX"),
 
     /**
-     * 币安智能链
+     * 币安
      */
-    BSC("BSC", "BNB"),
+    BSC("Binance", "BNB"),
 
     /**
      * Lido
