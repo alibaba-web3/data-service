@@ -21,7 +21,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@TableName("ethereum_traces_tmp")
+@TableName("ethereum_traces_tmp2")
 public class EthereumTraces {
 
     @TableId(value = "trace_id", type = IdType.AUTO)
