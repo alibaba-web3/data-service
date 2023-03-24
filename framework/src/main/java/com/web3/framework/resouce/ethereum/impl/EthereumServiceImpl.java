@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.net.ConnectException;
+import java.net.URI;
 
 import com.web3.framework.resouce.dingtalk.DingtalkService;
 import com.web3.framework.resouce.ethereum.EthereumService;
@@ -43,7 +44,7 @@ public class EthereumServiceImpl implements EthereumService {
 
     private final Web3j httpClient;
 
-    private final Web3j wsClient;
+    //private final Web3j wsClient;
 
     @Resource
     private ApplicationEventPublisher applicationEventPublisher;
@@ -55,24 +56,24 @@ public class EthereumServiceImpl implements EthereumService {
 
         httpClient = Web3j.build(new HttpService(httpUrl));
 
-        if (EnvUtils.isLocal(env)) {
-            wsClient = httpClient;
-        } else {
-            WebSocketService webSocketService = new WebSocketService(wsUrl, true);
-            try {
-                webSocketService.connect();
-            } catch (ConnectException e) {
-                log.error("web3j websocket connect error:", e);
-            }
-
-            wsClient = Web3j.build(webSocketService);
-        }
+        //if (EnvUtils.isLocal(env)) {
+        //    wsClient = httpClient;
+        //} else {
+        //    WebSocketService webSocketService = new WebSocketService(wsUrl, true);
+        //    try {
+        //        webSocketService.connect();
+        //    } catch (ConnectException e) {
+        //        log.error("web3j websocket connect error:", e);
+        //    }
+        //
+        //    wsClient = Web3j.build(webSocketService);
+        //}
 
     }
 
     @PostConstruct
     public void init() {
-        Disposable subscribe = wsClient.transactionFlowable().subscribe((transaction) -> {
+        Disposable subscribe = httpClient.transactionFlowable().subscribe((transaction) -> {
             BigDecimal amount = Convert.fromWei(String.valueOf(transaction.getValue()), Unit.ETHER);
 
             int largeAmount = 10000;
