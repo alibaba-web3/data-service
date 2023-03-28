@@ -76,10 +76,10 @@ public class EthereumServiceImpl implements EthereumService {
         Disposable subscribe = httpClient.transactionFlowable().subscribe((transaction) -> {
             BigDecimal amount = Convert.fromWei(String.valueOf(transaction.getValue()), Unit.ETHER);
 
-            int largeAmount = 10000;
+            int largeAmount = 30000;
 
             if (amount.longValue() >= largeAmount) {
-                dingtalkService.send(String.format("eth large amount transfer, amount: %s, %s", amount.setScale(0, RoundingMode.HALF_UP), getEtherScanTransactionUrl(transaction.getHash())));
+                dingtalkService.send(String.format("以太坊大额转账, 转账数量: %s, %s", amount.setScale(0, RoundingMode.HALF_UP), getEtherScanTransactionUrl(transaction.getHash())));
             }
 
         }, Throwable::printStackTrace);
