@@ -24,6 +24,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -133,6 +134,23 @@ public class DownloadController {
             log.error("download erc20_user_1d error", e);
         }
     }
+
+    @GetMapping("/{tableName}")
+    public void export(@PathVariable String tableName, HttpServletResponse response) throws TunnelException, IOException {
+        response.setContentType("text/csv");
+        response.setCharacterEncoding("utf-8");
+
+        response.setHeader("Content-disposition", "attachment; filename=" + tableName + ".csv");
+
+        PrintWriter printWriter = response.getWriter();
+        CSVWriter writer = new CSVWriter(printWriter, ',');
+        odpsService.downloadTable2Csv(tableName, writer);
+
+        writer.flush();
+        writer.close();
+    }
+
+
 
     public void exportCsv(String fileName, String[] header, List<String[]> csv, HttpServletResponse response) throws IOException {
         response.setContentType("text/csv");
