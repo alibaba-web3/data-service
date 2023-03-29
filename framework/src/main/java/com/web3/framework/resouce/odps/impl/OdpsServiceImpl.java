@@ -98,16 +98,20 @@ public class OdpsServiceImpl implements OdpsService {
         try {
             DownloadSession downloadSession = tunnel.createDownloadSession(odpsDefaultProject, tableName);
             long count = downloadSession.getRecordCount();
-            if (count > 500 * 10000) {
-                throw new RuntimeException("table is too large. rows limit is 500w.");
+            if (count > 1000 * 10000) {
+                throw new RuntimeException("table is too large. rows limit is 1000w.");
             }
             writeHeader(downloadSession.getSchema(), writer);
-            RecordReader recordReader = downloadSession.openRecordReader(0, count);
-            Record record;
-            while ((record = recordReader.read()) != null) {
-                consumeRecord(record, downloadSession.getSchema(), writer);
+            int start = 0, limit = 50000;
+            while (start < count) {
+                RecordReader recordReader = downloadSession.openRecordReader(start, limit);
+                Record record;
+                while ((record = recordReader.read()) != null) {
+                    consumeRecord(record, downloadSession.getSchema(), writer);
+                }
+                recordReader.close();
+                start += limit;
             }
-            recordReader.close();
 
         } catch (TunnelException | IOException e) {
             log.error("get odps table data error: ", e);

@@ -1,6 +1,7 @@
 package com.web3.web.controller;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,10 +24,13 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 /**
  * @Author: mianyun.yt
@@ -136,18 +140,19 @@ public class DownloadController {
     }
 
     @GetMapping("/{tableName}")
-    public void export(@PathVariable String tableName, HttpServletResponse response) throws TunnelException, IOException {
+    public ResponseEntity<StreamingResponseBody> export(@PathVariable String tableName, HttpServletResponse response) {
+        StreamingResponseBody responseBody = outputStream -> {
+            try (CSVWriter writer = new CSVWriter(new OutputStreamWriter(outputStream), ',')) {
+                odpsService.downloadTable2Csv(tableName, writer);
+            } catch (IOException | TunnelException e) {
+                throw new RuntimeException(e);
+            }
+        };
         response.setContentType("text/csv");
         response.setCharacterEncoding("utf-8");
-
-        response.setHeader("Content-disposition", "attachment; filename=" + tableName + ".csv");
-
-        PrintWriter printWriter = response.getWriter();
-        CSVWriter writer = new CSVWriter(printWriter, ',');
-        odpsService.downloadTable2Csv(tableName, writer);
-
-        writer.flush();
-        writer.close();
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + tableName + ".csv");
+        return ResponseEntity.ok()
+                .body(responseBody);
     }
 
 
