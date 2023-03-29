@@ -37,4 +37,12 @@ public class AddressTagMapperServiceImpl extends ServiceImpl<AddressTagMapper, A
         List<AddressTag> addressTagList = addressTagMapper.selectByParam(query);
         return new PageInfo<AddressTag>(addressTagList);
     }
+
+    @Override
+    public void removeByTagId(String tagId) {
+        QueryWrapper<AddressTag> wrapper = new QueryWrapper<>();
+        wrapper.eq("tag_id", tagId);
+
+        remove(wrapper);
+    }
 }

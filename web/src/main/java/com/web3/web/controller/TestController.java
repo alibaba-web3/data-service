@@ -224,4 +224,9 @@ public class TestController {
         dingtalkService.send(message);
     }
 
+    @PostMapping("/tag/ethersScan")
+    public void importEtherScanTag() {
+
+    }
+
 }

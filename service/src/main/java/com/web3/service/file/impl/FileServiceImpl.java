@@ -2,6 +2,7 @@ package com.web3.service.file.impl;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -26,6 +27,13 @@ public class FileServiceImpl implements FileService {
             return new CSVReader(new FileReader(path));
         } catch (FileNotFoundException e) {
             throw new Error();
+        }
+    }
+
+    @Override
+    public List<String[]> readAllCsv(String path) throws IOException {
+        try (CSVReader reader = readCsv(path)) {
+            return reader.readAll();
         }
     }
 

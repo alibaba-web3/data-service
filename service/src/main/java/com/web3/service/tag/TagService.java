@@ -2,9 +2,7 @@ package com.web3.service.tag;
 
 import java.util.List;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
-import com.web3.dal.meta.entity.Tag;
 import com.web3.service.tag.dto.TagDTO;
 
 /**
@@ -20,6 +18,14 @@ public interface TagService {
      */
     boolean create(String name, String categoryId, String note, String official, String operator);
 
+    /**
+     * 删除标签
+     *
+     * @param id id
+     * @return
+     */
+    boolean removeById(String id);
+
     List<TagDTO> list();
 
     /**
@@ -31,5 +37,12 @@ public interface TagService {
      * @return
      */
     PageInfo<TagDTO> listPageTag(String categoryId, Integer pageNum, Integer pageSize);
+
+    /**
+     * 导入 etherScan 标签
+     *
+     * @param path csv 文件路径
+     */
+    void importEtherScanTags(String path);
 
 }

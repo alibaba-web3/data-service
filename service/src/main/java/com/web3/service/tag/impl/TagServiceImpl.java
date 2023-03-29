@@ -1,20 +1,18 @@
 package com.web3.service.tag.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.web3.dal.meta.entity.Tag;
+import com.web3.dal.meta.service.AddressTagMapperService;
 import com.web3.dal.meta.service.TagMapperService;
+import com.web3.service.file.FileService;
 import com.web3.service.tag.TagService;
 import com.web3.service.tag.dto.TagDTO;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 /**
@@ -26,6 +24,12 @@ public class TagServiceImpl implements TagService {
 
     @Resource
     private TagMapperService tagMapperService;
+
+    @Resource
+    private AddressTagMapperService addressTagMapperService;
+
+    @Resource
+    private FileService fileService;
 
     @Override
     public boolean create(String name, String categoryId, String note, String official, String operator) {
@@ -39,6 +43,17 @@ public class TagServiceImpl implements TagService {
         tag.setModifier(operator);
 
         return tagMapperService.save(tag);
+    }
+
+    @Override
+    @Transactional
+    public boolean removeById(String id) {
+
+        // 删除地址和标签的关联数据
+        addressTagMapperService.removeByTagId(id);
+
+        // 删除标签
+        return tagMapperService.removeById(id);
     }
 
     @Override
@@ -73,5 +88,26 @@ public class TagServiceImpl implements TagService {
             pageRes.setTotal(pageInfo.getTotal());
         }
         return pageRes;
+    }
+
+    @Override
+    public void importEtherScanTags(String path) {
+        //try {
+        //    List<String[]> elements = fileService.readAllCsv(path);
+        //    elements.remove(0);
+        //
+        //    elements.forEach(element -> {
+        //        Tag tag = new Tag();
+        //        tag.setName(element[0]);
+        //        tag.setCategoryId("1");
+        //        tag.setOfficial("1");
+        //        tag.setCreator("system");
+        //        tag.setModifier("system");
+        //        tagMapperService.save(tag);
+        //    }
+        //} catch (Exception e) {
+        //    e.printStackTrace();
+        //}
+
     }
 }

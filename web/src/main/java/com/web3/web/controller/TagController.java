@@ -2,7 +2,6 @@ package com.web3.web.controller;
 
 import java.util.List;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
 import com.web3.dal.meta.entity.AddressTag;
 import com.web3.service.tag.AddressTagService;
@@ -113,6 +112,14 @@ public class TagController {
     }
 
     /**
+     * 删除标签
+     */
+    @DeleteMapping("/{id}")
+    Result<Boolean> removeTag(@PathVariable("id") String id) {
+        return ResultUtils.createSuccessRes(tagService.removeById(id));
+    }
+
+    /**
      * 地址打上标签
      */
     @PostMapping("/address")
@@ -140,8 +147,8 @@ public class TagController {
     @Operation(summary = "分页获取标签列表", description = "返回 Tag List")
     @ApiResponse(responseCode = "200", description = "标签列表")
     Result<PageResult<TagDTO>> listPageTag(@RequestParam(required = false, value = "categoryId") String categoryId,
-                                           @RequestParam(required = false, value = "pageNum") Integer pageNum,
-                                           @RequestParam(required = false, value = "pageSize") Integer pageSize) {
+        @RequestParam(required = false, value = "pageNum") Integer pageNum,
+        @RequestParam(required = false, value = "pageSize") Integer pageSize) {
         if (ObjectUtils.anyNull(pageNum, pageSize)) {
             pageNum = 1;
             pageSize = 10;
@@ -157,8 +164,8 @@ public class TagController {
     @Operation(summary = "根据标签分页查询地址列表", description = "返回 Tag-Address List")
     @ApiResponse(responseCode = "200", description = "标签地址列表")
     Result<PageResult<AddressTagDTO>> listPageAddress(@RequestParam(required = false, value = "tagId") String tagId,
-                                                      @RequestParam(required = false, value = "pageNum") Integer pageNum,
-                                                      @RequestParam(required = false, value = "pageSize") Integer pageSize) {
+        @RequestParam(required = false, value = "pageNum") Integer pageNum,
+        @RequestParam(required = false, value = "pageSize") Integer pageSize) {
         return ResultUtils.createSuccessPageRes(addressTagService.listPageAddressByTag(tagId, pageNum, pageSize));
     }
 

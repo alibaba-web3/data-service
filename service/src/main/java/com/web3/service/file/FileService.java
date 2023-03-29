@@ -1,5 +1,6 @@
 package com.web3.service.file;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.opencsv.CSVReader;
@@ -18,6 +19,8 @@ public interface FileService {
      * @return csv
      */
     CSVReader readCsv(String path);
+
+    List<String[]> readAllCsv(String path) throws IOException;
 
     /**
      * 读取 trace 数据
