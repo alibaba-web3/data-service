@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.aliyun.odps.Table;
 import com.aliyun.odps.data.Record;
 import com.aliyun.odps.tunnel.TunnelException;
 import com.opencsv.CSVWriter;
@@ -32,10 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 /**
@@ -167,8 +165,10 @@ public class DownloadController {
     @GetMapping("/table/list")
     @Operation(summary = "MaxCompute 数据列表", description = "返回 MaxCompute 表名列表 List")
     @ApiResponse(responseCode = "200", description = "MaxCompute 表数据")
-    public Result<List<String>> tableList() {
-        return ResultUtils.createSuccessRes(new ArrayList<>());
+    public Result<List<String>> tableList(@RequestParam(value = "tableName", required = false) String tableName) {
+        List<Table> tables = odpsService.tableByName(tableName);
+        List<String> nameList = tables.stream().map(Table::getName).toList();
+        return ResultUtils.createSuccessRes(nameList);
     }
 
 

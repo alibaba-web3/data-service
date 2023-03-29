@@ -2,13 +2,12 @@ package com.web3.framework.resouce.odps.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
-import com.aliyun.odps.Column;
-import com.aliyun.odps.Odps;
-import com.aliyun.odps.Table;
-import com.aliyun.odps.TableSchema;
+import com.aliyun.odps.*;
 import com.aliyun.odps.account.Account;
 import com.aliyun.odps.account.AliyunAccount;
 import com.aliyun.odps.data.Record;
@@ -20,6 +19,8 @@ import com.opencsv.CSVWriter;
 import com.web3.framework.resouce.odps.OdpsService;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -63,6 +64,14 @@ public class OdpsServiceImpl implements OdpsService {
             list.add(table);
         }
         return list;
+    }
+
+    @Override
+    public List<Table> tableByName(String tableName) {
+        return StringUtils.isBlank(tableName) ?
+                StreamSupport.stream(odps.tables().spliterator(), false).toList() :
+                StreamSupport.stream(odps.tables().spliterator(), false)
+                        .filter(table -> tableName.equals(table.getName())).toList();
     }
 
     @Override

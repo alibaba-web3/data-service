@@ -22,6 +22,13 @@ public interface OdpsService {
     List<Table> listTable();
 
     /**
+     * 查询指定的 odps 表
+     *
+     * @return 指定 ODPS 表信息
+     */
+    List<Table> tableByName(String tableName);
+
+    /**
      * 查询表所有的数据
      *
      * @param tableName 表名
