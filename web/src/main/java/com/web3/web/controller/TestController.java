@@ -34,7 +34,7 @@ import com.web3.service.address.BalanceService;
 import com.web3.service.defi.DefiService;
 import com.web3.service.file.FileReadService;
 import com.web3.service.file.impl.CsvReadImpl;
-import com.web3.service.pos.EthereumV2Service;
+import com.web3.service.tag.TagService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -97,7 +97,7 @@ public class TestController {
     private Integer useLocalCache;
 
     @Resource
-    private EthereumV2Service ethereumV2Service;
+    private TagService tagService;
 
     @Resource(type = CsvReadImpl.class)
     private FileReadService<?> fileReadService;
@@ -204,8 +204,8 @@ public class TestController {
     @GetMapping("/defi/protocolProfit")
     public void syncProtocolProfit(@RequestParam(value = "dataType") String dataType) {
         defiService.syncProtocolProfit(dataType);
-//        defiService.syncProtocolProfit("dailyFees");
-//        defiService.syncProtocolProfit("dailyRevenue");
+        //        defiService.syncProtocolProfit("dailyFees");
+        //        defiService.syncProtocolProfit("dailyRevenue");
     }
 
     @GetMapping("/odps/tables")
@@ -225,8 +225,8 @@ public class TestController {
     }
 
     @PostMapping("/tag/ethersScan")
-    public void importEtherScanTag() {
-
+    public void importEtherScanTag(@RequestParam String path, @RequestParam String categoryId) {
+        tagService.importEtherScanTags(path, categoryId);
     }
 
 }
