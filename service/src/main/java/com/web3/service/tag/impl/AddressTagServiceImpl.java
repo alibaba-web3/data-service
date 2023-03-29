@@ -70,9 +70,10 @@ public class AddressTagServiceImpl implements AddressTagService {
     }
 
     @Override
-    public PageInfo<AddressTagDTO> listPageAddressByTag(String tagId, Integer pageNum, Integer pageSize) {
+    public PageInfo<AddressTagDTO> listPageAddressByTag(String tagId, String creator, Integer pageNum, Integer pageSize) {
         AddressTag query = new AddressTag();
         query.setTagId(tagId);
+        query.setCreator(creator);
         PageInfo<AddressTag> pageInfo = addressTagMapperService.listPage(query, pageNum, pageSize);
 
         PageInfo<AddressTagDTO> pageRes = new PageInfo<>();
