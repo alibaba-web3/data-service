@@ -41,8 +41,9 @@ public interface TagService {
     /**
      * 导入 etherScan 标签
      *
-     * @param path csv 文件路径
+     * @param path       csv 文件路径
+     * @param categoryId
      */
-    void importEtherScanTags(String path);
+    void importEtherScanTags(String path, String categoryId);
 
 }
