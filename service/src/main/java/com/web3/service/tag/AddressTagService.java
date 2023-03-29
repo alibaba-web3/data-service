@@ -40,11 +40,12 @@ public interface AddressTagService {
      * 分页查询 Tag-Address
      *
      * @param tagId    标签 id
+     * @param creator  创建人
      * @param pageNum  页码
      * @param pageSize 页容量
      * @return
      */
-    PageInfo<AddressTagDTO> listPageAddressByTag(String tagId, Integer pageNum, Integer pageSize);
+    PageInfo<AddressTagDTO> listPageAddressByTag(String tagId, String creator, Integer pageNum, Integer pageSize);
 
     /**
      * 删除地址-标签记录

@@ -32,6 +32,9 @@
             <if test="tagId != null and tagId != ''">
                 AND tag_id = #{tagId}
             </if>
+            <if test="creator != null and creator != ''">
+                AND creator = #{creator}
+            </if>
             AND deleted = 0
         </where>
     </select>

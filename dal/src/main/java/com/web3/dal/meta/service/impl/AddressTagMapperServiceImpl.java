@@ -35,7 +35,7 @@ public class AddressTagMapperServiceImpl extends ServiceImpl<AddressTagMapper, A
     public PageInfo<AddressTag> listPage(AddressTag query, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<AddressTag> addressTagList = addressTagMapper.selectByParam(query);
-        return new PageInfo<AddressTag>(addressTagList);
+        return new PageInfo<>(addressTagList);
     }
 
     @Override
