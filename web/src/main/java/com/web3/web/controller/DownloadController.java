@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,6 +21,11 @@ import com.web3.dal.data.service.ProtocolProfitMapperService;
 import com.web3.dal.data.service.Tvl1dMapperService;
 import com.web3.framework.utils.DateUtils;
 import com.web3.framework.resouce.odps.OdpsService;
+import com.web3.web.entity.ResultUtils;
+import com.web3.web.entity.vo.Result;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -36,9 +42,10 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
  * @Author: mianyun.yt
  * @Date: 2023/2/23
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/download")
-@Slf4j
+@Tag(name = "DownloadController", description = "下载相关接口")
 public class DownloadController {
 
     @Resource
@@ -140,6 +147,8 @@ public class DownloadController {
     }
 
     @GetMapping("/{tableName}")
+    @Operation(summary = "下载指定 MaxCompute 表的文件", description = "返回 Category List")
+    @ApiResponse(responseCode = "200", description = "MaxCompute 表数据")
     public ResponseEntity<StreamingResponseBody> export(@PathVariable String tableName, HttpServletResponse response) {
         StreamingResponseBody responseBody = outputStream -> {
             try (CSVWriter writer = new CSVWriter(new OutputStreamWriter(outputStream), ',')) {
@@ -155,6 +164,12 @@ public class DownloadController {
                 .body(responseBody);
     }
 
+    @GetMapping("/table/list")
+    @Operation(summary = "MaxCompute 数据列表", description = "返回 MaxCompute 表名列表 List")
+    @ApiResponse(responseCode = "200", description = "MaxCompute 表数据")
+    public Result<List<String>> tableList() {
+        return ResultUtils.createSuccessRes(new ArrayList<>());
+    }
 
 
     public void exportCsv(String fileName, String[] header, List<String[]> csv, HttpServletResponse response) throws IOException {
