@@ -17,4 +17,6 @@ public interface AddressTagMapperService extends IService<AddressTag> {
 
     PageInfo<AddressTag>  listPage(AddressTag query, Integer pageNum, Integer pageSize);
 
+    void removeByTagId(String tagId);
+
 }
