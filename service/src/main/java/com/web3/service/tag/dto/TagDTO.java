@@ -3,6 +3,8 @@ package com.web3.service.tag.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 /**
  * @Author: mianyun.yt
  * @Date: 2023/1/3
@@ -40,5 +42,29 @@ public class TagDTO {
      */
     @Schema(title = "标签描述")
     private String note;
+
+    /**
+     * 创建人
+     */
+    @Schema(title = "创建人")
+    private String creator;
+
+    /**
+     * 修改人
+     */
+    @Schema(title = "修改人")
+    private String modifier;
+
+    /**
+     * 创建时间
+     */
+    @Schema(title = "创建时间")
+    private LocalDateTime gmtCreate;
+
+    /**
+     * 修改时间
+     */
+    @Schema(title = "修改时间")
+    private LocalDateTime gmtModified;
 
 }

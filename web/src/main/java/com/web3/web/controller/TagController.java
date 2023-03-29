@@ -107,9 +107,10 @@ public class TagController {
     @PostMapping("")
     @Operation(summary = "创建标签", description = "创建标签")
     @ApiResponse(responseCode = "200", description = "创建标签结果")
-    Result<Boolean> createTag(@RequestParam String name, @RequestParam String categoryId, @RequestParam(required = false) String note) {
+    Result<Boolean> createTag(@RequestParam String name, @RequestParam String categoryId, @RequestParam(required = false) String note
+            , @RequestParam String creator) {
         // TODO 获取登录用户信息
-        return ResultUtils.createSuccessRes(tagService.create(name, categoryId, note, "0", "0xfe731b7ed91C7655B87c062a2A27625AeCB0ddD5"));
+        return ResultUtils.createSuccessRes(tagService.create(name, categoryId, note, "0", creator));
     }
 
     /**
@@ -157,9 +158,10 @@ public class TagController {
     @Operation(summary = "根据标签分页查询地址列表", description = "返回 Tag-Address List")
     @ApiResponse(responseCode = "200", description = "标签地址列表")
     Result<PageResult<AddressTagDTO>> listPageAddress(@RequestParam(required = false, value = "tagId") String tagId,
+                                                      @RequestParam(required = false, value = "creator") String creator,
                                                       @RequestParam(required = false, value = "pageNum") Integer pageNum,
                                                       @RequestParam(required = false, value = "pageSize") Integer pageSize) {
-        return ResultUtils.createSuccessPageRes(addressTagService.listPageAddressByTag(tagId, pageNum, pageSize));
+        return ResultUtils.createSuccessPageRes(addressTagService.listPageAddressByTag(tagId, creator, pageNum, pageSize));
     }
 
     /**
