@@ -95,7 +95,7 @@ public class AddressTagServiceImpl implements AddressTagService {
                 AddressTagDTO dto = new AddressTagDTO();
                 Tag tag = tagMapperService.getById(addressTag.getTagId());
                 BeanUtils.copyProperties(addressTag, dto);
-                dto.setOrigin(tag.getOfficial());
+                dto.setOfficial(tag.getOfficial());
                 return dto;
             }).toList();
             pageRes.setList(list);
