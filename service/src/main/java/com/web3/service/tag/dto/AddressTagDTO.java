@@ -47,4 +47,10 @@ public class AddressTagDTO {
     @Schema(title = "标签名称")
     private String name;
 
+    /**
+     * 是否官方 0,1
+     */
+    @Schema(title = "是否官方 0, 1")
+    private String official;
+
 }

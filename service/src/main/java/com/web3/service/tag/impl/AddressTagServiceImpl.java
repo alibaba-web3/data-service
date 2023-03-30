@@ -93,7 +93,9 @@ public class AddressTagServiceImpl implements AddressTagService {
         if (!CollectionUtils.isEmpty(pageInfo.getList())) {
             List<AddressTagDTO> list = pageInfo.getList().stream().map(addressTag -> {
                 AddressTagDTO dto = new AddressTagDTO();
+                Tag tag = tagMapperService.getById(addressTag.getTagId());
                 BeanUtils.copyProperties(addressTag, dto);
+                dto.setOrigin(tag.getOfficial());
                 return dto;
             }).toList();
             pageRes.setList(list);
