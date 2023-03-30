@@ -100,12 +100,12 @@ public class OdpsServiceImpl implements OdpsService {
 
 
     @Override
-    public void downloadTable2Csv(String tableName, CSVWriter writer) throws TunnelException, IOException {
+    public void downloadTable2Csv(String project, String tableName, CSVWriter writer) throws TunnelException, IOException {
         TableTunnel tunnel = new TableTunnel(odps);
         tunnel.setEndpoint(odpsTunnelEndpoint);
 
         try {
-            DownloadSession downloadSession = tunnel.createDownloadSession(odpsDefaultProject, tableName);
+            DownloadSession downloadSession = tunnel.createDownloadSession(project, tableName);
             long count = downloadSession.getRecordCount();
             if (count > 1000 * 10000) {
                 throw new RuntimeException("table is too large. rows limit is 1000w.");

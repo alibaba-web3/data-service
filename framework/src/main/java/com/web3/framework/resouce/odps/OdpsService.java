@@ -39,11 +39,12 @@ public interface OdpsService {
     /**
      * 下载表数据到csv
      *
+     * @param project
      * @param tableName
      * @param writer
      * @throws TunnelException
      * @throws IOException
      */
-    void downloadTable2Csv(String tableName, CSVWriter writer) throws TunnelException, IOException;
+    void downloadTable2Csv(String project, String tableName, CSVWriter writer) throws TunnelException, IOException;
 
 }

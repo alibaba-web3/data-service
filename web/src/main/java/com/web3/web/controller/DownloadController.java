@@ -144,13 +144,13 @@ public class DownloadController {
         }
     }
 
-    @GetMapping("/{tableName}")
+    @GetMapping("/{project}/{tableName}")
     @Operation(summary = "下载指定 MaxCompute 表的文件", description = "返回 Category List")
     @ApiResponse(responseCode = "200", description = "MaxCompute 表数据")
-    public ResponseEntity<StreamingResponseBody> export(@PathVariable String tableName, HttpServletResponse response) {
+    public ResponseEntity<StreamingResponseBody> export(@PathVariable String project, @PathVariable String tableName, HttpServletResponse response) {
         StreamingResponseBody responseBody = outputStream -> {
             try (CSVWriter writer = new CSVWriter(new OutputStreamWriter(outputStream), ',')) {
-                odpsService.downloadTable2Csv(tableName, writer);
+                odpsService.downloadTable2Csv(project, tableName, writer);
             } catch (IOException | TunnelException e) {
                 throw new RuntimeException(e);
             }
