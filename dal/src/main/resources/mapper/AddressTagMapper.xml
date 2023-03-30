@@ -16,7 +16,7 @@
         <result column="tag_id" property="tagId"/>
     </resultMap>
 
-    <select id="selectByParam" resultMap="AddressTagResultMap">
+    <select id="selectByParam" resultMap="AddressTagResultMap" parameterType="com.web3.dal.meta.entity.AddressTag">
         SELECT * FROM address_tag
         <where>
             1=1

@@ -92,4 +92,10 @@ public class AddressTag implements Serializable {
     @Schema(title = "标签来源：  user 用户打标 system 系统打标 spider 爬虫 nansen (具体外部平台名称)")
     private String origin;
 
+    /**
+     * 名称
+     */
+    @Schema(title = "名称")
+    private String name;
+
 }
