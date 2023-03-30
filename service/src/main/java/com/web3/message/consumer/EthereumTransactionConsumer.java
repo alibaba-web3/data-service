@@ -27,7 +27,7 @@ public class EthereumTransactionConsumer implements Consumer<TransactionSubscrib
     private EthereumService ethereumService;
 
     @Resource
-    private DingtalkService dingtalkService;
+    private LargeTransactionSubscribeRule largeTransactionSubscribeRule;
 
     @PostConstruct
     @Override
@@ -50,7 +50,7 @@ public class EthereumTransactionConsumer implements Consumer<TransactionSubscrib
 
     public List<TransactionSubscribeRule> getSubscribeRules() {
         List<TransactionSubscribeRule> transactionRules = new ArrayList<>();
-        transactionRules.add(new LargeTransactionSubscribeRule(dingtalkService, 30000));
+        transactionRules.add(largeTransactionSubscribeRule);
 
         return transactionRules;
 

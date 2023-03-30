@@ -1,5 +1,6 @@
 package com.web3.service.tag.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.github.pagehelper.PageInfo;
@@ -121,7 +122,7 @@ public class AddressTagServiceImpl implements AddressTagService {
                 return addressTagList.stream().map(AddressTag::getAddress).toList();
             }
         }
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
