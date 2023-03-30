@@ -15,7 +15,7 @@
         <result column="note" property="note"/>
     </resultMap>
     
-    <select id="selectByParam" resultMap="TagResultMap">
+    <select id="selectByParam" resultMap="TagResultMap" parameterType="com.web3.dal.meta.entity.Tag">
         SELECT * FROM tag
         <where>
             1=1
