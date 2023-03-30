@@ -7,13 +7,20 @@ import com.web3.dal.meta.entity.AddressTag;
 import com.web3.dal.meta.entity.Tag;
 import com.web3.dal.meta.service.AddressTagMapperService;
 import com.web3.dal.meta.service.TagMapperService;
+import com.web3.framework.consts.TagConst;
+import com.web3.framework.enums.TagOfficialEnum;
+import com.web3.framework.enums.TagOriginEnum;
 import com.web3.framework.exception.ParamException;
+import com.web3.service.file.FileService;
 import com.web3.service.tag.AddressTagService;
+import com.web3.service.tag.TagCategoryService;
+import com.web3.service.tag.TagService;
 import com.web3.service.tag.dto.AddressTagDTO;
 import com.web3.service.tag.dto.TagDTO;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 /**
@@ -31,6 +38,12 @@ public class AddressTagServiceImpl implements AddressTagService {
     private TagMapperService tagMapperService;
     @Resource
     private AddressTagMapperService addressTagMapperService;
+
+    @Resource
+    private TagService tagService;
+
+    @Resource
+    private FileService fileService;
 
     @Override
     public AddressTag create(String address, String tagId, String origin, String operator) {
@@ -93,5 +106,48 @@ public class AddressTagServiceImpl implements AddressTagService {
     @Override
     public Boolean delete(Long addressTagId) {
         return addressTagMapperService.removeById(addressTagId);
+    }
+
+    @Override
+    public List<String> listAddressByTagCategory(String categoryId) {
+        List<Tag> binanceTagList = tagMapperService.listByCategoryId(categoryId);
+        if (!CollectionUtils.isEmpty(binanceTagList)) {
+            List<Long> tagIdList = binanceTagList.stream().map(Tag::getId).toList();
+
+            List<AddressTag> addressTagList = addressTagMapperService.listByTagIds(tagIdList);
+            if (!CollectionUtils.isEmpty(addressTagList)) {
+                return addressTagList.stream().map(AddressTag::getAddress).toList();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<String> listBinanceAddress() {
+        return listAddressByTagCategory("2");
+    }
+
+    @Override
+    @Transactional
+    public void importEtherScanTags(String path, String categoryId) {
+        try {
+            List<String[]> elements = fileService.readAllCsv(path);
+            elements.remove(0);
+
+            elements.forEach(element -> {
+                Tag tag = new Tag();
+                tag.setName(element[2]);
+                tag.setCategoryId(categoryId);
+                tag.setOfficial(TagOfficialEnum.OFFICIAL.getKey());
+                tag.setCreator(TagConst.systemUser);
+                tag.setModifier(TagConst.systemUser);
+                tagMapperService.save(tag);
+
+                create(element[1], tag.getId().toString(), TagOriginEnum.EtherScan.getKey(), TagConst.systemUser);
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }

@@ -1,5 +1,6 @@
 package com.web3.dal.meta.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -26,5 +27,13 @@ public class TagMapperServiceImpl extends ServiceImpl<TagMapper, Tag> implements
         PageHelper.startPage(pageNum, pageSize);
         List<Tag> tags = tagMapper.selectByParam(query);
         return new PageInfo<Tag>(tags);
+    }
+
+    @Override
+    public List<Tag> listByCategoryId(String categoryId) {
+        QueryWrapper<Tag> query = new QueryWrapper<>();
+        query.eq("category_id", categoryId);
+
+        return list(query);
     }
 }

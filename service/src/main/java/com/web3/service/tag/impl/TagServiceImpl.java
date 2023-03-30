@@ -6,11 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.web3.dal.meta.entity.Tag;
 import com.web3.dal.meta.service.AddressTagMapperService;
 import com.web3.dal.meta.service.TagMapperService;
-import com.web3.framework.consts.TagConst;
-import com.web3.framework.enums.TagOfficialEnum;
-import com.web3.framework.enums.TagOriginEnum;
 import com.web3.service.file.FileService;
-import com.web3.service.tag.AddressTagService;
 import com.web3.service.tag.TagService;
 import com.web3.service.tag.dto.TagDTO;
 import jakarta.annotation.Resource;
@@ -28,9 +24,6 @@ public class TagServiceImpl implements TagService {
 
     @Resource
     private TagMapperService tagMapperService;
-
-    @Resource
-    private AddressTagService addressTagService;
 
     @Resource
     private AddressTagMapperService addressTagMapperService;
@@ -99,27 +92,4 @@ public class TagServiceImpl implements TagService {
         return pageRes;
     }
 
-    @Override
-    @Transactional
-    public void importEtherScanTags(String path, String categoryId) {
-        try {
-            List<String[]> elements = fileService.readAllCsv(path);
-            elements.remove(0);
-
-            elements.forEach(element -> {
-                Tag tag = new Tag();
-                tag.setName(element[2]);
-                tag.setCategoryId(categoryId);
-                tag.setOfficial(TagOfficialEnum.OFFICIAL.getKey());
-                tag.setCreator(TagConst.systemUser);
-                tag.setModifier(TagConst.systemUser);
-                tagMapperService.save(tag);
-
-                addressTagService.create(element[1], tag.getId().toString(), TagOriginEnum.EtherScan.getKey(), TagConst.systemUser);
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
 }

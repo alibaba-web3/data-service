@@ -34,6 +34,7 @@ import com.web3.service.address.BalanceService;
 import com.web3.service.defi.DefiService;
 import com.web3.service.file.FileReadService;
 import com.web3.service.file.impl.CsvReadImpl;
+import com.web3.service.tag.AddressTagService;
 import com.web3.service.tag.TagService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -98,6 +99,9 @@ public class TestController {
 
     @Resource
     private TagService tagService;
+
+    @Resource
+    private AddressTagService addressTagService;
 
     @Resource(type = CsvReadImpl.class)
     private FileReadService<?> fileReadService;
@@ -226,7 +230,12 @@ public class TestController {
 
     @PostMapping("/tag/ethersScan")
     public void importEtherScanTag(@RequestParam String path, @RequestParam String categoryId) {
-        tagService.importEtherScanTags(path, categoryId);
+        addressTagService.importEtherScanTags(path, categoryId);
+    }
+
+    @GetMapping("/tag/category")
+    public List<String> listTagByCategory(@RequestParam String categoryId) {
+        return addressTagService.listAddressByTagCategory(categoryId);
     }
 
 }

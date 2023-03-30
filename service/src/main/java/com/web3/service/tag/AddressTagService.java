@@ -55,4 +55,27 @@ public interface AddressTagService {
      */
     Boolean delete(Long addressTagId);
 
+    /**
+     * 通过标签分类查询地址
+     *
+     * @param categoryId 标签分类id
+     * @return 地址列表
+     */
+    List<String> listAddressByTagCategory(String categoryId);
+
+    /**
+     * 查询币安地址列表
+     *
+     * @return 币安地址列表
+     */
+    List<String> listBinanceAddress();
+
+    /**
+     * 导入 etherScan 标签
+     *
+     * @param path       csv 文件路径
+     * @param categoryId
+     */
+    void importEtherScanTags(String path, String categoryId);
+
 }

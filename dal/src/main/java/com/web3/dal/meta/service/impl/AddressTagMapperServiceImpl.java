@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.web3.dal.meta.entity.AddressTag;
-import com.web3.dal.meta.entity.Tag;
 import com.web3.dal.meta.mapper.AddressTagMapper;
 import com.web3.dal.meta.service.AddressTagMapperService;
 import jakarta.annotation.Resource;
@@ -44,5 +43,21 @@ public class AddressTagMapperServiceImpl extends ServiceImpl<AddressTagMapper, A
         wrapper.eq("tag_id", tagId);
 
         remove(wrapper);
+    }
+
+    @Override
+    public List<AddressTag> listByTagId(String tagId) {
+        QueryWrapper<AddressTag> wrapper = new QueryWrapper<>();
+        wrapper.eq("tag_id", tagId);
+
+        return list(wrapper);
+    }
+
+    @Override
+    public List<AddressTag> listByTagIds(List<Long> tagIds) {
+        QueryWrapper<AddressTag> wrapper = new QueryWrapper<>();
+        wrapper.in("tag_id", tagIds);
+
+        return list(wrapper);
     }
 }
