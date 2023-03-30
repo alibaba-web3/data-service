@@ -1,6 +1,7 @@
 package com.web3.framework.resouce.odps.impl;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -151,6 +152,11 @@ public class OdpsServiceImpl implements OdpsService {
             Column column = schema.getColumn(i);
             String colValue;
             switch (column.getType()) {
+                case DECIMAL: {
+                    BigDecimal v = record.getDecimal(i);
+                    colValue = v == null ? null : v.toString();
+                    break;
+                }
                 case BIGINT: {
                     Long v = record.getBigint(i);
                     colValue = v == null ? null : v.toString();
@@ -177,7 +183,7 @@ public class OdpsServiceImpl implements OdpsService {
                     break;
                 }
                 default:
-                    throw new RuntimeException("Unknown column type: ");
+                    throw new RuntimeException("Unknown column type: " + column.getType().toString());
             }
             line[i] = colValue;
         }
