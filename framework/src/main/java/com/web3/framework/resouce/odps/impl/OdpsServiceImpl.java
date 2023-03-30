@@ -169,7 +169,7 @@ public class OdpsServiceImpl implements OdpsService {
                 }
                 case DATETIME: {
                     Date v = record.getDatetime(i);
-                    colValue = v == null ? null : v.toString();
+                    colValue = v == null ? null : String.valueOf(v.getTime());
                     break;
                 }
                 case DOUBLE: {
@@ -178,12 +178,11 @@ public class OdpsServiceImpl implements OdpsService {
                     break;
                 }
                 case STRING: {
-                    String v = record.getString(i);
-                    colValue = v == null ? null : v.toString();
+                    colValue = record.getString(i);
                     break;
                 }
                 default:
-                    throw new RuntimeException("Unknown column type: " + column.getType().toString());
+                    throw new RuntimeException("Unknown column type: " + column.getType());
             }
             line[i] = colValue;
         }
