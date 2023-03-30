@@ -29,6 +29,13 @@ public interface OdpsService {
     List<Table> tableByName(String tableName);
 
     /**
+     * 根据 projectName 查询指定的 odps 表
+     *
+     * @return 指定 ODPS 表信息
+     */
+    List<Table> tableByProject(String projectName);
+
+    /**
      * 查询表所有的数据
      *
      * @param tableName 表名

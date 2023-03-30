@@ -75,6 +75,15 @@ public class OdpsServiceImpl implements OdpsService {
     }
 
     @Override
+    public List<Table> tableByProject(String projectName) {
+        if (StringUtils.isNotBlank(projectName)) {
+            odps.setDefaultProject(projectName);
+        }
+
+        return StreamSupport.stream(odps.tables().spliterator(), false).toList();
+    }
+
+    @Override
     public List<Record> getTable(String tableName) throws TunnelException, IOException {
         TableTunnel tunnel = new TableTunnel(odps);
         tunnel.setEndpoint(odpsTunnelEndpoint);

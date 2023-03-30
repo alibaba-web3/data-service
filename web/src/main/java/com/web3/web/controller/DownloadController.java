@@ -163,10 +163,10 @@ public class DownloadController {
     }
 
     @GetMapping("/table/list")
-    @Operation(summary = "MaxCompute 数据列表", description = "返回 MaxCompute 表名列表 List")
+    @Operation(summary = "根据项目名称获取 MaxCompute 数据表", description = "返回 MaxCompute 表名列表 List")
     @ApiResponse(responseCode = "200", description = "MaxCompute 表数据")
-    public Result<List<String>> tableList(@RequestParam(value = "tableName", required = false) String tableName) {
-        List<Table> tables = odpsService.tableByName(tableName);
+    public Result<List<String>> tableList(@RequestParam(value = "projectName", required = false) String projectName) {
+        List<Table> tables = odpsService.tableByProject(projectName);
         List<String> nameList = tables.stream().map(Table::getName).toList();
         return ResultUtils.createSuccessRes(nameList);
     }
