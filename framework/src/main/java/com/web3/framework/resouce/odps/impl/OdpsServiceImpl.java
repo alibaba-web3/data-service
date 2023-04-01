@@ -157,9 +157,13 @@ public class OdpsServiceImpl implements OdpsService {
                     colValue = v == null ? null : v.toString();
                     break;
                 }
-                case BIGINT:
-                case INT: {
+                case BIGINT: {
                     Long v = record.getBigint(i);
+                    colValue = v == null ? null : v.toString();
+                    break;
+                }
+                case INT: {
+                    Integer v = (Integer) record.get(i);
                     colValue = v == null ? null : v.toString();
                     break;
                 }
