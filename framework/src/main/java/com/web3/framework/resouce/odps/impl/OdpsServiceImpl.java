@@ -174,7 +174,7 @@ public class OdpsServiceImpl implements OdpsService {
                 }
                 case DOUBLE: {
                     Double v = record.getDouble(i);
-                    colValue = v == null ? null : v.toString();
+                    colValue = v == null ? null : new BigDecimal(v).toString();
                     break;
                 }
                 case STRING: {
