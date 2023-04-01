@@ -182,7 +182,7 @@ public class OdpsServiceImpl implements OdpsService {
                     break;
                 }
                 default:
-                    throw new RuntimeException("Unknown column type: " + column.getType());
+                    colValue = record.getString(i);
             }
             line[i] = colValue;
         }
