@@ -157,7 +157,7 @@ public class DownloadController {
         };
         response.setContentType("text/csv");
         response.setCharacterEncoding("utf-8");
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + tableName + ".csv");
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + tableName + ".txt");
         return ResponseEntity.ok()
                 .body(responseBody);
     }
