@@ -1,6 +1,7 @@
 package com.web3.framework.resouce.odps.impl;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -151,8 +152,18 @@ public class OdpsServiceImpl implements OdpsService {
             Column column = schema.getColumn(i);
             String colValue;
             switch (column.getType()) {
+                case DECIMAL: {
+                    BigDecimal v = record.getDecimal(i);
+                    colValue = v == null ? null : v.toString();
+                    break;
+                }
                 case BIGINT: {
                     Long v = record.getBigint(i);
+                    colValue = v == null ? null : v.toString();
+                    break;
+                }
+                case INT: {
+                    Integer v = (Integer) record.get(i);
                     colValue = v == null ? null : v.toString();
                     break;
                 }
@@ -163,21 +174,20 @@ public class OdpsServiceImpl implements OdpsService {
                 }
                 case DATETIME: {
                     Date v = record.getDatetime(i);
-                    colValue = v == null ? null : v.toString();
+                    colValue = v == null ? null : String.valueOf(v.getTime());
                     break;
                 }
                 case DOUBLE: {
                     Double v = record.getDouble(i);
-                    colValue = v == null ? null : v.toString();
+                    colValue = v == null ? null : new BigDecimal(v).toString();
                     break;
                 }
                 case STRING: {
-                    String v = record.getString(i);
-                    colValue = v == null ? null : v.toString();
+                    colValue = record.getString(i);
                     break;
                 }
                 default:
-                    throw new RuntimeException("Unknown column type: ");
+                    colValue = record.getString(i);
             }
             line[i] = colValue;
         }
