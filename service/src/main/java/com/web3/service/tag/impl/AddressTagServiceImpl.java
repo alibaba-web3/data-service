@@ -77,6 +77,10 @@ public class AddressTagServiceImpl implements AddressTagService {
 
         return addressTagList.stream().map(addressTag -> {
             AddressTagDTO dto = new AddressTagDTO();
+            Tag tag = tagMapperService.getById(addressTag.getTagId());
+            if (tag != null) {
+                addressTag.setName(tag.getName());
+            }
             BeanUtils.copyProperties(addressTag, dto);
             return dto;
         }).toList();
