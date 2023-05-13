@@ -41,7 +41,7 @@ public class OpenAPIConfig {
 
         List<Server> servers = new ArrayList<>();
         Server server = new Server()
-                .url("https://127.0.0.1:8082")
+                .url("https://api.0x66.io")
                 .description("请求URL");
         servers.add(server);
 
